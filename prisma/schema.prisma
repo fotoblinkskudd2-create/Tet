@@ -1,0 +1,265 @@
+// Secure Authentication System Database Schema
+// Supports: Passkeys, TOTP 2FA, Device Binding, Session Management
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model with comprehensive security fields
+model User {
+  id                    String      @id @default(cuid())
+  email                 String      @unique
+  emailVerified         DateTime?
+  username              String?     @unique
+
+  // Password hash (optional - passkeys are primary)
+  passwordHash          String?
+  passwordChangedAt     DateTime?
+
+  // TOTP 2FA (mandatory on first login)
+  totpSecret            String?
+  totpEnabled           Boolean     @default(false)
+  totpBackupCodes       String[]    // Encrypted backup codes
+
+  // Account security
+  accountLocked         Boolean     @default(false)
+  lockedUntil           DateTime?
+  failedLoginAttempts   Int         @default(0)
+  lastFailedLogin       DateTime?
+
+  // Session invalidation tracking
+  sessionVersion        Int         @default(1) // Increment on password change
+
+  // Metadata
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  lastLoginAt           DateTime?
+
+  // Relations
+  passkeys              Passkey[]
+  sessions              Session[]
+  devices               Device[]
+  auditLogs             AuditLog[]
+
+  @@index([email])
+  @@index([username])
+}
+
+// WebAuthn Passkeys (Primary Authentication)
+model Passkey {
+  id                    String      @id @default(cuid())
+  userId                String
+
+  // WebAuthn credential data
+  credentialID          Bytes       @unique
+  credentialPublicKey   Bytes
+  counter               BigInt
+
+  // Device info
+  deviceName            String      // User-friendly name
+  deviceType            String?     // "platform" or "cross-platform"
+
+  // Attestation data for device binding
+  aaguid                String?
+  attestationFormat     String?
+  attestationObject     Bytes?
+
+  // Transports
+  transports            String[]    // ["usb", "nfc", "ble", "internal"]
+
+  // Security metadata
+  credentialBackedUp    Boolean     @default(false)
+  credentialDeviceType  String?
+
+  // Status
+  isActive              Boolean     @default(true)
+  lastUsedAt            DateTime?
+
+  // Metadata
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  // Relations
+  user                  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([credentialID])
+}
+
+// Session Management with Token Rotation
+model Session {
+  id                    String      @id @default(cuid())
+  userId                String
+
+  // Session tokens
+  accessToken           String      @unique
+  refreshToken          String      @unique
+  refreshTokenHash      String      // Hashed for security
+
+  // Token rotation for breach protection
+  tokenFamily           String      // Track token lineage
+  rotationCount         Int         @default(0)
+
+  // Session version (for invalidation on password change)
+  sessionVersion        Int
+
+  // Device binding
+  deviceId              String?
+
+  // Session metadata
+  ipAddress             String
+  userAgent             String
+
+  // Expiration
+  accessTokenExpiresAt  DateTime
+  refreshTokenExpiresAt DateTime
+
+  // Security flags
+  isRevoked             Boolean     @default(false)
+  revokedAt             DateTime?
+  revokedReason         String?
+
+  // Challenge for replay protection
+  lastNonce             String?
+
+  // Metadata
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  lastActivityAt        DateTime    @default(now())
+
+  // Relations
+  user                  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  device                Device?     @relation(fields: [deviceId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([accessToken])
+  @@index([refreshToken])
+  @@index([tokenFamily])
+  @@index([deviceId])
+  @@index([refreshTokenExpiresAt])
+}
+
+// Device Binding with Cryptographic Attestation
+model Device {
+  id                    String      @id @default(cuid())
+  userId                String
+
+  // Device fingerprint (derived from multiple signals)
+  deviceFingerprint     String      @unique
+
+  // Device information
+  deviceName            String
+  deviceType            String      // "mobile", "desktop", "tablet"
+  os                    String?
+  browser               String?
+
+  // Cryptographic binding
+  devicePublicKey       String?     // Public key for device verification
+  attestationData       Bytes?      // Platform attestation
+
+  // Trust level
+  trustLevel            String      @default("unverified") // "unverified", "verified", "trusted"
+
+  // Security metadata
+  firstSeenIp           String
+  lastSeenIp            String
+  firstSeenAt           DateTime    @default(now())
+  lastSeenAt            DateTime    @default(now())
+
+  // Status
+  isActive              Boolean     @default(true)
+  isTrusted             Boolean     @default(false)
+
+  // Metadata
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  // Relations
+  user                  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessions              Session[]
+
+  @@index([userId])
+  @@index([deviceFingerprint])
+}
+
+// Comprehensive Audit Logging
+model AuditLog {
+  id                    String      @id @default(cuid())
+  userId                String?
+
+  // Event details
+  eventType             String      // "login", "logout", "2fa_setup", "passkey_register", etc.
+  eventAction           String      // "success", "failure", "warning"
+  eventDescription      String
+
+  // Context
+  ipAddress             String
+  userAgent             String?
+  deviceId              String?
+
+  // Security metadata
+  riskScore             Int?        // 0-100
+  anomalyDetected       Boolean     @default(false)
+
+  // Additional data (JSON)
+  metadata              Json?
+
+  // Timestamp
+  createdAt             DateTime    @default(now())
+
+  // Relations
+  user                  User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([eventType])
+  @@index([createdAt])
+}
+
+// Temporary storage for WebAuthn challenges
+model AuthChallenge {
+  id                    String      @id @default(cuid())
+  challenge             String      @unique
+  userId                String?
+  email                 String?
+
+  // Challenge type
+  type                  String      // "registration" or "authentication"
+
+  // Expiration (challenges expire after 5 minutes)
+  expiresAt             DateTime
+
+  // Usage tracking
+  used                  Boolean     @default(false)
+  usedAt                DateTime?
+
+  // Metadata
+  createdAt             DateTime    @default(now())
+
+  @@index([challenge])
+  @@index([expiresAt])
+}
+
+// Rate limiting storage (in-memory cache preferred, this is fallback)
+model RateLimitEntry {
+  id                    String      @id @default(cuid())
+  key                   String      @unique // IP address or user ID
+
+  // Rate limit tracking
+  attempts              Int         @default(1)
+  windowStart           DateTime    @default(now())
+
+  // Block tracking
+  blockedUntil          DateTime?
+
+  // Metadata
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  @@index([key])
+  @@index([windowStart])
+}
