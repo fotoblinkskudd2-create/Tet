@@ -1,0 +1,10 @@
+PLACEHOLDER: This file should contain a disturbing sound effect.
+Since we cannot generate actual audio files, you'll need to:
+1. Find a disturbing/glitchy sound effect (CC0 or royalty-free)
+2. Replace this file with an actual .mp3 file
+3. Alternatively, remove the audio reference from pomodoro.tsx if you don't want sound
+
+Suggested sources:
+- freesound.org (search for "glitch", "horror", "disturbing")
+- YouTube Audio Library
+- zapsplat.com
