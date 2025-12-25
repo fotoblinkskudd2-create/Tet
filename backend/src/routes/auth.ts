@@ -2,24 +2,20 @@ import { Router, Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { v4 as uuid } from 'uuid';
-
-interface UserStats {
-  gamesPlayed: number;
-  wins: number;
-  losses: number;
-  draws: number;
-}
+import pool from '../db';
 
 interface User {
   id: string;
   email: string;
   username: string;
-  passwordHash: string;
+  password_hash: string;
   rating: number;
-  stats: UserStats;
+  games_played: number;
+  wins: number;
+  losses: number;
+  draws: number;
 }
 
-const users = new Map<string, User>();
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
 const COOKIE_NAME = 'session';
@@ -72,26 +68,28 @@ router.post('/signup', async (req: Request, res: Response) => {
     const email = String(req.body.email).toLowerCase();
     const username = String(req.body.username);
 
-    if ([...users.values()].some((u) => u.email === email || u.username === username)) {
+    // Check if user already exists
+    const existingUser = await pool.query(
+      'SELECT id FROM users WHERE email = $1 OR username = $2',
+      [email, username]
+    );
+
+    if (existingUser.rows.length > 0) {
       return res.status(409).json({ error: 'User already exists' });
     }
 
     const passwordHash = await bcrypt.hash(req.body.password, 10);
-    const newUser: User = {
-      id: uuid(),
-      email,
-      username,
-      passwordHash,
-      rating: 1200,
-      stats: {
-        gamesPlayed: 0,
-        wins: 0,
-        losses: 0,
-        draws: 0,
-      },
-    };
+    const userId = uuid();
 
-    users.set(newUser.id, newUser);
+    // Insert new user
+    const result = await pool.query(
+      `INSERT INTO users (id, email, username, password_hash)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, email, username, rating, games_played, wins, losses, draws`,
+      [userId, email, username, passwordHash]
+    );
+
+    const newUser = result.rows[0];
 
     const token = jwt.sign({ userId: newUser.id }, JWT_SECRET, { expiresIn: '7d' });
     setSessionCookie(res, token);
@@ -101,7 +99,12 @@ router.post('/signup', async (req: Request, res: Response) => {
       email: newUser.email,
       username: newUser.username,
       rating: newUser.rating,
-      stats: newUser.stats,
+      stats: {
+        gamesPlayed: newUser.games_played,
+        wins: newUser.wins,
+        losses: newUser.losses,
+        draws: newUser.draws,
+      },
     });
   } catch (err) {
     res.status(400).json({ error: (err as Error).message });
@@ -115,12 +118,19 @@ router.post('/login', async (req: Request, res: Response) => {
   }
 
   const normalizedEmail = String(email).toLowerCase();
-  const user = [...users.values()].find((u) => u.email === normalizedEmail);
-  if (!user) {
+
+  const result = await pool.query(
+    'SELECT * FROM users WHERE email = $1',
+    [normalizedEmail]
+  );
+
+  if (result.rows.length === 0) {
     return res.status(401).json({ error: 'Invalid credentials' });
   }
 
-  const passwordMatches = await bcrypt.compare(password, user.passwordHash);
+  const user = result.rows[0];
+  const passwordMatches = await bcrypt.compare(password, user.password_hash);
+
   if (!passwordMatches) {
     return res.status(401).json({ error: 'Invalid credentials' });
   }
@@ -133,24 +143,42 @@ router.post('/login', async (req: Request, res: Response) => {
     email: user.email,
     username: user.username,
     rating: user.rating,
-    stats: user.stats,
+    stats: {
+      gamesPlayed: user.games_played,
+      wins: user.wins,
+      losses: user.losses,
+      draws: user.draws,
+    },
   });
 });
 
-router.get('/me', authMiddleware, (req: Request, res: Response) => {
+router.get('/me', authMiddleware, async (req: Request, res: Response) => {
   const userId = (req as any).userId as string;
-  const user = users.get(userId);
-  if (!user) {
+
+  const result = await pool.query(
+    'SELECT * FROM users WHERE id = $1',
+    [userId]
+  );
+
+  if (result.rows.length === 0) {
     return res.status(404).json({ error: 'User not found' });
   }
+
+  const user = result.rows[0];
 
   res.json({
     id: user.id,
     email: user.email,
     username: user.username,
     rating: user.rating,
-    stats: user.stats,
+    stats: {
+      gamesPlayed: user.games_played,
+      wins: user.wins,
+      losses: user.losses,
+      draws: user.draws,
+    },
   });
 });
 
+export { authMiddleware };
 export default router;
