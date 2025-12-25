@@ -153,4 +153,5 @@ router.get('/me', authMiddleware, (req: Request, res: Response) => {
   });
 });
 
+export { authMiddleware };
 export default router;
