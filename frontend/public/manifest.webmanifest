@@ -1,0 +1,55 @@
+{
+  "name": "FRIHET",
+  "short_name": "FRIHET",
+  "description": "Våpenet ditt mot systemet",
+  "theme_color": "#FF0000",
+  "background_color": "#000000",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["productivity", "finance", "news"],
+  "shortcuts": [
+    {
+      "name": "Gjeldsknuser",
+      "short_name": "Gjeld",
+      "description": "Analyser gjeld og få strategi",
+      "url": "/debt",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Sannhetsmotor",
+      "short_name": "Sannhet",
+      "description": "Faktasjekk nyheter med AI",
+      "url": "/truth",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Handlingstracker",
+      "short_name": "Handling",
+      "description": "Daglige oppgaver og streaks",
+      "url": "/action",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

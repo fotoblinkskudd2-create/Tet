@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+  <!-- Black background -->
+  <rect width="192" height="192" fill="#000000"/>
+
+  <!-- Red fist/power symbol -->
+  <g transform="translate(96.0, 96.0)">
+    <!-- Circle -->
+    <circle cx="0" cy="0" r="67.19999999999999" fill="none" stroke="#FF0000" stroke-width="15.36"/>
+
+    <!-- Power symbol line -->
+    <rect x="-7.68" y="-67.19999999999999" width="15.36" height="48.0" fill="#FF0000"/>
+  </g>
+
+  <!-- Text -->
+  <text
+    x="50%"
+    y="85%"
+    text-anchor="middle"
+    font-family="Arial, sans-serif"
+    font-size="28.799999999999997"
+    font-weight="bold"
+    fill="#FF0000">FRIHET</text>
+</svg>
