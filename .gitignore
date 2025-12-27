@@ -1,2 +1,6 @@
 __pycache__/
 *.pyc
+
+# Generated icons (create from icon.svg)
+public/icon.png
+public/icon-512.png

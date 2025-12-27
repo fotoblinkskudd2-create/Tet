@@ -1,0 +1,141 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #111;
+    color: #fff;
+    line-height: 1.6;
+}
+
+header {
+    background: linear-gradient(135deg, #c00 0%, #900 100%);
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+    margin: 0;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+header p {
+    margin: 10px 0 0 0;
+    opacity: 0.9;
+}
+
+section {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #c00;
+    padding-bottom: 10px;
+}
+
+input,
+select,
+button {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 12px;
+    font-size: 1em;
+    border: none;
+    border-radius: 6px;
+    font-family: inherit;
+}
+
+input,
+select {
+    background: #222;
+    color: #fff;
+    border: 1px solid #444;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #c00;
+}
+
+input[type="file"] {
+    padding: 8px;
+}
+
+button {
+    background: linear-gradient(135deg, #f00 0%, #c00 100%);
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 10px rgba(255, 0, 0, 0.3);
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 0, 0, 0.4);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+#report-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.report-item {
+    background: #222;
+    margin: 15px 0;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #c00;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.report-item h3 {
+    margin: 0 0 10px 0;
+    color: #f00;
+    font-size: 1.2em;
+}
+
+.report-item .meta {
+    color: #aaa;
+    font-size: 0.9em;
+    margin: 5px 0;
+}
+
+.report-item .date {
+    color: #888;
+    font-size: 0.85em;
+}
+
+.report-item img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    margin-top: 10px;
+    border: 1px solid #444;
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 1.5em;
+    }
+
+    section {
+        padding: 15px;
+    }
+}

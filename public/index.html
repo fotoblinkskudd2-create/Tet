@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SykePriser">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <title>SykePriser.app – Meld inn jævla høye priser</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header>
+        <h1>💣 SykePriser.app</h1>
+        <p>Meld inn jævla høye priser fra Rema, Coop og Kiwi. Vi avslører ranet.</p>
+    </header>
+
+    <section id="submit-section">
+        <h2>Meld inn sykt pris</h2>
+        <input type="text" id="product" placeholder="Vare (f.eks. Tine Melk 1L)">
+        <input type="number" id="price" placeholder="Pris (kr)" step="0.01">
+        <select id="store">
+            <option value="">Velg butikk</option>
+            <option value="Rema 1000">Rema 1000</option>
+            <option value="Coop Extra">Coop Extra</option>
+            <option value="Coop Mega">Coop Mega</option>
+            <option value="Coop Prix">Coop Prix</option>
+            <option value="Kiwi">Kiwi</option>
+            <option value="Annen">Annen</option>
+        </select>
+        <input type="text" id="location" placeholder="Sted (f.eks. Oslo Sentrum)">
+        <input type="file" id="photo" accept="image/*" capture="environment">
+        <button id="submit">Send inn – knus kjedene!</button>
+    </section>
+
+    <section id="reports-section">
+        <h2>🔥 Nyeste meldinger (folket slår tilbake)</h2>
+        <ul id="report-list"></ul>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
