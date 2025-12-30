@@ -1,10 +1,36 @@
-# Tet Problem Solver
+# Tet - Drunk Party Games & Problem Solver
 
-A tiny, joyful command-line helper that solves small puzzles like arithmetic and classic anagrams. When it cannot solve a prompt directly, it offers upbeat brainstorming steps to keep the momentum going.
+## Drunk Party Games 🍺🎉
 
-## Usage
+An absolutely ridiculous collection of drunk party games that use your phone's GPS and gyroscope sensors to determine who's the biggest idiot!
 
-Run the solver with your problem statement:
+### Features
+
+- **Shake-o-Meter** 📳 - Shake your phone as hard as you can. Don't drop it!
+- **Balance Master** 🎯 - Hold your phone steady. Impossible when drunk!
+- **GPS Treasure Hunt** 🗺️ - Navigate to random locations. Hot or cold?
+- **Spin & Point** 🧭 - Spin around and point to target directions. Get dizzy!
+- **Progressive Web App** - Install it on your phone like a native app!
+
+### Getting Started
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) on your phone!
+
+**⚠️ Safety Warning:** Please drink responsibly. Don't play while driving, and watch where you're walking!
+
+---
+
+## Tet Problem Solver (Legacy)
+
+A tiny, joyful command-line helper that solves small puzzles like arithmetic and classic anagrams.
+
+### Usage
 
 ```bash
 python app.py "2 + 3 * 4"

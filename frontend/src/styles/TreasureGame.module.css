@@ -1,0 +1,373 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  padding: 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.backButton {
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 25px;
+  transition: all 0.3s;
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateX(-5px);
+}
+
+.title {
+  font-size: 2.5rem;
+  color: white;
+  margin: 20px 0;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+  font-weight: 900;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 10px 0;
+}
+
+.setupScreen {
+  max-width: 500px;
+  margin: 0 auto;
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.startButton {
+  width: 100%;
+  padding: 20px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 6px 20px rgba(17, 153, 142, 0.4);
+}
+
+.startButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(17, 153, 142, 0.6);
+}
+
+.instructions {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f5f5f5;
+  border-radius: 12px;
+}
+
+.instructions h3 {
+  color: #11998e;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.instructions ol {
+  text-align: left;
+  padding-left: 25px;
+}
+
+.instructions li {
+  margin: 10px 0;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.warning {
+  margin-top: 15px;
+  padding: 12px;
+  background: #FF9800;
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.gameScreen {
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.timer {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.timer h3 {
+  font-size: 2rem;
+  color: #11998e;
+  margin: 0;
+  font-weight: 900;
+}
+
+.compassContainer {
+  width: 300px;
+  height: 300px;
+  margin: 0 auto 30px;
+  position: relative;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow {
+  font-size: 8rem;
+  font-weight: 900;
+  transition: transform 0.5s ease-out, color 0.3s;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+.compassRing {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.compassRing span {
+  position: absolute;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #666;
+}
+
+.north {
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #F44336 !important;
+}
+
+.east {
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.south {
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.west {
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.distanceDisplay {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  margin: 20px 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.distanceDisplay h2 {
+  font-size: 3rem;
+  font-weight: 900;
+  margin: 0;
+}
+
+.distanceLabel {
+  font-size: 1.2rem;
+  color: #666;
+  margin: 10px 0 0 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hotColdIndicator {
+  padding: 20px 40px;
+  border-radius: 50px;
+  margin: 30px 0;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  animation: pulse 1.5s infinite;
+}
+
+.hotColdIndicator h2 {
+  color: white;
+  font-size: 2rem;
+  font-weight: 900;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.locationInfo {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 15px;
+  border-radius: 12px;
+  margin: 20px 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.coords {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #11998e;
+  margin: 5px 0 0 0;
+}
+
+.quitButton {
+  background: rgba(244, 67, 54, 0.8);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 20px;
+}
+
+.quitButton:hover {
+  background: rgba(244, 67, 54, 1);
+  transform: scale(1.05);
+}
+
+.winScreen {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.winCard {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: bounceIn 0.6s;
+}
+
+.winCard h2 {
+  font-size: 2.5rem;
+  color: #11998e;
+  margin-bottom: 30px;
+  animation: rainbow 3s infinite;
+}
+
+.winInfo {
+  margin: 30px 0;
+}
+
+.winTime {
+  font-size: 2rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 10px 0;
+}
+
+.winMessage {
+  font-size: 1.3rem;
+  color: #666;
+  margin: 15px 0;
+}
+
+.winSubtext {
+  font-size: 1rem;
+  color: #999;
+  font-style: italic;
+}
+
+.playAgainButton {
+  width: 100%;
+  padding: 18px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  margin-top: 20px;
+}
+
+.playAgainButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(17, 153, 142, 0.4);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes rainbow {
+  0% { color: #11998e; }
+  25% { color: #38ef7d; }
+  50% { color: #FFD700; }
+  75% { color: #38ef7d; }
+  100% { color: #11998e; }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .compassContainer {
+    width: 250px;
+    height: 250px;
+  }
+
+  .arrow {
+    font-size: 6rem;
+  }
+}

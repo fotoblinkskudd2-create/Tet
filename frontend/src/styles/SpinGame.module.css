@@ -1,0 +1,495 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  padding: 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.backButton {
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 25px;
+  transition: all 0.3s;
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateX(-5px);
+}
+
+.title {
+  font-size: 2.5rem;
+  color: white;
+  margin: 20px 0;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+  font-weight: 900;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 10px 0;
+}
+
+.setupScreen {
+  max-width: 500px;
+  margin: 0 auto;
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.inputGroup {
+  margin-bottom: 30px;
+}
+
+.label {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #fa709a;
+}
+
+.input {
+  width: 100%;
+  padding: 15px 20px;
+  font-size: 1.2rem;
+  border: 3px solid #fa709a;
+  border-radius: 12px;
+  box-sizing: border-box;
+  transition: all 0.3s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #fee140;
+  box-shadow: 0 0 0 3px rgba(254, 225, 64, 0.2);
+}
+
+.startButton {
+  width: 100%;
+  padding: 20px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 6px 20px rgba(250, 112, 154, 0.4);
+}
+
+.startButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(250, 112, 154, 0.6);
+}
+
+.instructions {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f5f5f5;
+  border-radius: 12px;
+}
+
+.instructions h3 {
+  color: #fa709a;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.instructions ol {
+  text-align: left;
+  padding-left: 25px;
+}
+
+.instructions li {
+  margin: 10px 0;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.tip {
+  margin-top: 15px;
+  font-weight: 600;
+  color: #FF9800;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.gameScreen {
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.roundInfo {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.roundInfo h3 {
+  font-size: 1.8rem;
+  color: #fa709a;
+  margin: 5px 0;
+  font-weight: 900;
+}
+
+.roundInfo p {
+  font-size: 1.2rem;
+  color: #666;
+  margin: 5px 0;
+  font-weight: 600;
+}
+
+.timer {
+  color: #FF9800 !important;
+  font-size: 1.4rem !important;
+}
+
+.spinPrompt {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.spinPrompt h2 {
+  font-size: 2rem;
+  color: #fa709a;
+  margin-bottom: 20px;
+  animation: pulse 1s infinite;
+}
+
+.spinPrompt p {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #666;
+  margin: 20px 0;
+}
+
+.spinIndicator {
+  margin-top: 30px;
+}
+
+.spinnerIcon {
+  font-size: 8rem;
+  color: #fa709a;
+  display: inline-block;
+  animation: spin 2s linear infinite;
+}
+
+.pointingPhase {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.pointingPhase h2 {
+  font-size: 2rem;
+  color: #fa709a;
+  margin-bottom: 10px;
+  font-weight: 900;
+}
+
+.targetDegrees {
+  font-size: 1.5rem;
+  color: #fee140;
+  font-weight: 900;
+  margin: 10px 0 30px 0;
+}
+
+.compassDisplay {
+  width: 300px;
+  height: 300px;
+  margin: 30px auto;
+  position: relative;
+  background: #f5f5f5;
+  border-radius: 50%;
+  border: 5px solid #fa709a;
+}
+
+.compassNeedle {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 4px;
+  height: 50%;
+  transform-origin: bottom center;
+  transition: transform 0.3s;
+}
+
+.needleArrow {
+  font-size: 3rem;
+  color: #4CAF50;
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.targetMarker {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 4px;
+  height: 50%;
+  transform-origin: bottom center;
+}
+
+.targetDot {
+  font-size: 2.5rem;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: pulse 1s infinite;
+}
+
+.currentHeading {
+  margin: 30px 0;
+}
+
+.currentHeading p {
+  font-size: 1.2rem;
+  color: #666;
+  margin: 8px 0;
+  font-weight: 600;
+}
+
+.currentDegrees {
+  font-size: 1.8rem !important;
+  color: #4CAF50 !important;
+  font-weight: 900 !important;
+}
+
+.difference {
+  font-size: 1.3rem !important;
+  color: #FF9800 !important;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 18px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  margin-top: 20px;
+}
+
+.submitButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.resultsScreen {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.resultCard {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.resultCard h2 {
+  font-size: 2rem;
+  color: #fa709a;
+  margin-bottom: 30px;
+}
+
+.finalScore {
+  margin: 30px 0;
+}
+
+.playerNameResult {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #fee140;
+  margin: 10px 0;
+}
+
+.scoreValue {
+  font-size: 4rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 20px 0;
+}
+
+.scoreLabel {
+  font-size: 1.2rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.avgScore {
+  font-size: 1rem;
+  color: #999;
+  margin-top: 10px;
+}
+
+.champion {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  padding: 20px;
+  border-radius: 15px;
+  margin: 30px 0;
+  animation: glow 2s infinite;
+}
+
+.champion h3 {
+  color: white;
+  font-size: 1.5rem;
+  margin: 10px 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.playAgainButton {
+  width: 100%;
+  padding: 18px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  margin-top: 20px;
+}
+
+.playAgainButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(250, 112, 154, 0.4);
+}
+
+.leaderboard {
+  max-width: 500px;
+  margin: 40px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.leaderboard h3 {
+  text-align: center;
+  color: #fa709a;
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+}
+
+.leaderboardList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.leaderboardItem {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  background: #f5f5f5;
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+
+.leaderboardItem:hover {
+  transform: translateX(5px);
+  background: #ebebeb;
+}
+
+.leaderboardItem.first {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: white;
+  font-weight: 800;
+}
+
+.rank {
+  font-size: 1.5rem;
+  font-weight: 900;
+  min-width: 50px;
+  text-align: center;
+}
+
+.playerName {
+  flex: 1;
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding: 0 15px;
+}
+
+.score {
+  font-size: 1.4rem;
+  font-weight: 900;
+  min-width: 80px;
+  text-align: right;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.8);
+  }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .compassDisplay {
+    width: 250px;
+    height: 250px;
+  }
+}
