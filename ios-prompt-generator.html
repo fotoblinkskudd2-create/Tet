@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Prompt Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+            -webkit-appearance: none;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .category-btn {
+            padding: 14px 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .category-btn:active {
+            transform: scale(0.95);
+        }
+
+        .category-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .category-icon {
+            font-size: 24px;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .generate-btn:active {
+            transform: scale(0.98);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .output-card {
+            display: none;
+        }
+
+        .output-card.show {
+            display: block;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .output-header h3 {
+            color: #333;
+            font-size: 18px;
+        }
+
+        .copy-btn {
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+
+        .copy-btn.copied {
+            background: #48bb78;
+        }
+
+        .output-text {
+            background: #f7fafc;
+            padding: 16px;
+            border-radius: 12px;
+            line-height: 1.6;
+            font-size: 15px;
+            color: #2d3748;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .examples {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .examples-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .example-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .example-chip {
+            padding: 6px 12px;
+            background: #f0f0f0;
+            border-radius: 16px;
+            font-size: 12px;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .example-chip:active {
+            transform: scale(0.95);
+            background: #e0e0e0;
+        }
+
+        @media (max-width: 480px) {
+            .category-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✨ Prompt Generator</h1>
+            <p>Transform simple words into powerful prompts</p>
+        </div>
+
+        <div class="card">
+            <div class="input-group">
+                <label for="keywords">Enter your idea (a few words)</label>
+                <input type="text" id="keywords" placeholder="e.g., sunset beach, jazz melody, love poem...">
+            </div>
+
+            <div class="input-group">
+                <label>Select Category</label>
+                <div class="category-grid">
+                    <button class="category-btn active" data-category="photo">
+                        <span class="category-icon">📷</span>
+                        <span>Photo</span>
+                    </button>
+                    <button class="category-btn" data-category="video">
+                        <span class="category-icon">🎬</span>
+                        <span>Video</span>
+                    </button>
+                    <button class="category-btn" data-category="music">
+                        <span class="category-icon">🎵</span>
+                        <span>Music</span>
+                    </button>
+                    <button class="category-btn" data-category="art">
+                        <span class="category-icon">🎨</span>
+                        <span>Art</span>
+                    </button>
+                    <button class="category-btn" data-category="poem">
+                        <span class="category-icon">📝</span>
+                        <span>Poem</span>
+                    </button>
+                </div>
+            </div>
+
+            <button class="generate-btn" id="generateBtn">Generate Prompt</button>
+
+            <div class="examples">
+                <div class="examples-title">Quick examples:</div>
+                <div class="example-chips" id="exampleChips"></div>
+            </div>
+        </div>
+
+        <div class="card output-card" id="outputCard">
+            <div class="output-header">
+                <h3>Your Prompt</h3>
+                <button class="copy-btn" id="copyBtn">Copy</button>
+            </div>
+            <div class="output-text" id="outputText"></div>
+        </div>
+    </div>
+
+    <script>
+        const categoryExamples = {
+            photo: ['sunset beach', 'city rain', 'portrait light', 'nature macro'],
+            video: ['action scene', 'time lapse', 'drone flight', 'slow motion'],
+            music: ['jazz melody', 'epic orchestra', 'chill beats', 'rock anthem'],
+            art: ['abstract colors', 'digital portrait', 'landscape oil', 'modern sketch'],
+            poem: ['love sonnet', 'nature haiku', 'city nights', 'childhood memory']
+        };
+
+        const promptTemplates = {
+            photo: (keywords) => {
+                const styles = ['professional photography', 'high resolution', 'sharp focus', 'perfect lighting'];
+                const technical = ['8k resolution', 'depth of field', 'golden hour lighting', 'rule of thirds composition'];
+                const mood = ['stunning', 'breathtaking', 'cinematic', 'award-winning'];
+
+                return `Create a ${mood[Math.floor(Math.random() * mood.length)]} photograph of ${keywords}. ${styles[Math.floor(Math.random() * styles.length)]}, ${technical[Math.floor(Math.random() * technical.length)]}. Professional grade photo with beautiful composition, rich colors, and perfect exposure. Capture intricate details with ${technical[(Math.floor(Math.random() * technical.length) + 1) % technical.length]}. Style: photorealistic, magazine quality.`;
+            },
+
+            video: (keywords) => {
+                const videoStyles = ['cinematic', 'documentary style', 'dynamic', 'smooth'];
+                const camera = ['steadicam movement', 'tracking shot', 'slow pan', 'aerial view'];
+                const quality = ['4K resolution', 'high frame rate', 'color graded', 'professional editing'];
+
+                return `Produce a ${videoStyles[Math.floor(Math.random() * videoStyles.length)]} video featuring ${keywords}. Use ${camera[Math.floor(Math.random() * camera.length)]} with ${quality[Math.floor(Math.random() * quality.length)]}. Include smooth transitions, compelling visual narrative, and professional sound design. Lighting should be dramatic and purposeful. Duration optimized for maximum impact. Style: ${videoStyles[(Math.floor(Math.random() * videoStyles.length) + 1) % videoStyles.length]}, Hollywood-grade production value.`;
+            },
+
+            music: (keywords) => {
+                const genres = ['melodic', 'rhythmic', 'harmonic', 'atmospheric'];
+                const instruments = ['orchestral', 'electronic', 'acoustic', 'synthesized'];
+                const mood = ['uplifting', 'emotional', 'energetic', 'contemplative'];
+
+                return `Compose a ${mood[Math.floor(Math.random() * mood.length)]} music piece about ${keywords}. Create ${genres[Math.floor(Math.random() * genres.length)]} composition using ${instruments[Math.floor(Math.random() * instruments.length)]} elements. Include: dynamic range from soft to powerful, memorable melody lines, rich harmonic progression, and professional production quality. Tempo and rhythm should enhance the emotional journey. BPM tailored to the theme. Style: ${genres[(Math.floor(Math.random() * genres.length) + 1) % genres.length]} with ${instruments[(Math.floor(Math.random() * instruments.length) + 1) % instruments.length]} arrangement.`;
+            },
+
+            art: (keywords) => {
+                const artStyles = ['impressionist', 'modern', 'contemporary', 'expressive', 'detailed'];
+                const medium = ['digital painting', 'oil on canvas', 'watercolor', 'mixed media'];
+                const qualities = ['vibrant colors', 'bold brushstrokes', 'intricate details', 'dynamic composition'];
+
+                return `Create an artistic masterpiece depicting ${keywords}. Style: ${artStyles[Math.floor(Math.random() * artStyles.length)]} ${medium[Math.floor(Math.random() * medium.length)]}. Features ${qualities[Math.floor(Math.random() * qualities.length)]}, expert use of light and shadow, compelling focal point, and balanced composition. Color palette should evoke emotion and draw the viewer in. Include fine details and texture. Quality: gallery-worthy, museum-grade artistry with ${qualities[(Math.floor(Math.random() * qualities.length) + 1) % qualities.length]}.`;
+            },
+
+            poem: (keywords) => {
+                const poemTypes = ['lyrical', 'narrative', 'descriptive', 'contemplative'];
+                const techniques = ['vivid imagery', 'powerful metaphors', 'rhythmic flow', 'emotional depth'];
+                const tone = ['heartfelt', 'inspiring', 'thought-provoking', 'moving'];
+
+                return `Write a ${tone[Math.floor(Math.random() * tone.length)]} poem about ${keywords}. Craft ${poemTypes[Math.floor(Math.random() * poemTypes.length)]} verses using ${techniques[Math.floor(Math.random() * techniques.length)]} and ${techniques[(Math.floor(Math.random() * techniques.length) + 1) % techniques.length]}. Employ sensory language that brings scenes to life. Include carefully chosen words that resonate emotionally. Structure should enhance meaning with natural rhythm and flow. Use literary devices like alliteration, personification, or symbolism. Style: ${poemTypes[(Math.floor(Math.random() * poemTypes.length) + 1) % poemTypes.length]} with authentic voice and genuine emotion.`;
+            }
+        };
+
+        let selectedCategory = 'photo';
+
+        // Category selection
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedCategory = this.dataset.category;
+                updateExamples();
+            });
+        });
+
+        // Update examples based on category
+        function updateExamples() {
+            const exampleChips = document.getElementById('exampleChips');
+            exampleChips.innerHTML = '';
+            categoryExamples[selectedCategory].forEach(example => {
+                const chip = document.createElement('div');
+                chip.className = 'example-chip';
+                chip.textContent = example;
+                chip.addEventListener('click', () => {
+                    document.getElementById('keywords').value = example;
+                });
+                exampleChips.appendChild(chip);
+            });
+        }
+
+        // Generate prompt
+        document.getElementById('generateBtn').addEventListener('click', function() {
+            const keywords = document.getElementById('keywords').value.trim();
+
+            if (!keywords) {
+                alert('Please enter some keywords first!');
+                return;
+            }
+
+            const prompt = promptTemplates[selectedCategory](keywords);
+            document.getElementById('outputText').textContent = prompt;
+            document.getElementById('outputCard').classList.add('show');
+            document.getElementById('copyBtn').textContent = 'Copy';
+            document.getElementById('copyBtn').classList.remove('copied');
+
+            // Scroll to output
+            setTimeout(() => {
+                document.getElementById('outputCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        });
+
+        // Copy to clipboard
+        document.getElementById('copyBtn').addEventListener('click', async function() {
+            const text = document.getElementById('outputText').textContent;
+
+            try {
+                await navigator.clipboard.writeText(text);
+                this.textContent = '✓ Copied!';
+                this.classList.add('copied');
+
+                setTimeout(() => {
+                    this.textContent = 'Copy';
+                    this.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';
+                textArea.style.opacity = '0';
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+
+                this.textContent = '✓ Copied!';
+                this.classList.add('copied');
+
+                setTimeout(() => {
+                    this.textContent = 'Copy';
+                    this.classList.remove('copied');
+                }, 2000);
+            }
+        });
+
+        // Allow Enter key to generate
+        document.getElementById('keywords').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('generateBtn').click();
+            }
+        });
+
+        // Initialize examples
+        updateExamples();
+    </script>
+</body>
+</html>
