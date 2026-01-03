@@ -71,7 +71,7 @@ _ANAGRAM_LIBRARY: Dict[str, Tuple[str, ...]] = {
     "evil": ("vile", "veil", "live"),
     "angel": ("glean", "angle"),
     "stressed": ("desserts",),
-    "save": ("vase" ,),
+    "save": ("vase",),
 }
 
 
@@ -124,6 +124,66 @@ def _brainstorm_steps(problem: str) -> Solution:
     return Solution(kind="Brainstorm", answer=answer, details=steps)
 
 
+def _normalize_seed(seed: str) -> Tuple[str, List[str]]:
+    cleaned = " ".join(seed.split()).strip()
+    if not cleaned:
+        raise ValueError("Please provide a few words to seed the prompter.")
+    tokens = [token.lower() for token in cleaned.split()]
+    return cleaned, tokens
+
+
+def _pick_from(tokens: List[str], candidates: Tuple[str, ...], default: str) -> str:
+    for token in tokens:
+        if token in candidates:
+            return token
+    return default
+
+
+def build_prompt_pack(seed: str) -> Solution:
+    """Generate a multi-modal prompt pack for mobile-friendly creative tools."""
+
+    cleaned_seed, tokens = _normalize_seed(seed)
+
+    moods = (
+        "dreamy",
+        "moody",
+        "vivid",
+        "gentle",
+        "energetic",
+        "calm",
+        "nostalgic",
+        "cinematic",
+    )
+    art_styles = (
+        "watercolor",
+        "digital painting",
+        "line art",
+        "vector",
+        "pencil sketch",
+        "pop art",
+    )
+    audio_colors = ("warm", "bright", "crisp", "airy", "gritty")
+    motion_styles = ("handheld", "steady", "slow pan", "tracking", "time-lapse")
+
+    mood = _pick_from(tokens, moods, "cinematic")
+    art_style = _pick_from(tokens, art_styles, "digital painting")
+    audio_color = _pick_from(tokens, audio_colors, "warm")
+    motion_style = _pick_from(tokens, motion_styles, "steady")
+
+    prompts = [
+        f"📸 Photo (iOS ready): Capture {cleaned_seed} with {mood} lighting, shot on an iPhone in portrait orientation. Focus on clean edges, tap-to-focus on the key subject, and keep background blur subtle for mobile clarity.",
+        f"🎬 Video (vertical): Film a 12–15s clip of {cleaned_seed} using a {motion_style} move. Start with a tight detail, then reveal the wider scene; lock exposure, stabilize with elbows in, and frame for swipe-stopping contrast.",
+        f"🎵 Music: Compose a {audio_color}, {mood} cue inspired by {cleaned_seed}. Aim for a 90–105 BPM pocket, layered pads, and a tactile hook that can loop cleanly for short-form video edits.",
+        f"🎨 Art: Create a {art_style} illustration of {cleaned_seed}. Emphasize bold silhouettes, tactile texture, and a limited palette so it pops on Retina iOS displays.",
+        f"📝 Poem: Write a 6-line free-verse piece about {cleaned_seed}, opening with a sensory image, pivoting on an unexpected verb, and ending with a crisp, memorable closing line.",
+    ]
+
+    answer = (
+        f"Creative prompt pack for '{cleaned_seed}' ready for iOS-friendly photo, video, music, art, and poetry."
+    )
+    return Solution(kind="Prompt Pack", answer=answer, details=prompts)
+
+
 def solve_problem(problem: str) -> Solution:
     """Attempt to solve a problem using available solvers."""
 
@@ -139,6 +199,11 @@ def _build_parser() -> argparse.ArgumentParser:
         description="A joyful assistant that tackles small problems with gusto!",
     )
     parser.add_argument(
+        "--prompt",
+        action="store_true",
+        help="Generate a creative prompt pack for iOS-friendly photo, video, music, art, and poetry.",
+    )
+    parser.add_argument(
         "problem",
         nargs=argparse.REMAINDER,
         help="Tell me your problem to solve. Quotes are encouraged for multi-word puzzles!",
@@ -150,14 +215,22 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
 
-    if not args.problem:
-        parser.print_help()
+    if args.prompt:
+        if not args.problem:
+            parser.error("Please provide a few words to seed the creative prompter.")
+        seed = " ".join(args.problem)
+        prompt_pack = build_prompt_pack(seed)
+        print(prompt_pack.format())
         return 0
+    else:
+        if not args.problem:
+            parser.print_help()
+            return 0
 
-    problem_text = " ".join(args.problem)
-    solution = solve_problem(problem_text)
-    print(solution.format())
-    return 0
+        problem_text = " ".join(args.problem)
+        solution = solve_problem(problem_text)
+        print(solution.format())
+        return 0
 
 
 if __name__ == "__main__":

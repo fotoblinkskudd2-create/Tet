@@ -1,4 +1,10 @@
+import pathlib
 import re
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 import app
 
@@ -20,3 +26,13 @@ def test_brainstorm_fallback_is_upbeat():
     assert solution.kind == "Brainstorm"
     assert re.search(r"win together", solution.answer)
     assert any("joyful" in step for step in solution.details)
+
+
+def test_prompt_pack_covers_modalities():
+    prompt_pack = app.build_prompt_pack("enchanted forest sunrise")
+    assert prompt_pack.kind == "Prompt Pack"
+    assert "enchanted forest sunrise" in prompt_pack.answer
+
+    detail_blob = "\n".join(prompt_pack.details or [])
+    for label in ("Photo", "Video", "Music", "Art", "Poem"):
+        assert label.lower() in detail_blob.lower()
