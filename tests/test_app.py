@@ -20,3 +20,17 @@ def test_brainstorm_fallback_is_upbeat():
     assert solution.kind == "Brainstorm"
     assert re.search(r"win together", solution.answer)
     assert any("joyful" in step for step in solution.details)
+
+
+def test_creative_prompt_handles_photo_medium():
+    solution = app.build_creative_prompt("sunrise over a wooden pier", medium_hint="photo")
+    assert solution.kind == "Creative Prompt"
+    assert "photo prompt" in solution.answer.lower()
+    assert "sunrise over a wooden pier" in solution.answer.lower()
+    assert any("light" in detail.lower() for detail in solution.details)
+
+
+def test_creative_prompt_auto_detects_poem():
+    solution = app.build_creative_prompt("poem about autumn rain and neon reflections")
+    assert "poem prompt" in solution.answer.lower()
+    assert any("form" in detail.lower() for detail in solution.details)
