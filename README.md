@@ -13,3 +13,15 @@ python app.py "How do I get motivated for chores?"
 ```
 
 Each response includes a playful banner, a concise answer, and encouraging bullet points whenever brainstorming is needed.
+
+## Build creative prompts for iOS web
+
+Use prompt mode when you want a ready-to-paste creative brief for photos, video, music, art, or poetry. The builder keeps instructions short and mobile-friendly for iOS web inputs:
+
+```bash
+python app.py --prompt --medium photo "misty forest boardwalk at dawn"
+python app.py --prompt --medium music "uplifting synthwave for launch video"
+python app.py --prompt "poem about late-summer rain in the city"  # medium auto-detected
+```
+
+The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
