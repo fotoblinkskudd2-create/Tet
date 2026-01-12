@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 Word Genius - Fun Word Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 650px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-item {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .score {
+            color: #667eea;
+        }
+
+        .attempts {
+            color: #764ba2;
+        }
+
+        .hint-box {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%);
+            border: 3px solid #ffc107;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            font-size: 18px;
+            box-shadow: 0 4px 6px rgba(255, 193, 7, 0.2);
+        }
+
+        .hint-box strong {
+            font-size: 20px;
+        }
+
+        .word-length {
+            text-align: center;
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .alphabet-grid {
+            display: grid;
+            grid-template-columns: repeat(13, 1fr);
+            gap: 6px;
+            margin-bottom: 25px;
+        }
+
+        .letter-box {
+            padding: 10px 5px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: bold;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .letter-box.found {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+        }
+
+        .letter-box.wrong {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+            opacity: 0.6;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        #guessInput {
+            flex: 1;
+            padding: 18px;
+            font-size: 18px;
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        #guessInput:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            padding: 18px 35px;
+            font-size: 18px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .message {
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 500;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .message.info {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            color: #1976d2;
+        }
+
+        .message.success {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+            color: #2e7d32;
+        }
+
+        .message.error {
+            background: #ffebee;
+            border: 2px solid #f44336;
+            color: #c62828;
+        }
+
+        .guess-history {
+            margin-bottom: 25px;
+        }
+
+        .guess-history h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .guess-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .guess-item {
+            padding: 10px 18px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e9e9e9 100%);
+            border-radius: 25px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            font-weight: 500;
+        }
+
+        .new-game-button {
+            width: 100%;
+            padding: 20px;
+            font-size: 20px;
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .new-game-button:hover {
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+
+            .alphabet-grid {
+                grid-template-columns: repeat(10, 1fr);
+                gap: 4px;
+            }
+
+            .letter-box {
+                padding: 8px 3px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🧠 Word Genius</h1>
+        <p class="subtitle">Guess the word from the hint and have fun!</p>
+
+        <div class="score-board">
+            <div class="score-item score">Score: <span id="score">0</span></div>
+            <div class="score-item attempts">Attempts: <span id="attempts">6</span></div>
+        </div>
+
+        <div class="hint-box">
+            <strong>💡 Hint:</strong> <span id="hint">Loading...</span>
+        </div>
+
+        <div class="word-length">
+            Word Length: <span id="wordLength">0</span> letters
+        </div>
+
+        <div class="alphabet-grid" id="alphabetGrid"></div>
+
+        <div class="input-group" id="inputGroup">
+            <input
+                type="text"
+                id="guessInput"
+                placeholder="Type your guess here..."
+                autocomplete="off"
+            />
+            <button onclick="makeGuess()">Guess</button>
+        </div>
+
+        <div id="message" class="message hidden"></div>
+
+        <div class="guess-history hidden" id="guessHistory">
+            <h3>Your Guesses:</h3>
+            <div class="guess-list" id="guessList"></div>
+        </div>
+
+        <button class="new-game-button hidden" id="newGameButton" onclick="startNewGame()">
+            🎮 New Game
+        </button>
+    </div>
+
+    <script>
+        // Word database with fun words and creative hints
+        const wordDatabase = [
+            { word: 'genius', hint: 'Someone with exceptional intellectual ability' },
+            { word: 'rainbow', hint: 'Colorful arc in the sky after rain' },
+            { word: 'adventure', hint: 'An exciting or unusual experience' },
+            { word: 'butterfly', hint: 'Beautiful insect with colorful wings' },
+            { word: 'treasure', hint: 'Valuable collection of precious things' },
+            { word: 'mystery', hint: 'Something difficult to understand or explain' },
+            { word: 'wisdom', hint: 'Knowledge gained through experience' },
+            { word: 'harmony', hint: 'Pleasant combination of different elements' },
+            { word: 'courage', hint: 'Bravery in the face of danger' },
+            { word: 'freedom', hint: 'The power to act without restraint' },
+            { word: 'symphony', hint: 'Large orchestral composition' },
+            { word: 'universe', hint: 'All of space and everything in it' },
+            { word: 'champion', hint: 'Winner of a competition' },
+            { word: 'sparkle', hint: 'Shine with small flashes of light' },
+            { word: 'mountain', hint: 'Very large natural elevation' },
+            { word: 'laughter', hint: 'The sound of joy and amusement' },
+            { word: 'journey', hint: 'An act of traveling from one place to another' },
+            { word: 'wonder', hint: 'A feeling of amazement and admiration' },
+            { word: 'thunder', hint: 'Loud sound following lightning' },
+            { word: 'crystal', hint: 'Clear transparent mineral' },
+            { word: 'cascade', hint: 'Small waterfall or series of them' },
+            { word: 'phoenix', hint: 'Mythical bird that rises from ashes' },
+            { word: 'serenity', hint: 'State of being calm and peaceful' },
+            { word: 'velocity', hint: 'The speed of something in a direction' },
+            { word: 'euphoria', hint: 'Intense feeling of happiness' },
+            { word: 'kaleidoscope', hint: 'Tube with mirrors showing colorful patterns' },
+            { word: 'magnificent', hint: 'Extremely beautiful or impressive' },
+            { word: 'spectacular', hint: 'Beautiful in a dramatic way' },
+            { word: 'imagination', hint: 'The ability to form new ideas or images' },
+            { word: 'celebration', hint: 'Joyful gathering for a special occasion' },
+        ];
+
+        let gameState = {
+            word: '',
+            hint: '',
+            guesses: [],
+            score: 0,
+            attemptsLeft: 6,
+            gameOver: false,
+            won: false
+        };
+
+        // Initialize the game
+        function init() {
+            createAlphabetGrid();
+            startNewGame();
+
+            // Add enter key listener
+            document.getElementById('guessInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    makeGuess();
+                }
+            });
+        }
+
+        // Create alphabet grid
+        function createAlphabetGrid() {
+            const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+            const grid = document.getElementById('alphabetGrid');
+
+            alphabet.forEach(letter => {
+                const box = document.createElement('div');
+                box.className = 'letter-box';
+                box.textContent = letter.toUpperCase();
+                box.id = `letter-${letter}`;
+                grid.appendChild(box);
+            });
+        }
+
+        // Start a new game
+        function startNewGame() {
+            // Pick a random word
+            const randomIndex = Math.floor(Math.random() * wordDatabase.length);
+            const selectedWord = wordDatabase[randomIndex];
+
+            gameState = {
+                word: selectedWord.word,
+                hint: selectedWord.hint,
+                guesses: [],
+                score: gameState.score,
+                attemptsLeft: 6,
+                gameOver: false,
+                won: false
+            };
+
+            // Update UI
+            document.getElementById('hint').textContent = gameState.hint;
+            document.getElementById('wordLength').textContent = gameState.word.length;
+            document.getElementById('attempts').textContent = gameState.attemptsLeft;
+            document.getElementById('guessInput').value = '';
+            document.getElementById('guessInput').disabled = false;
+            document.getElementById('message').className = 'message hidden';
+            document.getElementById('guessHistory').className = 'guess-history hidden';
+            document.getElementById('guessList').innerHTML = '';
+            document.getElementById('newGameButton').className = 'new-game-button hidden';
+            document.getElementById('inputGroup').classList.remove('hidden');
+
+            // Reset alphabet
+            const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+            alphabet.forEach(letter => {
+                const box = document.getElementById(`letter-${letter}`);
+                box.className = 'letter-box';
+            });
+        }
+
+        // Update alphabet highlighting
+        function updateAlphabet() {
+            const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+            const targetWord = gameState.word.toLowerCase();
+
+            alphabet.forEach(letter => {
+                const box = document.getElementById(`letter-${letter}`);
+                const guessedWithLetter = gameState.guesses.some(guess =>
+                    guess.toLowerCase().includes(letter)
+                );
+
+                if (guessedWithLetter) {
+                    if (targetWord.includes(letter)) {
+                        box.className = 'letter-box found';
+                    } else {
+                        box.className = 'letter-box wrong';
+                    }
+                }
+            });
+        }
+
+        // Make a guess
+        function makeGuess() {
+            if (gameState.gameOver) return;
+
+            const input = document.getElementById('guessInput');
+            const guess = input.value.toLowerCase().trim();
+
+            // Validation
+            if (!guess) {
+                showMessage('Please enter a word!', 'info');
+                return;
+            }
+
+            if (gameState.guesses.includes(guess)) {
+                showMessage('You already guessed that word!', 'info');
+                return;
+            }
+
+            // Add guess to history
+            gameState.guesses.push(guess);
+            gameState.attemptsLeft--;
+
+            // Update UI
+            updateGuessHistory();
+            updateAlphabet();
+            document.getElementById('attempts').textContent = gameState.attemptsLeft;
+
+            // Check if correct
+            if (guess === gameState.word.toLowerCase()) {
+                const points = gameState.attemptsLeft * 10;
+                gameState.score += points;
+                gameState.won = true;
+                gameState.gameOver = true;
+
+                document.getElementById('score').textContent = gameState.score;
+                showMessage(`🎉 Genius! You found it: "${gameState.word.toUpperCase()}"! +${points} points!`, 'success');
+                endGame();
+            } else if (gameState.attemptsLeft === 0) {
+                gameState.gameOver = true;
+                showMessage(`Game Over! The word was: "${gameState.word.toUpperCase()}"`, 'error');
+                endGame();
+            } else {
+                // Give feedback
+                const feedback = getFeedback(guess, gameState.word);
+                showMessage(`Not quite! ${feedback} (${gameState.attemptsLeft} attempts left)`, 'info');
+            }
+
+            input.value = '';
+        }
+
+        // Get feedback for incorrect guess
+        function getFeedback(guess, target) {
+            const targetLower = target.toLowerCase();
+
+            if (guess[0] === targetLower[0]) {
+                return 'Good start! Same first letter! 🎯';
+            } else if (Math.abs(target.length - guess.length) <= 2) {
+                return 'Close length! 📏';
+            } else if (targetLower.includes(guess[0])) {
+                return 'That first letter is in the word! 💡';
+            } else {
+                const commonLetters = [...new Set(guess.split(''))].filter(letter =>
+                    targetLower.includes(letter)
+                ).length;
+
+                if (commonLetters > 2) {
+                    return `You have ${commonLetters} letters in common! 🔥`;
+                }
+                return 'Keep trying! 💪';
+            }
+        }
+
+        // Show message
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+        }
+
+        // Update guess history display
+        function updateGuessHistory() {
+            const historyDiv = document.getElementById('guessHistory');
+            const listDiv = document.getElementById('guessList');
+
+            historyDiv.classList.remove('hidden');
+            listDiv.innerHTML = '';
+
+            gameState.guesses.forEach(guess => {
+                const span = document.createElement('span');
+                span.className = 'guess-item';
+                span.textContent = guess;
+                listDiv.appendChild(span);
+            });
+        }
+
+        // End game
+        function endGame() {
+            document.getElementById('guessInput').disabled = true;
+            document.getElementById('inputGroup').classList.add('hidden');
+            document.getElementById('newGameButton').classList.remove('hidden');
+        }
+
+        // Start the game when page loads
+        window.onload = init;
+    </script>
+</body>
+</html>
