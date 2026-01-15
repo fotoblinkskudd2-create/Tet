@@ -10,6 +10,9 @@ import re
 from dataclasses import dataclass
 from typing import Callable, Dict, Iterable, List, Optional, Tuple
 
+# Import FB ad hooks generator
+from fb_ad_hooks import main_fb_hooks
+
 
 @dataclass
 class Solution:
@@ -270,6 +273,11 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Choose the creative medium for prompt mode. Defaults to auto-detect.",
     )
     parser.add_argument(
+        "--fb-hooks",
+        action="store_true",
+        help="Generate 10 brutal FB ad hooks + copy for your niche (Saisify 2026 style).",
+    )
+    parser.add_argument(
         "problem",
         nargs=argparse.REMAINDER,
         help="Tell me your problem to solve. Quotes are encouraged for multi-word puzzles!",
@@ -287,12 +295,17 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
 
     problem_text = " ".join(args.problem)
 
-    if args.prompt:
+    if args.fb_hooks:
+        # Generate FB ad hooks
+        output = main_fb_hooks(problem_text)
+        print(output)
+    elif args.prompt:
         medium_hint = None if args.medium == "auto" else args.medium
         solution = build_creative_prompt(problem_text, medium_hint=medium_hint)
+        print(solution.format())
     else:
         solution = solve_problem(problem_text)
-    print(solution.format())
+        print(solution.format())
     return 0
 
 
