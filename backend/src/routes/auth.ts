@@ -1,156 +1,140 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import { Router, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { v4 as uuid } from 'uuid';
+import { query } from '../db';
+import { config } from '../config';
+import { authMiddleware } from '../middleware/auth';
+import { authLimiter } from '../middleware/rateLimit';
+import { User, UserResponse } from '../types';
 
-interface UserStats {
-  gamesPlayed: number;
-  wins: number;
-  losses: number;
-  draws: number;
-}
-
-interface User {
-  id: string;
-  email: string;
-  username: string;
-  passwordHash: string;
-  rating: number;
-  stats: UserStats;
-}
-
-const users = new Map<string, User>();
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
 const COOKIE_NAME = 'session';
-const ONE_WEEK_MS = 1000 * 60 * 60 * 24 * 7;
+const ONE_MONTH_MS = 1000 * 60 * 60 * 24 * 30;
 
 function setSessionCookie(res: Response, token: string) {
   res.cookie(COOKIE_NAME, token, {
     httpOnly: true,
     sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: ONE_WEEK_MS,
+    secure: config.nodeEnv === 'production',
+    maxAge: ONE_MONTH_MS,
     path: '/',
   });
 }
 
-function parseTokenFromRequest(req: Request): string | undefined {
-  const fromCookie = (req as any).cookies?.[COOKIE_NAME];
-  if (fromCookie) return fromCookie;
-
-  const header = req.headers.authorization;
-  if (!header) return undefined;
-  const [, token] = header.split(' ');
-  return token;
+function userToResponse(user: User): UserResponse {
+  return {
+    id: user.id,
+    email: user.email,
+    username: user.username,
+    subscriptionTier: user.subscriptionTier,
+    subscriptionExpiresAt: user.subscriptionExpiresAt,
+  };
 }
 
-function authMiddleware(req: Request, res: Response, next: NextFunction) {
-  const token = parseTokenFromRequest(req);
-  if (!token) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
+router.post('/signup', authLimiter, async (req: Request, res: Response) => {
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as { userId: string };
-    (req as any).userId = payload.userId;
-    next();
-  } catch (err) {
-    return res.status(401).json({ error: 'Invalid token' });
-  }
-}
+    const { email, username, password } = req.body;
 
-function validateSignupBody(body: any) {
-  if (!body?.email || !body?.username || !body?.password) {
-    throw new Error('Missing required fields');
-  }
-}
+    if (!email || !username || !password) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
 
-router.post('/signup', async (req: Request, res: Response) => {
-  try {
-    validateSignupBody(req.body);
-    const email = String(req.body.email).toLowerCase();
-    const username = String(req.body.username);
+    const normalizedEmail = String(email).toLowerCase().trim();
+    const normalizedUsername = String(username).trim();
 
-    if ([...users.values()].some((u) => u.email === email || u.username === username)) {
+    // Check if user exists
+    const existingUsers = await query<User>(
+      'SELECT id FROM users WHERE email = $1 OR username = $2',
+      [normalizedEmail, normalizedUsername]
+    );
+
+    if (existingUsers.length > 0) {
       return res.status(409).json({ error: 'User already exists' });
     }
 
-    const passwordHash = await bcrypt.hash(req.body.password, 10);
-    const newUser: User = {
-      id: uuid(),
-      email,
-      username,
-      passwordHash,
-      rating: 1200,
-      stats: {
-        gamesPlayed: 0,
-        wins: 0,
-        losses: 0,
-        draws: 0,
-      },
-    };
+    // Hash password
+    const passwordHash = await bcrypt.hash(password, 10);
 
-    users.set(newUser.id, newUser);
+    // Create user
+    const [newUser] = await query<User>(
+      `INSERT INTO users (id, email, username, password_hash, subscription_tier)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING *`,
+      [uuid(), normalizedEmail, normalizedUsername, passwordHash, 'free']
+    );
 
-    const token = jwt.sign({ userId: newUser.id }, JWT_SECRET, { expiresIn: '7d' });
+    // Generate JWT
+    const token = jwt.sign(
+      { userId: newUser.id },
+      config.jwt.secret,
+      { expiresIn: config.jwt.expiresIn }
+    );
+
     setSessionCookie(res, token);
 
-    res.status(201).json({
-      id: newUser.id,
-      email: newUser.email,
-      username: newUser.username,
-      rating: newUser.rating,
-      stats: newUser.stats,
-    });
+    res.status(201).json(userToResponse(newUser));
   } catch (err) {
-    res.status(400).json({ error: (err as Error).message });
+    console.error('Signup error:', err);
+    res.status(500).json({ error: 'Failed to create user' });
   }
 });
 
-router.post('/login', async (req: Request, res: Response) => {
-  const { email, password } = req.body || {};
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required' });
+router.post('/login', authLimiter, async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body || {};
+
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+
+    const normalizedEmail = String(email).toLowerCase().trim();
+
+    // Find user
+    const users = await query<User>(
+      'SELECT * FROM users WHERE email = $1',
+      [normalizedEmail]
+    );
+
+    if (users.length === 0) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    const user = users[0];
+
+    // Verify password
+    const passwordMatches = await bcrypt.compare(password, user.passwordHash);
+    if (!passwordMatches) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    // Generate JWT
+    const token = jwt.sign(
+      { userId: user.id },
+      config.jwt.secret,
+      { expiresIn: config.jwt.expiresIn }
+    );
+
+    setSessionCookie(res, token);
+
+    res.json(userToResponse(user));
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ error: 'Login failed' });
   }
-
-  const normalizedEmail = String(email).toLowerCase();
-  const user = [...users.values()].find((u) => u.email === normalizedEmail);
-  if (!user) {
-    return res.status(401).json({ error: 'Invalid credentials' });
-  }
-
-  const passwordMatches = await bcrypt.compare(password, user.passwordHash);
-  if (!passwordMatches) {
-    return res.status(401).json({ error: 'Invalid credentials' });
-  }
-
-  const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
-  setSessionCookie(res, token);
-
-  res.json({
-    id: user.id,
-    email: user.email,
-    username: user.username,
-    rating: user.rating,
-    stats: user.stats,
-  });
 });
 
 router.get('/me', authMiddleware, (req: Request, res: Response) => {
-  const userId = (req as any).userId as string;
-  const user = users.get(userId);
-  if (!user) {
-    return res.status(404).json({ error: 'User not found' });
+  if (!req.user) {
+    return res.status(401).json({ error: 'Not authenticated' });
   }
 
-  res.json({
-    id: user.id,
-    email: user.email,
-    username: user.username,
-    rating: user.rating,
-    stats: user.stats,
-  });
+  res.json(userToResponse(req.user));
+});
+
+router.post('/logout', (req: Request, res: Response) => {
+  res.clearCookie(COOKIE_NAME);
+  res.json({ message: 'Logged out successfully' });
 });
 
 export default router;
