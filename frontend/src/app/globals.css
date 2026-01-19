@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-grave-700;
+  }
+
+  body {
+    @apply bg-death-200 text-grave-100;
+  }
+
+  h1 {
+    @apply text-4xl font-bold tracking-tight;
+  }
+
+  h2 {
+    @apply text-3xl font-semibold;
+  }
+
+  h3 {
+    @apply text-2xl font-medium;
+  }
+
+  button {
+    @apply transition-all duration-200;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
+  }
+
+  .btn-primary {
+    @apply bg-soul-300 hover:bg-soul-200 text-white shadow-lg hover:shadow-xl;
+  }
+
+  .btn-secondary {
+    @apply bg-grave-700 hover:bg-grave-600 text-grave-100;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-700 text-white;
+  }
+
+  .card {
+    @apply bg-death-100 border border-grave-800 rounded-lg p-6 shadow-lg;
+  }
+
+  .input {
+    @apply w-full px-4 py-2 bg-death-300 border border-grave-700 rounded-lg text-grave-100 placeholder-grave-500 focus:outline-none focus:border-soul-300 focus:ring-1 focus:ring-soul-300 transition-all;
+  }
+
+  .textarea {
+    @apply w-full px-4 py-2 bg-death-300 border border-grave-700 rounded-lg text-grave-100 placeholder-grave-500 focus:outline-none focus:border-soul-300 focus:ring-1 focus:ring-soul-300 transition-all resize-none;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-death-300;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-grave-700 rounded-full hover:bg-grave-600;
+}
+
+/* Animation for message streaming */
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.cursor-blink {
+  animation: blink 1s infinite;
+}
