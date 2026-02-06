@@ -1,155 +1,171 @@
-import { Router, Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { Router, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { v4 as uuid } from 'uuid';
+import { getDb } from '../db';
+import { User } from '../models';
+import {
+  AuthRequest,
+  authRequired,
+  generateToken,
+  setSessionCookie,
+  clearSessionCookie,
+} from '../middleware/auth';
+import { validate } from '../middleware/validate';
 
-interface UserStats {
-  gamesPlayed: number;
-  wins: number;
-  losses: number;
-  draws: number;
-}
-
-interface User {
-  id: string;
-  email: string;
-  username: string;
-  passwordHash: string;
-  rating: number;
-  stats: UserStats;
-}
-
-const users = new Map<string, User>();
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
-const COOKIE_NAME = 'session';
-const ONE_WEEK_MS = 1000 * 60 * 60 * 24 * 7;
 
-function setSessionCookie(res: Response, token: string) {
-  res.cookie(COOKIE_NAME, token, {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: ONE_WEEK_MS,
-    path: '/',
-  });
-}
+// POST /api/auth/register
+router.post(
+  '/register',
+  validate([
+    { field: 'email', required: true, type: 'email' },
+    { field: 'name', required: true, type: 'string', min: 2, max: 100 },
+    { field: 'password', required: true, type: 'string', min: 8, max: 128 },
+  ]),
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const db = getDb();
+      const { email, name, password } = req.body;
+      const normalizedEmail = email.toLowerCase().trim();
 
-function parseTokenFromRequest(req: Request): string | undefined {
-  const fromCookie = (req as any).cookies?.[COOKIE_NAME];
-  if (fromCookie) return fromCookie;
+      const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(normalizedEmail);
+      if (existing) {
+        res.status(409).json({ error: 'E-postadressen er allerede registrert' });
+        return;
+      }
 
-  const header = req.headers.authorization;
-  if (!header) return undefined;
-  const [, token] = header.split(' ');
-  return token;
-}
+      const passwordHash = await bcrypt.hash(password, 12);
+      const id = uuid();
 
-function authMiddleware(req: Request, res: Response, next: NextFunction) {
-  const token = parseTokenFromRequest(req);
-  if (!token) {
-    return res.status(401).json({ error: 'Unauthorized' });
+      db.prepare(
+        'INSERT INTO users (id, email, name, password_hash, role) VALUES (?, ?, ?, ?, ?)'
+      ).run(id, normalizedEmail, name.trim(), passwordHash, 'user');
+
+      const token = generateToken(id);
+      setSessionCookie(res, token);
+
+      res.status(201).json({
+        id,
+        email: normalizedEmail,
+        name: name.trim(),
+        role: 'user',
+      });
+    } catch (err) {
+      console.error('Register error:', err);
+      res.status(500).json({ error: 'Kunne ikke opprette bruker' });
+    }
   }
+);
 
+// POST /api/auth/login
+router.post(
+  '/login',
+  validate([
+    { field: 'email', required: true, type: 'email' },
+    { field: 'password', required: true, type: 'string' },
+  ]),
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const db = getDb();
+      const { email, password } = req.body;
+      const normalizedEmail = email.toLowerCase().trim();
+
+      const user = db.prepare(
+        'SELECT id, email, name, password_hash, role FROM users WHERE email = ?'
+      ).get(normalizedEmail) as User | undefined;
+
+      if (!user || !user.password_hash) {
+        res.status(401).json({ error: 'Feil e-post eller passord' });
+        return;
+      }
+
+      const valid = await bcrypt.compare(password, user.password_hash);
+      if (!valid) {
+        res.status(401).json({ error: 'Feil e-post eller passord' });
+        return;
+      }
+
+      const token = generateToken(user.id);
+      setSessionCookie(res, token);
+
+      res.json({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      });
+    } catch (err) {
+      console.error('Login error:', err);
+      res.status(500).json({ error: 'Kunne ikke logge inn' });
+    }
+  }
+);
+
+// POST /api/auth/google (placeholder for Google OAuth)
+router.post('/google', async (req: AuthRequest, res: Response) => {
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as { userId: string };
-    (req as any).userId = payload.userId;
-    next();
-  } catch (err) {
-    return res.status(401).json({ error: 'Invalid token' });
-  }
-}
-
-function validateSignupBody(body: any) {
-  if (!body?.email || !body?.username || !body?.password) {
-    throw new Error('Missing required fields');
-  }
-}
-
-router.post('/signup', async (req: Request, res: Response) => {
-  try {
-    validateSignupBody(req.body);
-    const email = String(req.body.email).toLowerCase();
-    const username = String(req.body.username);
-
-    if ([...users.values()].some((u) => u.email === email || u.username === username)) {
-      return res.status(409).json({ error: 'User already exists' });
+    const { googleToken, email, name, googleId } = req.body;
+    if (!email || !googleId) {
+      res.status(400).json({ error: 'Mangler Google-innloggingsdata' });
+      return;
     }
 
-    const passwordHash = await bcrypt.hash(req.body.password, 10);
-    const newUser: User = {
-      id: uuid(),
-      email,
-      username,
-      passwordHash,
-      rating: 1200,
-      stats: {
-        gamesPlayed: 0,
-        wins: 0,
-        losses: 0,
-        draws: 0,
-      },
-    };
+    const db = getDb();
+    const normalizedEmail = email.toLowerCase().trim();
 
-    users.set(newUser.id, newUser);
+    let user = db.prepare(
+      'SELECT id, email, name, role FROM users WHERE google_id = ? OR email = ?'
+    ).get(googleId, normalizedEmail) as User | undefined;
 
-    const token = jwt.sign({ userId: newUser.id }, JWT_SECRET, { expiresIn: '7d' });
+    if (!user) {
+      const id = uuid();
+      db.prepare(
+        'INSERT INTO users (id, email, name, google_id, role) VALUES (?, ?, ?, ?, ?)'
+      ).run(id, normalizedEmail, name || normalizedEmail, googleId, 'user');
+      user = { id, email: normalizedEmail, name, role: 'user' } as User;
+    } else if (!user.google_id) {
+      db.prepare('UPDATE users SET google_id = ? WHERE id = ?').run(googleId, user.id);
+    }
+
+    const token = generateToken(user.id);
     setSessionCookie(res, token);
 
-    res.status(201).json({
-      id: newUser.id,
-      email: newUser.email,
-      username: newUser.username,
-      rating: newUser.rating,
-      stats: newUser.stats,
+    res.json({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
     });
   } catch (err) {
-    res.status(400).json({ error: (err as Error).message });
+    console.error('Google auth error:', err);
+    res.status(500).json({ error: 'Kunne ikke logge inn med Google' });
   }
 });
 
-router.post('/login', async (req: Request, res: Response) => {
-  const { email, password } = req.body || {};
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required' });
-  }
-
-  const normalizedEmail = String(email).toLowerCase();
-  const user = [...users.values()].find((u) => u.email === normalizedEmail);
-  if (!user) {
-    return res.status(401).json({ error: 'Invalid credentials' });
-  }
-
-  const passwordMatches = await bcrypt.compare(password, user.passwordHash);
-  if (!passwordMatches) {
-    return res.status(401).json({ error: 'Invalid credentials' });
-  }
-
-  const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
-  setSessionCookie(res, token);
-
-  res.json({
-    id: user.id,
-    email: user.email,
-    username: user.username,
-    rating: user.rating,
-    stats: user.stats,
-  });
+// POST /api/auth/logout
+router.post('/logout', (_req: AuthRequest, res: Response) => {
+  clearSessionCookie(res);
+  res.json({ message: 'Logget ut' });
 });
 
-router.get('/me', authMiddleware, (req: Request, res: Response) => {
-  const userId = (req as any).userId as string;
-  const user = users.get(userId);
+// GET /api/auth/me
+router.get('/me', authRequired, (req: AuthRequest, res: Response) => {
+  const db = getDb();
+  const user = db.prepare(
+    'SELECT id, email, name, role, created_at FROM users WHERE id = ?'
+  ).get(req.userId) as User | undefined;
+
   if (!user) {
-    return res.status(404).json({ error: 'User not found' });
+    res.status(404).json({ error: 'Bruker ikke funnet' });
+    return;
   }
 
   res.json({
     id: user.id,
     email: user.email,
-    username: user.username,
-    rating: user.rating,
-    stats: user.stats,
+    name: user.name,
+    role: user.role,
+    createdAt: user.created_at,
   });
 });
 

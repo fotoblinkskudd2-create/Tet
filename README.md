@@ -1,27 +1,68 @@
-# Tet Problem Solver
+# BergenBudget
 
-A tiny, joyful command-line helper that solves small puzzles like arithmetic and classic anagrams. When it cannot solve a prompt directly, it offers upbeat brainstorming steps to keep the momentum going.
+Personlig okonomiapp for nordmenn i Bergen. Hold oversikt over bankkontoer, transaksjoner, budsjetter og skatterelevante kategorier - alt pa norsk med NOK-formatering.
 
-## Usage
+## Funksjoner
 
-Run the solver with your problem statement:
+- **Autentisering** - E-post/passord + Google OAuth (placeholder), rollebasert tilgang (admin/bruker)
+- **Kontoer** - Brukskonto, sparekonto, kredittkort, BSU
+- **Transaksjoner** - CRUD med auto-kategorisering, delte transaksjoner, etiketter, kvitteringsopplasting
+- **Budsjetter** - Manedlige budsjetter per kategori med fremdriftsvisning
+- **Rapporter** - Maneds-/arsrapporter, skattesammendrag, nettoverdi over tid, CSV-eksport
+- **Prognose** - "Hvis du fortsetter slik, gar du tom for penger innen X"
+- **CSV-import** - Stotter Sbanken, Sparebanken Vest og generisk norsk bankformat
+- **Norske skattekategorier** - Skattetrekk, feriepenger, BSU-sparing, fagforeningsfradrag
+- **Mork modus** - Bytt mellom lys og mork tema
+- **Responsivt design** - Fungerer pa mobil, nettbrett og desktop
+
+## Teknisk stack
+
+- **Frontend:** React 18 + TypeScript + Vite + Chart.js
+- **Backend:** Node.js + Express + TypeScript
+- **Database:** SQLite (better-sqlite3) - enkelt a bytte til PostgreSQL
+- **Sikkerhet:** bcrypt, JWT, helmet, CORS, rate limiting, input-validering
+
+## Kom i gang
 
 ```bash
-python app.py "2 + 3 * 4"
-python app.py "Unscramble an anagram of listen"
-python app.py "How do I get motivated for chores?"
+# Installer avhengigheter
+npm run install:all
+
+# Start utvikling (backend + frontend)
+npm run dev
+
+# Eller start separat
+npm run dev:backend   # Port 3001
+npm run dev:frontend  # Port 5173
 ```
 
-Each response includes a playful banner, a concise answer, and encouraging bullet points whenever brainstorming is needed.
+## API-endepunkter
 
-## Build creative prompts for iOS web
+| Rute | Metode | Beskrivelse |
+|------|--------|-------------|
+| `/api/auth/register` | POST | Registrer bruker |
+| `/api/auth/login` | POST | Logg inn |
+| `/api/auth/me` | GET | Hent innlogget bruker |
+| `/api/accounts` | GET/POST | Kontoer |
+| `/api/transactions` | GET/POST | Transaksjoner (paginert) |
+| `/api/transactions/split` | POST | Del transaksjon |
+| `/api/transactions/import-csv` | POST | Importer fra CSV |
+| `/api/categories` | GET/POST | Kategorier |
+| `/api/budgets` | GET/POST | Budsjetter |
+| `/api/recurring` | GET/POST | Faste transaksjoner |
+| `/api/dashboard` | GET | Dashboard-data |
+| `/api/reports/monthly` | GET | Manedsrapport |
+| `/api/reports/annual` | GET | Arsrapport |
+| `/api/reports/net-worth` | GET | Nettoverdi |
+| `/api/reports/forecast` | GET | Prognose |
+| `/api/reports/export` | GET | Eksporter CSV |
 
-Use prompt mode when you want a ready-to-paste creative brief for photos, video, music, art, or poetry. The builder keeps instructions short and mobile-friendly for iOS web inputs:
+## Produksjon
 
 ```bash
-python app.py --prompt --medium photo "misty forest boardwalk at dawn"
-python app.py --prompt --medium music "uplifting synthwave for launch video"
-python app.py --prompt "poem about late-summer rain in the city"  # medium auto-detected
-```
+# Bygg frontend
+npm run build
 
-The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+# Start server (serverer bade API og frontend)
+npm start
+```
