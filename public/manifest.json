@@ -1,0 +1,16 @@
+{
+  "name": "BergenBudget",
+  "short_name": "BergenBudget",
+  "description": "Personlig økonomitracker for Bergensere",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -1,27 +1,42 @@
-# Tet Problem Solver
+# BergenBudget
 
-A tiny, joyful command-line helper that solves small puzzles like arithmetic and classic anagrams. When it cannot solve a prompt directly, it offers upbeat brainstorming steps to keep the momentum going.
+Personlig okonomitracker bygget for Bergensere. Spor inntekter, utgifter, budsjetter og formue - alt paa norsk med norsk tallformat.
 
-## Usage
+## Funksjoner
 
-Run the solver with your problem statement:
+- **Dashboard** - Oversikt over saldo, inntekt/utgift, budsjettfremdrift og kommende faste utgifter
+- **Transaksjoner** - Legg til, rediger, slett og sok i transaksjoner med automatisk kategorisering
+- **Kontoer** - Brukskonto, sparekonto, kredittkort og BSU
+- **Budsjett** - Sett manedlige budsjetter per kategori med fremdriftsmaling
+- **Rapporter** - Manedlig oversikt, formueutvikling og CSV-eksport
+- **Faste utgifter** - Administrer husleie, lonn, abonnementer og annet
+- **CSV-import** - Importer transaksjoner fra norske banker (Sbanken, Sparebanken Vest)
+- **Norsk UI** - Bokmal med norsk tallformat (1 234,56 kr) og datoformat (DD.MM.YYYY)
+
+## Tech stack
+
+- React 19 + TypeScript
+- Tailwind CSS v4
+- Recharts (diagrammer)
+- Zustand (state management med localStorage-persistering)
+- React Router v7
+- Lucide React (ikoner)
+- Supabase-klar (migrasjonsfil inkludert)
+
+## Kom i gang
 
 ```bash
-python app.py "2 + 3 * 4"
-python app.py "Unscramble an anagram of listen"
-python app.py "How do I get motivated for chores?"
+npm install
+npm run dev
 ```
 
-Each response includes a playful banner, a concise answer, and encouraging bullet points whenever brainstorming is needed.
+Appen kjorer med lokal data (localStorage). For Supabase-integrasjon, sett miljovariabler:
 
-## Build creative prompts for iOS web
-
-Use prompt mode when you want a ready-to-paste creative brief for photos, video, music, art, or poetry. The builder keeps instructions short and mobile-friendly for iOS web inputs:
-
-```bash
-python app.py --prompt --medium photo "misty forest boardwalk at dawn"
-python app.py --prompt --medium music "uplifting synthwave for launch video"
-python app.py --prompt "poem about late-summer rain in the city"  # medium auto-detected
+```
+VITE_SUPABASE_URL=din-supabase-url
+VITE_SUPABASE_ANON_KEY=din-anon-key
 ```
 
-The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+## Demodata
+
+Klikk "Prove med demodata" paa innloggingssiden for aa laste inn eksempeldata med kontoer, transaksjoner og budsjetter.

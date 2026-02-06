@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* Bergen-inspired color palette */
+  --color-fjord-50: #f0f7ff;
+  --color-fjord-100: #dfeeff;
+  --color-fjord-200: #b8ddff;
+  --color-fjord-300: #78c3ff;
+  --color-fjord-400: #3aa5ff;
+  --color-fjord-500: #0b85f0;
+  --color-fjord-600: #0068cd;
+  --color-fjord-700: #0053a6;
+  --color-fjord-800: #004789;
+  --color-fjord-900: #003b71;
+  --color-fjord-950: #00254a;
+
+  --color-bergen-mist: #1e293b;
+  --color-bergen-fog: #334155;
+  --color-bergen-stone: #475569;
+  --color-bergen-rain: #64748b;
+
+  --shadow-neu: 6px 6px 12px rgba(0, 0, 0, 0.3), -6px -6px 12px rgba(255, 255, 255, 0.03);
+  --shadow-neu-sm: 3px 3px 6px rgba(0, 0, 0, 0.3), -3px -3px 6px rgba(255, 255, 255, 0.03);
+  --shadow-neu-inset: inset 3px 3px 6px rgba(0, 0, 0, 0.3), inset -3px -3px 6px rgba(255, 255, 255, 0.03);
+  --shadow-glow: 0 0 20px rgba(11, 133, 240, 0.15);
+
+  --animate-fade-in: fade-in 0.3s ease-out;
+  --animate-slide-up: slide-up 0.3s ease-out;
+  --animate-slide-in-right: slide-in-right 0.3s ease-out;
+  --animate-scale-in: scale-in 0.2s ease-out;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
