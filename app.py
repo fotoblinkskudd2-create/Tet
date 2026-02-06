@@ -10,6 +10,8 @@ import re
 from dataclasses import dataclass
 from typing import Callable, Dict, Iterable, List, Optional, Tuple
 
+import theme_tracker
+
 
 @dataclass
 class Solution:
@@ -258,6 +260,9 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="A joyful assistant that tackles small problems with gusto!",
     )
+    sub = parser.add_subparsers(dest="command")
+
+    # Default solve mode (no subcommand required for backwards compat)
     parser.add_argument(
         "--prompt",
         action="store_true",
@@ -274,13 +279,144 @@ def _build_parser() -> argparse.ArgumentParser:
         nargs=argparse.REMAINDER,
         help="Tell me your problem to solve. Quotes are encouraged for multi-word puzzles!",
     )
+
+    # --- theme subcommands ---
+    theme_parser = sub.add_parser("theme", help="Set your one-word theme for the year.")
+    theme_parser.add_argument("word", help="Your one-word theme (e.g. Focus, Momentum, Clarity).")
+    theme_parser.add_argument("--year", type=int, default=2026, help="Year for the theme.")
+
+    sub.add_parser("dashboard", help="Show your theme year dashboard.")
+
+    exp_parser = sub.add_parser("experiment", help="Add a new experiment (max 3 active).")
+    exp_parser.add_argument("name", help="Short name for the experiment.")
+    exp_parser.add_argument("description", help="What you will test.")
+
+    cp_parser = sub.add_parser("checkpoint", help="Record a checkpoint review for an experiment.")
+    cp_parser.add_argument("experiment_index", type=int, help="Experiment number (1-based).")
+    cp_parser.add_argument("label", choices=["30-day", "60-day", "90-day"])
+    cp_parser.add_argument("result", help="What happened? Keep it honest.")
+
+    ph_parser = sub.add_parser("powerhour", help="Log a Power Hour session.")
+    ph_parser.add_argument("task", help="The needle-moving task you focused on.")
+    ph_parser.add_argument("--outcome", default="", help="What you achieved.")
+
+    reset_parser = sub.add_parser("reset", help="Log a weekly reset ritual.")
+    reset_parser.add_argument("--wins", nargs="*", default=[], help="This week's wins.")
+    reset_parser.add_argument("--losses", nargs="*", default=[], help="This week's losses.")
+    reset_parser.add_argument("--priorities", nargs="*", default=[], help="Next week's top priorities.")
+    reset_parser.add_argument("--notes", default="", help="Additional reflection notes.")
+
+    energy_parser = sub.add_parser("energy", help="Log your energy level for the day.")
+    energy_parser.add_argument("level", type=int, help="Energy 1-10.")
+    energy_parser.add_argument("--givers", nargs="*", default=[], help="What gave you energy.")
+    energy_parser.add_argument("--drains", nargs="*", default=[], help="What drained you.")
+    energy_parser.add_argument("--sleep", type=float, default=0.0, help="Hours of sleep.")
+    energy_parser.add_argument("--cold", action="store_true", help="Did cold exposure today.")
+    energy_parser.add_argument("--movement", default="", help="Movement/exercise done.")
+
+    goal_parser = sub.add_parser("goal", help="Add a core area goal.")
+    goal_parser.add_argument(
+        "area",
+        choices=list(theme_tracker.CORE_AREAS),
+        help="Which core area.",
+    )
+    goal_parser.add_argument("goal_text", help="The goal.")
+    goal_parser.add_argument("--measurable", default="", help="How you will measure it.")
+
+    sub.add_parser("trends", help="Show energy trends and insights.")
+
     return parser
+
+
+def _handle_theme_commands(args: argparse.Namespace) -> int:
+    """Dispatch theme-related subcommands. Returns exit code."""
+
+    if args.command == "theme":
+        ty = theme_tracker.create_theme(args.word, year=args.year)
+        theme_tracker.save_theme(ty)
+        print(f"Theme set: {ty.theme.upper()} for {ty.year}!")
+        print(f"Now add up to 3 experiments with: python app.py experiment <name> <description>")
+        return 0
+
+    # All other commands need an existing theme
+    ty = theme_tracker.load_theme()
+    if ty is None:
+        print("No theme set yet. Start with: python app.py theme <your-word>")
+        return 1
+
+    if args.command == "dashboard":
+        print(theme_tracker.dashboard(ty))
+        return 0
+
+    if args.command == "experiment":
+        exp = theme_tracker.add_experiment(ty, args.name, args.description)
+        theme_tracker.save_theme(ty)
+        active = [e for e in ty.experiments if e.status == "active"]
+        print(f"Experiment added: {exp.name}")
+        print(f"Active experiments: {len(active)}/3")
+        return 0
+
+    if args.command == "checkpoint":
+        idx = args.experiment_index - 1
+        if idx < 0 or idx >= len(ty.experiments):
+            print(f"No experiment #{args.experiment_index}. You have {len(ty.experiments)} experiments.")
+            return 1
+        exp = ty.experiments[idx]
+        exp.record_checkpoint(args.label, args.result)
+        theme_tracker.save_theme(ty)
+        print(f"Checkpoint '{args.label}' recorded for '{exp.name}'.")
+        print(theme_tracker.experiment_report(exp))
+        return 0
+
+    if args.command == "powerhour":
+        entry = theme_tracker.log_power_hour(ty, args.task, outcome=args.outcome)
+        theme_tracker.save_theme(ty)
+        print(f"Power Hour #{len(ty.power_hours)} logged: {entry.focus_task}")
+        return 0
+
+    if args.command == "reset":
+        reset = theme_tracker.log_weekly_reset(
+            ty, wins=args.wins, losses=args.losses,
+            priorities=args.priorities, notes=args.notes,
+        )
+        theme_tracker.save_theme(ty)
+        print(f"Weekly reset #{len(ty.weekly_resets)} recorded for week of {reset.week_of}.")
+        return 0
+
+    if args.command == "energy":
+        entry = theme_tracker.log_energy(
+            ty, level=args.level, givers=args.givers, drains=args.drains,
+            sleep_hours=args.sleep, cold_exposure=args.cold, movement=args.movement,
+        )
+        theme_tracker.save_theme(ty)
+        print(f"Energy logged: {entry.level}/10 on {entry.date}")
+        return 0
+
+    if args.command == "goal":
+        cg = theme_tracker.add_core_goal(ty, args.area, args.goal_text, measurable=args.measurable)
+        theme_tracker.save_theme(ty)
+        print(f"Goal added to {cg.area}: {cg.goal}")
+        return 0
+
+    if args.command == "trends":
+        print(theme_tracker.energy_trends(ty))
+        return 0
+
+    return 1
 
 
 def main(argv: Optional[Iterable[str]] = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
 
+    # Theme subcommands
+    if args.command in (
+        "theme", "dashboard", "experiment", "checkpoint",
+        "powerhour", "reset", "energy", "goal", "trends",
+    ):
+        return _handle_theme_commands(args)
+
+    # Original solve/prompt mode
     if not args.problem:
         parser.print_help()
         return 0
