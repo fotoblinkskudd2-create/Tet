@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+enum PerspectiveType {
+  PROGRESSIVE
+  CONSERVATIVE
+  INTERNATIONAL
+}
+
+enum StoryStatus {
+  PENDING
+  ANALYZED
+  PUBLISHED
+  ARCHIVED
+}
+
+model Story {
+  id            String      @id @default(cuid())
+  title         String
+  slug          String      @unique
+  summary       String
+  imageUrl      String?
+  category      String
+  region        String
+  publishedAt   DateTime
+  status        StoryStatus @default(PENDING)
+  sourceCount   Int         @default(0)
+  consensusFacts String[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  perspectives  Perspective[]
+  readEvents    UserReadEvent[]
+
+  @@index([category])
+  @@index([region])
+  @@index([publishedAt])
+  @@index([status])
+}
+
+model Perspective {
+  id              String          @id @default(cuid())
+  storyId         String
+  type            PerspectiveType
+  headline        String
+  body            String
+  sourceName      String
+  sourceUrl       String
+  sourceRegion    String
+  biasScore       Float           @default(0)
+  sentimentScore  Float           @default(0)
+  keyArguments    String[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  story           Story           @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  @@index([storyId])
+  @@index([type])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  avatarUrl     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  diversityScore UserDiversityScore?
+  readEvents     UserReadEvent[]
+}
+
+model UserDiversityScore {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  overallScore          Float    @default(0)
+  progressiveExposure   Float    @default(0)
+  conservativeExposure  Float    @default(0)
+  internationalExposure Float    @default(0)
+  regionDiversity       Float    @default(0)
+  categoryDiversity     Float    @default(0)
+  streakDays            Int      @default(0)
+  lastCalculatedAt      DateTime @default(now())
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserReadEvent {
+  id              String          @id @default(cuid())
+  userId          String
+  storyId         String
+  perspectiveType PerspectiveType
+  readDurationSec Int             @default(0)
+  createdAt       DateTime        @default(now())
+
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  story           Story           @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([storyId])
+  @@index([createdAt])
+}
+
+model NewsSource {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  url         String
+  rssUrl      String?
+  apiEndpoint String?
+  bias        PerspectiveType
+  region      String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
