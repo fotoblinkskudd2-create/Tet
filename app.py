@@ -244,10 +244,43 @@ def _brainstorm_steps(problem: str) -> Solution:
     return Solution(kind="Brainstorm", answer=answer, details=steps)
 
 
+def _solve_panic_support(problem: str) -> Optional[Solution]:
+    """Provide a structured, practical protocol for panic moments."""
+
+    panic_markers = (
+        "panic",
+        "anxiety attack",
+        "panik",
+        "angst",
+        "heart racing",
+        "kan ikke puste",
+    )
+    lowered = problem.lower()
+    if not any(marker in lowered for marker in panic_markers):
+        return None
+
+    answer = (
+        "Panic protocol activated: you are safe, this is a stress surge, and we handle it "
+        "methodically. Start with grounding right now, then slow breathing, then reality "
+        "checks."
+    )
+    details = [
+        "Grounding now: use 5-4-3-2-1, cold water on face/wrists for 30s, or describe one object in forensic detail.",
+        "Breathing: inhale 4, hold 4, exhale 6, hold 2. Repeat 6-8 rounds. Longer exhales help your body downshift.",
+        "Reality checks: 'This feels awful but not dangerous.' 'It always peaks and passes.' 'Adrenaline cannot harm me.'",
+        "Body reset: progressive muscle relaxation from feet to face, tense 5 seconds and release 10 seconds.",
+        "Engage attention: familiar music, simple rule-based game, or predictable low-stress content (no news/suspense).",
+        "If prescribed for panic, take medication exactly as directed—tools are not failure.",
+        "Emergency line: seek urgent help for new crushing chest pain, fainting, one-sided weakness, confusion, persistent severe symptoms, or self-harm thoughts.",
+        "Aftercare: eat, hydrate, avoid caffeine/alcohol for 24h, protect sleep, do gentle movement, and reduce stress load.",
+    ]
+    return Solution(kind="Panic Support", answer=answer, details=details)
+
+
 def solve_problem(problem: str) -> Solution:
     """Attempt to solve a problem using available solvers."""
 
-    for solver in (_solve_math, _solve_anagram):
+    for solver in (_solve_math, _solve_anagram, _solve_panic_support):
         solution = solver(problem)
         if solution:
             return solution

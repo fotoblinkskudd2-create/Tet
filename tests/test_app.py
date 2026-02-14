@@ -34,3 +34,11 @@ def test_creative_prompt_auto_detects_poem():
     solution = app.build_creative_prompt("poem about autumn rain and neon reflections")
     assert "poem prompt" in solution.answer.lower()
     assert any("form" in detail.lower() for detail in solution.details)
+
+
+def test_panic_support_protocol_is_returned_for_panic_prompt():
+    solution = app.solve_problem("I think I am having a panic attack and my heart is racing")
+    assert solution.kind == "Panic Support"
+    assert "you are safe" in solution.answer.lower()
+    assert any("4, hold 4, exhale 6" in detail for detail in solution.details)
+    assert any("emergency" in detail.lower() for detail in solution.details)
