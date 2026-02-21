@@ -1,0 +1,258 @@
+// Prisma Schema for Employee Appraisal Portal
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model with role-based access
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   // Hashed password for email/password auth
+  role          UserRole  @default(EMPLOYEE)
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  accounts              Account[]
+  sessions              Session[]
+  appraisalsAsEmployee  Appraisal[] @relation("EmployeeAppraisals")
+  appraisalsAsManager   Appraisal[] @relation("ManagerAppraisals")
+  createdTemplates      AppraisalTemplate[]
+  assignedAppraisals    AppraisalAssignment[]
+  notifications         Notification[]
+
+  @@index([email])
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  EMPLOYEE
+}
+
+// NextAuth Account model
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+// NextAuth Session model
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// NextAuth Verification Token
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Appraisal Template - Created by Admin
+model AppraisalTemplate {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  isActive    Boolean  @default(true)
+
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  questions   TemplateQuestion[]
+  appraisals  Appraisal[]
+
+  @@index([isActive])
+}
+
+// Questions in a template
+model TemplateQuestion {
+  id          String       @id @default(cuid())
+  templateId  String
+  template    AppraisalTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  questionText String
+  questionType QuestionType
+  options      String[]     // For multiple choice questions (JSON array)
+  isRequired   Boolean      @default(true)
+  order        Int          // Display order
+  section      String?      // Optional section grouping
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  responses   Response[]
+
+  @@index([templateId, order])
+}
+
+enum QuestionType {
+  TEXT
+  RATING
+  MULTIPLE_CHOICE
+  COMMENT
+}
+
+// Main Appraisal record
+model Appraisal {
+  id          String   @id @default(cuid())
+
+  employeeId  String
+  employee    User     @relation("EmployeeAppraisals", fields: [employeeId], references: [id])
+
+  managerId   String?
+  manager     User?    @relation("ManagerAppraisals", fields: [managerId], references: [id])
+
+  templateId  String
+  template    AppraisalTemplate @relation(fields: [templateId], references: [id])
+
+  status      AppraisalStatus @default(DRAFT)
+
+  // Dates
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  submittedAt      DateTime?
+  reviewedAt       DateTime?
+  completedAt      DateTime?
+  dueDate          DateTime?
+
+  // Overall ratings/comments
+  employeeOverallComment  String?
+  managerOverallComment   String?
+  finalRating             Int?     // 1-5 rating
+
+  // Relations
+  responses       Response[]
+  notifications   Notification[]
+  assignment      AppraisalAssignment?
+
+  @@index([employeeId, status])
+  @@index([managerId, status])
+  @@index([status])
+}
+
+enum AppraisalStatus {
+  DRAFT           // Employee is filling out
+  SUBMITTED       // Employee submitted for review
+  IN_REVIEW       // Manager is reviewing
+  COMPLETED       // Final and locked
+  CANCELLED       // Cancelled appraisal
+}
+
+// Responses to individual questions
+model Response {
+  id          String   @id @default(cuid())
+
+  appraisalId String
+  appraisal   Appraisal @relation(fields: [appraisalId], references: [id], onDelete: Cascade)
+
+  questionId  String
+  question    TemplateQuestion @relation(fields: [questionId], references: [id])
+
+  // Response fields
+  employeeResponse String?      // Employee's answer
+  employeeRating   Int?         // 1-5 for rating questions
+
+  managerResponse  String?      // Manager's comments
+  managerRating    Int?         // Manager's rating
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([appraisalId, questionId])
+  @@index([appraisalId])
+}
+
+// Appraisal assignments (Admin assigns appraisals to employees)
+model AppraisalAssignment {
+  id          String   @id @default(cuid())
+
+  appraisalId String   @unique
+  appraisal   Appraisal @relation(fields: [appraisalId], references: [id], onDelete: Cascade)
+
+  assignedToId String
+  assignedTo   User     @relation(fields: [assignedToId], references: [id])
+
+  assignedAt  DateTime @default(now())
+  dueDate     DateTime?
+  notes       String?
+
+  @@index([assignedToId])
+}
+
+// Notification system
+model Notification {
+  id          String   @id @default(cuid())
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  appraisalId String?
+  appraisal   Appraisal? @relation(fields: [appraisalId], references: [id], onDelete: Cascade)
+
+  type        NotificationType
+  title       String
+  message     String
+  isRead      Boolean  @default(false)
+
+  createdAt   DateTime @default(now())
+
+  @@index([userId, isRead])
+  @@index([createdAt])
+}
+
+enum NotificationType {
+  APPRAISAL_ASSIGNED
+  APPRAISAL_DUE_SOON
+  APPRAISAL_SUBMITTED
+  APPRAISAL_REVIEWED
+  APPRAISAL_COMPLETED
+  SYSTEM
+}
+
+// Company settings (logo, branding)
+model CompanySetting {
+  id          String   @id @default(cuid())
+
+  companyName String   @default("Company Name")
+  logoUrl     String?
+  primaryColor String  @default("#3b82f6")
+
+  updatedAt   DateTime @updatedAt
+
+  @@map("company_settings")
+}
