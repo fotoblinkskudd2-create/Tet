@@ -1,10 +1,17 @@
 # Tet Problem Solver
 
-A tiny, joyful command-line helper that solves small puzzles like arithmetic and classic anagrams. When it cannot solve a prompt directly, it offers upbeat brainstorming steps to keep the momentum going.
+A joyful command-line helper and full-stack application that solves puzzles, generates creative prompts, and provides panic-support protocols.
 
-## Usage
+## Quick start
 
-Run the solver with your problem statement:
+```bash
+pip install -r requirements.txt
+python app.py "2 + 3 * 4"
+```
+
+## CLI usage
+
+### Problem solver
 
 ```bash
 python app.py "2 + 3 * 4"
@@ -14,14 +21,37 @@ python app.py "How do I get motivated for chores?"
 
 Each response includes a playful banner, a concise answer, and encouraging bullet points whenever brainstorming is needed.
 
-## Build creative prompts for iOS web
+### Creative prompt builder
 
-Use prompt mode when you want a ready-to-paste creative brief for photos, video, music, art, or poetry. The builder keeps instructions short and mobile-friendly for iOS web inputs:
+Generate ready-to-paste creative briefs for photos, video, music, art, or poetry (mobile-friendly for iOS web inputs):
 
 ```bash
 python app.py --prompt --medium photo "misty forest boardwalk at dawn"
 python app.py --prompt --medium music "uplifting synthwave for launch video"
-python app.py --prompt "poem about late-summer rain in the city"  # medium auto-detected
+python app.py --prompt "poem about late-summer rain in the city"
 ```
 
-The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+### Panic support protocol
+
+Triggered automatically when the solver detects panic-related keywords. Provides grounding techniques, breathing exercises, and emergency guidance.
+
+## Running tests
+
+```bash
+python -m pytest tests/ -v
+```
+
+## Architecture
+
+| Layer | Stack | Location |
+|-------|-------|----------|
+| CLI solver | Python 3.12+, AST-based safe eval | `app.py` |
+| Backend API | Express, JWT, bcrypt | `backend/src/routes/` |
+| Frontend | Next.js, React, TypeScript | `frontend/src/pages/` |
+| Database | PostgreSQL | `migrations/` |
+
+### Security measures
+
+- Math eval: exponent cap, expression length limit, AST node budget
+- Auth: email/username/password validation, bcrypt 12 rounds, constant-time login comparison, httpOnly session cookies, `Bearer` token parsing hardened
+- Frontend: client-side validation mirroring server rules, ARIA attributes, abort-safe fetches

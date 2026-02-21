@@ -7,8 +7,12 @@ import argparse
 import ast
 import operator
 import re
-from dataclasses import dataclass
-from typing import Callable, Dict, Iterable, List, Optional, Tuple
+from dataclasses import dataclass, field
+from typing import Callable, Dict, Iterable, List, Optional, Sequence, Tuple
+
+MAX_EXPR_LENGTH = 256
+MAX_EXPONENT = 1000
+MAX_OPERAND = 1e15
 
 
 @dataclass
@@ -17,23 +21,33 @@ class Solution:
 
     kind: str
     answer: str
-    details: Optional[List[str]] = None
+    details: List[str] = field(default_factory=list)
 
     def format(self) -> str:
         """Return a user-friendly representation of the solution."""
-
         banner = f"✨ {self.kind} solution ready! ✨"
-        parts = [banner, self.answer]
+        parts: list[str] = [banner, self.answer]
         if self.details:
             parts.append("\n".join(f"- {line}" for line in self.details))
         return "\n".join(parts)
 
 
+def _guarded_pow(base: float, exp: float) -> float:
+    if abs(exp) > MAX_EXPONENT:
+        raise ValueError(f"Exponent too large (limit {MAX_EXPONENT}).")
+    if abs(base) > MAX_OPERAND:
+        raise ValueError("Base value too large for exponentiation.")
+    return operator.pow(base, exp)
+
+
 def _safe_math_eval(expr: str) -> float:
     """Safely evaluate a math expression using Python's AST.
 
-    Only allows basic numeric operations to keep evaluation safe.
+    Only allows basic numeric operations; exponentiation is capped to
+    prevent denial-of-service via huge exponents.
     """
+    if len(expr) > MAX_EXPR_LENGTH:
+        raise ValueError(f"Expression too long (limit {MAX_EXPR_LENGTH} chars).")
 
     allowed_bin_ops: Dict[type, Callable[[float, float], float]] = {
         ast.Add: operator.add,
@@ -42,14 +56,20 @@ def _safe_math_eval(expr: str) -> float:
         ast.Div: operator.truediv,
         ast.FloorDiv: operator.floordiv,
         ast.Mod: operator.mod,
-        ast.Pow: operator.pow,
+        ast.Pow: _guarded_pow,
     }
     allowed_unary_ops: Dict[type, Callable[[float], float]] = {
         ast.UAdd: operator.pos,
         ast.USub: operator.neg,
     }
 
+    node_budget = 64
+
     def _evaluate(node: ast.AST) -> float:
+        nonlocal node_budget
+        node_budget -= 1
+        if node_budget < 0:
+            raise ValueError("Expression too complex.")
         if isinstance(node, ast.Expression):
             return _evaluate(node.body)
         if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
@@ -71,22 +91,25 @@ _ANAGRAM_LIBRARY: Dict[str, Tuple[str, ...]] = {
     "evil": ("vile", "veil", "live"),
     "angel": ("glean", "angle"),
     "stressed": ("desserts",),
-    "save": ("vase" ,),
+    "save": ("vase",),
 }
+
+_ANAGRAM_INDEX: Dict[str, List[str]] = {}
+for _src, _words in _ANAGRAM_LIBRARY.items():
+    _key = "".join(sorted(_src))
+    _ANAGRAM_INDEX.setdefault(_key, []).extend(_words)
+
+_ANAGRAM_PATTERN = re.compile(r"(?:anagram of|unscramble)\s+([A-Za-z]+)")
 
 
 def _solve_anagram(problem: str) -> Optional[Solution]:
-    pattern = re.compile(r"(?:anagram of|unscramble)\s+([A-Za-z]+)")
-    match = pattern.search(problem.lower())
+    match = _ANAGRAM_PATTERN.search(problem.lower())
     if not match:
         return None
 
     target = match.group(1)
     canonical = "".join(sorted(target))
-    candidates: List[str] = []
-    for source, words in _ANAGRAM_LIBRARY.items():
-        if canonical == "".join(sorted(source)):
-            candidates.extend(words)
+    candidates = _ANAGRAM_INDEX.get(canonical, [])
     if not candidates:
         answer = f"I could not find a perfect match, but '{canonical}' looks like a fun jumble!"
     else:
@@ -277,12 +300,22 @@ def _solve_panic_support(problem: str) -> Optional[Solution]:
     return Solution(kind="Panic Support", answer=answer, details=details)
 
 
-def solve_problem(problem: str) -> Solution:
-    """Attempt to solve a problem using available solvers."""
+Solver = Callable[[str], Optional[Solution]]
 
-    for solver in (_solve_math, _solve_anagram, _solve_panic_support):
+_SOLVER_CHAIN: Sequence[Solver] = (
+    _solve_math,
+    _solve_anagram,
+    _solve_panic_support,
+)
+
+
+def solve_problem(problem: str) -> Solution:
+    """Attempt to solve a problem using the registered solver chain."""
+    if not problem or not problem.strip():
+        return _brainstorm_steps(problem)
+    for solver in _SOLVER_CHAIN:
         solution = solver(problem)
-        if solution:
+        if solution is not None:
             return solution
     return _brainstorm_steps(problem)
 

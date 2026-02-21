@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface UserStats {
   gamesPlayed: number;
@@ -15,65 +15,84 @@ interface UserProfile {
   stats: UserStats;
 }
 
-const defaultStats: UserStats = {
-  gamesPlayed: 0,
-  wins: 0,
-  losses: 0,
-  draws: 0,
-};
+function winRate(stats: UserStats): string {
+  if (stats.gamesPlayed === 0) return '—';
+  return `${((stats.wins / stats.gamesPlayed) * 100).toFixed(1)}%`;
+}
+
+type FetchState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'ok'; profile: UserProfile }
+  | { status: 'error'; message: string };
 
 export default function ProfilePage() {
   const router = useRouter();
   const { id } = router.query;
-
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [state, setState] = useState<FetchState>({ status: 'idle' });
+  const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
-    if (!id) return;
-    const fetchProfile = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`/api/users/${id}`);
-        if (!response.ok) {
-          throw new Error('Fant ikke bruker');
+    if (typeof id !== 'string') return;
+
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    setState({ status: 'loading' });
+
+    fetch(`/api/users/${encodeURIComponent(id)}`, { signal: controller.signal })
+      .then(async (res) => {
+        if (!res.ok) throw new Error('Fant ikke bruker');
+        const data: UserProfile = await res.json();
+        if (!controller.signal.aborted) {
+          setState({ status: 'ok', profile: data });
         }
+      })
+      .catch((err: unknown) => {
+        if (controller.signal.aborted) return;
+        setState({ status: 'error', message: (err as Error).message });
+      });
 
-        const data = await response.json();
-        setProfile(data as UserProfile);
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
+    return () => controller.abort();
   }, [id]);
-
-  const stats = profile?.stats || defaultStats;
 
   return (
     <div className="profile-page">
-      {loading && <p>Laster profil...</p>}
-      {error && <p className="error">{error}</p>}
-      {profile && !loading && !error && (
-        <div>
-          <h1>{profile.username}</h1>
-          <p>Spiller-ID: {profile.id}</p>
-          <p>Rating: {profile.rating}</p>
+      {state.status === 'loading' && <p aria-live="polite">Laster profil...</p>}
 
-          <section>
-            <h2>Statistikk</h2>
-            <ul>
-              <li>Kamperspilt: {stats.gamesPlayed}</li>
-              <li>Seire: {stats.wins}</li>
-              <li>Tap: {stats.losses}</li>
-              <li>Uavgjort: {stats.draws}</li>
-            </ul>
+      {state.status === 'error' && (
+        <p className="error" role="alert">
+          {state.message}
+        </p>
+      )}
+
+      {state.status === 'ok' && (
+        <article>
+          <h1>{state.profile.username}</h1>
+          <dl className="profile-meta">
+            <dt>Spiller-ID</dt>
+            <dd>{state.profile.id}</dd>
+            <dt>Rating</dt>
+            <dd>{state.profile.rating}</dd>
+          </dl>
+
+          <section aria-labelledby="stats-heading">
+            <h2 id="stats-heading">Statistikk</h2>
+            <dl className="stats-grid">
+              <dt>Kamper spilt</dt>
+              <dd>{state.profile.stats.gamesPlayed}</dd>
+              <dt>Seire</dt>
+              <dd>{state.profile.stats.wins}</dd>
+              <dt>Tap</dt>
+              <dd>{state.profile.stats.losses}</dd>
+              <dt>Uavgjort</dt>
+              <dd>{state.profile.stats.draws}</dd>
+              <dt>Seiersprosent</dt>
+              <dd>{winRate(state.profile.stats)}</dd>
+            </dl>
           </section>
-        </div>
+        </article>
       )}
     </div>
   );
