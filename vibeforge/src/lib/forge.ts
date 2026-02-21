@@ -38,11 +38,9 @@ function inferAppDetails(input: string): { name: string; features: string[]; vib
     game: ["game loop", "score tracking", "leaderboard", "achievements", "sound effects"],
   };
 
-  let appType = "app";
   let features = ["responsive layout", "dark mode", "user authentication", "data persistence"];
   for (const [type, typeFeatures] of Object.entries(appTypes)) {
     if (words.includes(type) || words.some((w) => w.includes(type))) {
-      appType = type;
       features = typeFeatures;
       break;
     }
@@ -346,6 +344,73 @@ model Category {
 }`,
     },
   ];
+
+  files.push({
+    path: "src/app/globals.css",
+    language: "css",
+    content: `@import "tailwindcss";
+
+:root {
+  --background: ${vibeName === "Cyberpunk" ? "#0a0a0f" : "#0c0c12"};
+  --foreground: #e0e0ff;
+  --primary: #00f0ff;
+  --card: #0f0f1e;
+  --border: #2a2a4a;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--primary);
+  color: var(--background);
+}`,
+  });
+
+  files.push({
+    path: ".env.example",
+    language: "bash",
+    content: `DATABASE_URL="postgresql://user:password@localhost:5432/${safeName}"
+NEXT_PUBLIC_APP_URL="http://localhost:3000"`,
+  });
+
+  files.push({
+    path: "src/lib/store.ts",
+    language: "typescript",
+    content: `type Listener = () => void;
+
+class Store<T> {
+  private state: T;
+  private listeners: Set<Listener> = new Set();
+
+  constructor(initialState: T) {
+    this.state = initialState;
+  }
+
+  getState(): T {
+    return this.state;
+  }
+
+  setState(partial: Partial<T>) {
+    this.state = { ...this.state, ...partial };
+    this.listeners.forEach((l) => l());
+  }
+
+  subscribe(listener: Listener) {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+}
+
+export const appStore = new Store({
+  items: [] as { id: string; title: string; status: string }[],
+  loading: false,
+});`,
+  });
 
   return { plan, files };
 }

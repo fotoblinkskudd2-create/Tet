@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Code2, Eye, FileText, Download, CopyCheck,
@@ -382,12 +382,12 @@ function ForgeLoadingAnimation() {
   ];
   const [step, setStep] = useState(0);
 
-  useState(() => {
+  useEffect(() => {
     const interval = setInterval(() => {
       setStep((s) => (s + 1) % steps.length);
     }, 800);
     return () => clearInterval(interval);
-  });
+  }, [steps.length]);
 
   return (
     <motion.div

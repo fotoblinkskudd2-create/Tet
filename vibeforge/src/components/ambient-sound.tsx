@@ -26,7 +26,6 @@ export function AmbientSound() {
   const [showMenu, setShowMenu] = useState(false);
   const [activeTrack, setActiveTrack] = useState(currentVibe.soundTrack);
   const howlRef = useRef<import("howler").Howl | null>(null);
-  const [loaded, setLoaded] = useState(false);
 
   const stopCurrent = useCallback(() => {
     if (howlRef.current) {
@@ -51,8 +50,6 @@ export function AmbientSound() {
         loop: true,
         volume: 0,
         html5: true,
-        onload: () => setLoaded(true),
-        onloaderror: () => setLoaded(false),
       });
       howlRef.current = howl;
       howl.play();

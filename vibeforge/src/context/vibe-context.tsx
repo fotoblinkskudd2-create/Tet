@@ -13,8 +13,24 @@ interface VibeContextType {
 const VibeContext = createContext<VibeContextType | null>(null);
 
 export function VibeProvider({ children }: { children: React.ReactNode }) {
-  const [currentVibe, setCurrentVibe] = useState<VibeDefinition>(VIBES[0]);
-  const [apiKeys, setApiKeys] = useState({ grok: "", claude: "" });
+  const [currentVibe, setCurrentVibe] = useState<VibeDefinition>(() => {
+    if (typeof window !== "undefined") {
+      const savedId = localStorage.getItem("vibeforge-vibe");
+      if (savedId) return getVibeById(savedId);
+    }
+    return VIBES[0];
+  });
+
+  const [apiKeys, setApiKeys] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("vibeforge-keys");
+      if (saved) {
+        try { return JSON.parse(saved) as { grok: string; claude: string }; }
+        catch { /* ignore */ }
+      }
+    }
+    return { grok: "", claude: "" };
+  });
 
   const setVibe = useCallback((id: string) => {
     const vibe = getVibeById(id);
@@ -33,19 +49,6 @@ export function VibeProvider({ children }: { children: React.ReactNode }) {
       return next;
     });
   }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedVibe = localStorage.getItem("vibeforge-vibe");
-      if (savedVibe) setVibe(savedVibe);
-      const savedKeys = localStorage.getItem("vibeforge-keys");
-      if (savedKeys) {
-        try {
-          setApiKeys(JSON.parse(savedKeys));
-        } catch { /* ignore */ }
-      }
-    }
-  }, [setVibe]);
 
   useEffect(() => {
     const root = document.documentElement;

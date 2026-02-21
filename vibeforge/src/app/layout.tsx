@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { VibeProvider } from "@/context/vibe-context";
+import { FontLoader } from "@/components/font-loader";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,16 +29,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Serif:wght@400;700&family=Space+Mono:wght@400;700&family=VT323&family=Playfair+Display:wght@400;700&family=Fira+Code:wght@400;700&family=Quicksand:wght@400;700&family=Orbitron:wght@400;700&family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning
       >
         <VibeProvider>
+          <FontLoader />
           {children}
           <Toaster
             position="bottom-right"
