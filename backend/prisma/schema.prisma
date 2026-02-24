@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  passwordHash  String         @map("password_hash")
+  name          String
+  avatarUrl     String?        @map("avatar_url")
+  stripeId      String?        @map("stripe_id")
+  subscription  Subscription   @default(FREE)
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+
+  healthProfile HealthProfile?
+  weightEntries WeightEntry[]
+  foodLogs      FoodLog[]
+  exerciseLogs  ExerciseLog[]
+  mealPlans     MealPlan[]
+  achievements  Achievement[]
+
+  @@map("users")
+}
+
+enum Subscription {
+  FREE
+  PRO
+  FAMILY
+}
+
+model HealthProfile {
+  id            String   @id @default(uuid())
+  userId        String   @unique @map("user_id")
+  heightCm      Float    @map("height_cm")
+  goalWeightKg  Float    @map("goal_weight_kg")
+  activityLevel Activity @default(MODERATE) @map("activity_level")
+  birthDate     DateTime @map("birth_date")
+  sex           Sex
+  bmr           Float    @default(0)
+  tdee          Float    @default(0)
+  dailyTarget   Int      @default(2000) @map("daily_target")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("health_profiles")
+}
+
+enum Activity {
+  SEDENTARY
+  LIGHT
+  MODERATE
+  ACTIVE
+  VERY_ACTIVE
+}
+
+enum Sex {
+  MALE
+  FEMALE
+  OTHER
+}
+
+model WeightEntry {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  weightKg  Float    @map("weight_kg")
+  date      DateTime @db.Date
+  note      String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@map("weight_entries")
+}
+
+model Food {
+  id        String   @id @default(uuid())
+  name      String
+  brand     String?
+  barcode   String?  @unique
+  calories  Float
+  protein   Float
+  carbs     Float
+  fat       Float
+  fiber     Float    @default(0)
+  servingG  Float    @default(100) @map("serving_g")
+  source    String   @default("manual")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  foodLogs FoodLog[]
+
+  @@map("foods")
+}
+
+model FoodLog {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  foodId    String   @map("food_id")
+  amount    Float
+  unit      String   @default("g")
+  mealType  MealType @map("meal_type")
+  date      DateTime @db.Date
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  food Food @relation(fields: [foodId], references: [id])
+
+  @@map("food_logs")
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+}
+
+model ExerciseLog {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  type        String
+  name        String
+  durationMin Int      @map("duration_min")
+  calories    Float
+  date        DateTime @db.Date
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("exercise_logs")
+}
+
+model MealPlan {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  weekStart DateTime @map("week_start") @db.Date
+  meals     Json
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("meal_plans")
+}
+
+model Achievement {
+  id       String   @id @default(uuid())
+  userId   String   @map("user_id")
+  type     String
+  name     String
+  earnedAt DateTime @default(now()) @map("earned_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("achievements")
+}
