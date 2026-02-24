@@ -1,156 +1,123 @@
-import { Router, Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-import { v4 as uuid } from 'uuid';
+import { Router, Request, Response } from "express";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { PrismaClient } from "@prisma/client";
+import { config } from "../config";
+import { validate } from "../middleware/validate";
+import { authenticate } from "../middleware/auth";
+import { authLimiter } from "../middleware/rateLimit";
+import { registerSchema, loginSchema } from "../utils/validators";
+import { AuthRequest } from "../types";
 
-interface UserStats {
-  gamesPlayed: number;
-  wins: number;
-  losses: number;
-  draws: number;
-}
-
-interface User {
-  id: string;
-  email: string;
-  username: string;
-  passwordHash: string;
-  rating: number;
-  stats: UserStats;
-}
-
-const users = new Map<string, User>();
+const prisma = new PrismaClient();
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
-const COOKIE_NAME = 'session';
-const ONE_WEEK_MS = 1000 * 60 * 60 * 24 * 7;
 
-function setSessionCookie(res: Response, token: string) {
-  res.cookie(COOKIE_NAME, token, {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: ONE_WEEK_MS,
-    path: '/',
+function generateTokens(userId: string, email: string) {
+  const accessToken = jwt.sign({ userId, email }, config.jwt.secret, {
+    expiresIn: config.jwt.accessExpiry,
   });
+  const refreshToken = jwt.sign({ userId, email }, config.jwt.refreshSecret, {
+    expiresIn: config.jwt.refreshExpiry,
+  });
+  return { accessToken, refreshToken };
 }
 
-function parseTokenFromRequest(req: Request): string | undefined {
-  const fromCookie = (req as any).cookies?.[COOKIE_NAME];
-  if (fromCookie) return fromCookie;
+router.post(
+  "/register",
+  authLimiter,
+  validate(registerSchema),
+  async (req: Request, res: Response): Promise<void> => {
+    const { email, password, name } = req.body;
 
-  const header = req.headers.authorization;
-  if (!header) return undefined;
-  const [, token] = header.split(' ');
-  return token;
-}
-
-function authMiddleware(req: Request, res: Response, next: NextFunction) {
-  const token = parseTokenFromRequest(req);
-  if (!token) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  try {
-    const payload = jwt.verify(token, JWT_SECRET) as { userId: string };
-    (req as any).userId = payload.userId;
-    next();
-  } catch (err) {
-    return res.status(401).json({ error: 'Invalid token' });
-  }
-}
-
-function validateSignupBody(body: any) {
-  if (!body?.email || !body?.username || !body?.password) {
-    throw new Error('Missing required fields');
-  }
-}
-
-router.post('/signup', async (req: Request, res: Response) => {
-  try {
-    validateSignupBody(req.body);
-    const email = String(req.body.email).toLowerCase();
-    const username = String(req.body.username);
-
-    if ([...users.values()].some((u) => u.email === email || u.username === username)) {
-      return res.status(409).json({ error: 'User already exists' });
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) {
+      res.status(409).json({ error: "E-post allerede registrert" });
+      return;
     }
 
-    const passwordHash = await bcrypt.hash(req.body.password, 10);
-    const newUser: User = {
-      id: uuid(),
-      email,
-      username,
-      passwordHash,
-      rating: 1200,
-      stats: {
-        gamesPlayed: 0,
-        wins: 0,
-        losses: 0,
-        draws: 0,
-      },
-    };
-
-    users.set(newUser.id, newUser);
-
-    const token = jwt.sign({ userId: newUser.id }, JWT_SECRET, { expiresIn: '7d' });
-    setSessionCookie(res, token);
-
-    res.status(201).json({
-      id: newUser.id,
-      email: newUser.email,
-      username: newUser.username,
-      rating: newUser.rating,
-      stats: newUser.stats,
+    const passwordHash = await bcrypt.hash(password, 12);
+    const user = await prisma.user.create({
+      data: { email, passwordHash, name },
+      select: { id: true, email: true, name: true, createdAt: true },
     });
-  } catch (err) {
-    res.status(400).json({ error: (err as Error).message });
+
+    const tokens = generateTokens(user.id, user.email);
+    res.status(201).json({ user, ...tokens });
   }
-});
+);
 
-router.post('/login', async (req: Request, res: Response) => {
-  const { email, password } = req.body || {};
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required' });
+router.post(
+  "/login",
+  authLimiter,
+  validate(loginSchema),
+  async (req: Request, res: Response): Promise<void> => {
+    const { email, password } = req.body;
+
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      res.status(401).json({ error: "Ugyldig e-post eller passord" });
+      return;
+    }
+
+    const valid = await bcrypt.compare(password, user.passwordHash);
+    if (!valid) {
+      res.status(401).json({ error: "Ugyldig e-post eller passord" });
+      return;
+    }
+
+    const tokens = generateTokens(user.id, user.email);
+    res.json({
+      user: { id: user.id, email: user.email, name: user.name },
+      ...tokens,
+    });
   }
+);
 
-  const normalizedEmail = String(email).toLowerCase();
-  const user = [...users.values()].find((u) => u.email === normalizedEmail);
-  if (!user) {
-    return res.status(401).json({ error: 'Invalid credentials' });
+router.post(
+  "/refresh",
+  async (req: Request, res: Response): Promise<void> => {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      res.status(400).json({ error: "Refresh token påkrevd" });
+      return;
+    }
+
+    try {
+      const payload = jwt.verify(refreshToken, config.jwt.refreshSecret) as {
+        userId: string;
+        email: string;
+      };
+      const tokens = generateTokens(payload.userId, payload.email);
+      res.json(tokens);
+    } catch {
+      res.status(401).json({ error: "Ugyldig refresh token" });
+    }
   }
+);
 
-  const passwordMatches = await bcrypt.compare(password, user.passwordHash);
-  if (!passwordMatches) {
-    return res.status(401).json({ error: 'Invalid credentials' });
+router.get(
+  "/me",
+  authenticate,
+  async (req: AuthRequest, res: Response): Promise<void> => {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user!.userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        subscription: true,
+        createdAt: true,
+        healthProfile: true,
+      },
+    });
+
+    if (!user) {
+      res.status(404).json({ error: "Bruker ikke funnet" });
+      return;
+    }
+
+    res.json(user);
   }
-
-  const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
-  setSessionCookie(res, token);
-
-  res.json({
-    id: user.id,
-    email: user.email,
-    username: user.username,
-    rating: user.rating,
-    stats: user.stats,
-  });
-});
-
-router.get('/me', authMiddleware, (req: Request, res: Response) => {
-  const userId = (req as any).userId as string;
-  const user = users.get(userId);
-  if (!user) {
-    return res.status(404).json({ error: 'User not found' });
-  }
-
-  res.json({
-    id: user.id,
-    email: user.email,
-    username: user.username,
-    rating: user.rating,
-    stats: user.stats,
-  });
-});
+);
 
 export default router;
