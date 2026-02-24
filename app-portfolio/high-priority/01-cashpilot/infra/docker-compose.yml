@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://cashpilot:cashpilot@db:5432/cashpilot
+      - REDIS_URL=redis://cache:6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - CLERK_SECRET_KEY=${CLERK_SECRET_KEY}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+    depends_on:
+      - db
+      - cache
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: cashpilot
+      POSTGRES_PASSWORD: cashpilot
+      POSTGRES_DB: cashpilot
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  cache:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:
