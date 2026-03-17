@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0a0a1a">
+  <link rel="manifest" href="/manifest.json">
+  <title>MoodShift</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <!-- Ambient background -->
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- App shell -->
+  <div id="app">
+    <!-- Top safe area / status bar -->
+    <div class="status-bar">
+      <span class="status-time" id="clock"></span>
+      <span class="status-title">MoodShift</span>
+      <span class="status-dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </span>
+    </div>
+
+    <!-- Screen: Home / Mood Check-in -->
+    <section id="screen-home" class="screen active">
+      <div class="screen-scroll">
+        <div class="hero-section">
+          <div class="hero-orb" id="hero-orb"></div>
+          <h1 class="hero-title">How are you <br><em>really</em> feeling?</h1>
+          <p class="hero-sub" id="hero-quote">Tap your mood to begin the shift.</p>
+        </div>
+
+        <div class="mood-grid" id="mood-grid">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="quick-actions">
+          <h2 class="section-title">Quick Shift</h2>
+          <div class="action-cards" id="quick-actions">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="journal-preview">
+          <h2 class="section-title">Recent Feels</h2>
+          <div id="journal-preview-list" class="journal-list">
+            <p class="empty-state">Your mood story starts here.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen: Mood Detail / Activity Hub -->
+    <section id="screen-mood" class="screen">
+      <div class="screen-scroll">
+        <button class="back-btn" data-target="home">&larr; Back</button>
+        <div class="mood-detail-header" id="mood-detail-header">
+          <div class="mood-big-emoji" id="mood-big-emoji"></div>
+          <h1 class="mood-big-label" id="mood-big-label"></h1>
+          <p class="mood-quote" id="mood-quote-text"></p>
+        </div>
+
+        <div class="mood-note-box">
+          <textarea id="mood-note" placeholder="What's on your mind? (optional)" rows="3"></textarea>
+        </div>
+
+        <h2 class="section-title">Suggested Activities</h2>
+        <div class="activity-list" id="suggested-activities">
+          <!-- Populated by JS -->
+        </div>
+
+        <button class="cta-btn" id="save-mood-btn">
+          <span class="cta-icon">&#10003;</span> Log This Mood
+        </button>
+      </div>
+    </section>
+
+    <!-- Screen: Breathing Exercise -->
+    <section id="screen-breathe" class="screen">
+      <div class="screen-scroll center-content">
+        <button class="back-btn" data-target="mood">&larr; Back</button>
+        <div class="breathe-container">
+          <div class="breathe-ring" id="breathe-ring">
+            <div class="breathe-circle" id="breathe-circle">
+              <span class="breathe-text" id="breathe-text">Ready</span>
+              <span class="breathe-counter" id="breathe-counter"></span>
+            </div>
+          </div>
+          <p class="breathe-instruction" id="breathe-instruction">Tap the circle to begin</p>
+          <div class="breathe-progress">
+            <span id="breathe-round">0</span> / <span id="breathe-total">6</span> rounds
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen: Gratitude -->
+    <section id="screen-gratitude" class="screen">
+      <div class="screen-scroll">
+        <button class="back-btn" data-target="mood">&larr; Back</button>
+        <div class="gratitude-header">
+          <span class="gratitude-icon">&#127775;</span>
+          <h1>Gratitude Glow</h1>
+          <p>Write three things that spark light in you today.</p>
+        </div>
+        <div class="gratitude-cards" id="gratitude-cards">
+          <div class="gratitude-card" data-index="0">
+            <span class="gratitude-num">1</span>
+            <textarea placeholder="Something small that made you smile..." data-idx="0"></textarea>
+          </div>
+          <div class="gratitude-card" data-index="1">
+            <span class="gratitude-num">2</span>
+            <textarea placeholder="A person who brings warmth..." data-idx="1"></textarea>
+          </div>
+          <div class="gratitude-card" data-index="2">
+            <span class="gratitude-num">3</span>
+            <textarea placeholder="Something you appreciate about yourself..." data-idx="2"></textarea>
+          </div>
+        </div>
+        <button class="cta-btn" id="save-gratitude-btn">
+          <span class="cta-icon">&#10024;</span> Save & Glow
+        </button>
+      </div>
+    </section>
+
+    <!-- Screen: Color Therapy -->
+    <section id="screen-color_therapy" class="screen">
+      <div class="screen-scroll center-content">
+        <button class="back-btn" data-target="mood">&larr; Back</button>
+        <div class="color-therapy-container">
+          <h1 class="ct-title">Color Therapy</h1>
+          <p class="ct-subtitle">Let colors wash over you</p>
+          <div class="ct-palette-picker" id="ct-palette-picker">
+            <!-- Populated by JS -->
+          </div>
+          <div class="ct-display" id="ct-display">
+            <div class="ct-blob ct-blob-1"></div>
+            <div class="ct-blob ct-blob-2"></div>
+            <div class="ct-blob ct-blob-3"></div>
+          </div>
+          <button class="cta-btn ct-play-btn" id="ct-play-btn">Begin Immersion</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen: Body Scan -->
+    <section id="screen-body_scan" class="screen">
+      <div class="screen-scroll center-content">
+        <button class="back-btn" data-target="mood">&larr; Back</button>
+        <div class="body-scan-container">
+          <h1>Body Scan</h1>
+          <p class="bs-subtitle">A gentle journey through your body</p>
+          <div class="bs-figure" id="bs-figure">
+            <div class="bs-silhouette">
+              <div class="bs-zone" data-zone="0" style="top:5%">&#128161;</div>
+              <div class="bs-zone" data-zone="1" style="top:15%">&#128065;</div>
+              <div class="bs-zone" data-zone="2" style="top:25%">&#128172;</div>
+              <div class="bs-zone" data-zone="3" style="top:38%">&#128170;</div>
+              <div class="bs-zone" data-zone="4" style="top:50%">&#10084;&#65039;</div>
+              <div class="bs-zone" data-zone="5" style="top:63%">&#127774;</div>
+              <div class="bs-zone" data-zone="6" style="top:80%">&#129406;</div>
+            </div>
+          </div>
+          <div class="bs-cue" id="bs-cue">
+            <p class="bs-area" id="bs-area">Tap Start to begin</p>
+            <p class="bs-text" id="bs-text">We'll guide you from head to toe.</p>
+          </div>
+          <button class="cta-btn" id="bs-start-btn">Start Scan</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen: Creative Spark -->
+    <section id="screen-creative_spark" class="screen">
+      <div class="screen-scroll">
+        <button class="back-btn" data-target="mood">&larr; Back</button>
+        <div class="creative-header">
+          <span class="creative-icon">&#127912;</span>
+          <h1>Creative Spark</h1>
+          <p>Generate an inspiring creative prompt</p>
+        </div>
+        <div class="creative-medium-picker" id="creative-medium-picker">
+          <button class="medium-btn active" data-medium="art">&#127912; Art</button>
+          <button class="medium-btn" data-medium="photo">&#128247; Photo</button>
+          <button class="medium-btn" data-medium="music">&#127925; Music</button>
+          <button class="medium-btn" data-medium="poem">&#128220; Poem</button>
+          <button class="medium-btn" data-medium="video">&#127916; Video</button>
+        </div>
+        <div class="creative-output" id="creative-output">
+          <p class="creative-placeholder">Tap Generate to spark your imagination.</p>
+        </div>
+        <button class="cta-btn" id="creative-generate-btn">
+          <span class="cta-icon">&#9889;</span> Generate Spark
+        </button>
+      </div>
+    </section>
+
+    <!-- Screen: Movement -->
+    <section id="screen-movement" class="screen">
+      <div class="screen-scroll center-content">
+        <button class="back-btn" data-target="mood">&larr; Back</button>
+        <div class="movement-container">
+          <h1>&#128131; Mood Movement</h1>
+          <p class="mv-subtitle">Gentle moves to shift your energy</p>
+          <div class="mv-current" id="mv-current">
+            <div class="mv-circle" id="mv-circle">
+              <span class="mv-name" id="mv-name">Ready?</span>
+            </div>
+            <p class="mv-desc" id="mv-desc">Tap Start to begin a 90-second flow.</p>
+            <div class="mv-timer" id="mv-timer"></div>
+          </div>
+          <div class="mv-progress-bar">
+            <div class="mv-progress-fill" id="mv-progress-fill"></div>
+          </div>
+          <button class="cta-btn" id="mv-start-btn">Start Moving</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen: Journal -->
+    <section id="screen-journal" class="screen">
+      <div class="screen-scroll">
+        <button class="back-btn" data-target="home">&larr; Back</button>
+        <h1 class="journal-title">Mood Journal</h1>
+        <div class="journal-stats" id="journal-stats"></div>
+        <div class="journal-entries" id="journal-entries">
+          <p class="empty-state">No entries yet. Check in with your mood to start.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom Tab Bar -->
+    <nav class="tab-bar" id="tab-bar">
+      <button class="tab active" data-screen="home">
+        <span class="tab-icon">&#127968;</span>
+        <span class="tab-label">Home</span>
+      </button>
+      <button class="tab" data-screen="journal">
+        <span class="tab-icon">&#128214;</span>
+        <span class="tab-label">Journal</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
