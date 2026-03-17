@@ -1,14 +1,17 @@
 """
-A playful problem-solving CLI application.
+A playful problem-solving CLI application with an IDE smart-ideas brain.
 """
 from __future__ import annotations
 
 import argparse
 import ast
 import operator
+import os
 import re
 from dataclasses import dataclass
 from typing import Callable, Dict, Iterable, List, Optional, Tuple
+
+import ide_brain
 
 
 @dataclass
@@ -303,6 +306,23 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Choose the creative medium for prompt mode. Defaults to auto-detect.",
     )
     parser.add_argument(
+        "--ideas",
+        action="store_true",
+        help="Activate the IDE brain to generate smart ideas from code or context.",
+    )
+    parser.add_argument(
+        "--file",
+        type=str,
+        default=None,
+        help="Path to a source file for the IDE brain to analyze (use with --ideas).",
+    )
+    parser.add_argument(
+        "--max-ideas",
+        type=int,
+        default=20,
+        help="Maximum number of ideas to generate (use with --ideas).",
+    )
+    parser.add_argument(
         "problem",
         nargs=argparse.REMAINDER,
         help="Tell me your problem to solve. Quotes are encouraged for multi-word puzzles!",
@@ -313,6 +333,23 @@ def _build_parser() -> argparse.ArgumentParser:
 def main(argv: Optional[Iterable[str]] = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
+
+    # IDE brain mode
+    if args.ideas:
+        context = " ".join(args.problem) if args.problem else ""
+        if args.file:
+            if not os.path.isfile(args.file):
+                print(f"Error: file not found: {args.file}")
+                return 1
+            report = ide_brain.generate_ideas_from_file(
+                args.file, context=context,
+            )
+        else:
+            report = ide_brain.generate_ideas(
+                code=None, context=context, max_ideas=args.max_ideas,
+            )
+        print(report.format())
+        return 0
 
     if not args.problem:
         parser.print_help()
