@@ -119,6 +119,7 @@ _MEDIUM_SYNONYMS: Dict[str, Tuple[str, ...]] = {
     "music": ("song", "track", "audio"),
     "art": ("illustration", "drawing", "painting", "concept art"),
     "poem": ("poetry", "verse", "haiku", "sonnet"),
+    "code": ("app", "software", "program", "script", "tool", "website", "api", "cli", "bot"),
 }
 
 _CREATIVE_RECIPES: Dict[str, Dict[str, object]] = {
@@ -182,6 +183,19 @@ _CREATIVE_RECIPES: Dict[str, Dict[str, object]] = {
             "Suggest a closing turn or surprise to land the emotion.",
         ],
     },
+    "code": {
+        "title": "Vibe code prompt",
+        "style": "Direct and unambiguous; describe what the software should do, not how to build it.",
+        "structure": "Lead with the core feature in one sentence, then list behaviors, constraints, and the user flow.",
+        "platform": "Ready to paste into any AI coding assistant or chat interface.",
+        "delivery": "Specify the tech stack, file scope, and any edge cases the AI must handle.",
+        "details": [
+            "State the single most important behavior first so the AI locks onto the goal.",
+            "Name the tech stack or language only if you have a preference—otherwise let the AI choose.",
+            "Describe the happy path and one or two edge cases to keep output robust.",
+            "Mention testing expectations (unit tests, example inputs/outputs) to get verifiable code.",
+        ],
+    },
 }
 
 
@@ -216,6 +230,75 @@ def _shape_creative_prompt(seed: str, medium: str) -> Tuple[str, List[str]]:
     details = list(profile["details"])  # type: ignore[arg-type]
     details.append("Mobile-first: short sentences, no markdown, ready for iOS web share sheets.")
     return answer, details
+
+
+_VIBE_TECH_HINTS: Dict[str, Tuple[str, ...]] = {
+    "web": ("react", "next", "html", "css", "frontend", "website", "dashboard", "landing page"),
+    "api": ("rest", "graphql", "endpoint", "server", "backend", "microservice"),
+    "cli": ("command line", "terminal", "cli", "shell", "script"),
+    "mobile": ("ios", "android", "react native", "flutter", "mobile"),
+    "data": ("database", "sql", "csv", "etl", "pipeline", "data"),
+    "bot": ("discord", "slack", "telegram", "chatbot", "bot"),
+    "game": ("game", "physics", "sprite", "canvas", "unity"),
+}
+
+
+def _detect_tech_domain(text: str) -> Optional[str]:
+    """Detect the likely tech domain from the user's idea."""
+    lowered = text.lower()
+    for domain, keywords in _VIBE_TECH_HINTS.items():
+        if any(kw in lowered for kw in keywords):
+            return domain
+    return None
+
+
+def _build_vibe_sections(seed: str) -> Tuple[str, List[str]]:
+    """Build a structured vibe code prompt from a rough idea."""
+    cleaned = seed.strip().rstrip(".")
+    domain = _detect_tech_domain(seed)
+
+    domain_advice: Dict[str, str] = {
+        "web": "Use a modern component framework. Keep the UI minimal and responsive.",
+        "api": "Design clear RESTful routes. Return consistent JSON shapes with proper status codes.",
+        "cli": "Use a proper argument parser. Print help text on empty input.",
+        "mobile": "Target a single platform first. Keep navigation simple and thumb-friendly.",
+        "data": "Validate inputs early. Log progress for long-running operations.",
+        "bot": "Handle unknown commands gracefully. Keep responses short and actionable.",
+        "game": "Start with a game loop and fixed timestep. Separate update logic from rendering.",
+    }
+
+    # Build the structured prompt
+    parts = [f"Build this: {cleaned}."]
+    if domain and domain in domain_advice:
+        parts.append(domain_advice[domain])
+    parts.append(
+        "Start with the simplest working version, then iterate. "
+        "Include clear variable names and short functions."
+    )
+
+    answer = " ".join(parts)
+
+    details = [
+        f"Core idea: {cleaned}.",
+        "Scope guard: build only what is described—no extra features, no premature abstractions.",
+        "File structure: keep it flat and obvious. One main entry point, helpers alongside.",
+        "Error handling: validate user input at boundaries; trust internal code.",
+        "Testing: include at least one example run or unit test that proves the happy path works.",
+    ]
+    if domain:
+        details.insert(1, f"Detected domain: {domain}. Tailor the stack accordingly.")
+
+    return answer, details
+
+
+def build_vibe_code_prompt(seed: str) -> Solution:
+    """Turn a rough software idea into a structured prompt for AI coding tools."""
+
+    if not seed or not seed.strip():
+        raise ValueError("Please describe what you want to build in a few words.")
+
+    answer, details = _build_vibe_sections(seed)
+    return Solution(kind="Vibe Code Prompt", answer=answer, details=details)
 
 
 def build_creative_prompt(seed: str, medium_hint: Optional[str] = None) -> Solution:
@@ -298,9 +381,14 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--medium",
-        choices=["photo", "video", "music", "art", "poem", "auto"],
+        choices=["photo", "video", "music", "art", "poem", "code", "auto"],
         default="auto",
         help="Choose the creative medium for prompt mode. Defaults to auto-detect.",
+    )
+    parser.add_argument(
+        "--vibe",
+        action="store_true",
+        help="Vibe code mode: turn a rough idea into a structured prompt for AI coding tools.",
     )
     parser.add_argument(
         "problem",
@@ -320,7 +408,9 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
 
     problem_text = " ".join(args.problem)
 
-    if args.prompt:
+    if args.vibe:
+        solution = build_vibe_code_prompt(problem_text)
+    elif args.prompt:
         medium_hint = None if args.medium == "auto" else args.medium
         solution = build_creative_prompt(problem_text, medium_hint=medium_hint)
     else:
