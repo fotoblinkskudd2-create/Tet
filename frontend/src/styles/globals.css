@@ -1,0 +1,554 @@
+/* ============================================================
+   Grafset + OpenClaw — iOS-optimized responsive stylesheet
+   ============================================================ */
+
+:root {
+  --color-bg: #fafafa;
+  --color-surface: #ffffff;
+  --color-primary: #1a73e8;
+  --color-primary-dark: #1558b0;
+  --color-accent: #ff6d00;
+  --color-text: #1a1a1a;
+  --color-muted: #6b7280;
+  --color-border: #e5e7eb;
+  --color-success: #16a34a;
+  --color-error: #dc2626;
+  --radius: 12px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+  padding-left: var(--safe-left);
+  padding-right: var(--safe-right);
+}
+
+/* --- iOS touch/tap resets ------------------------------------------- */
+a,
+button,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input,
+textarea,
+select {
+  font-size: 16px; /* prevents iOS zoom on focus */
+  font-family: inherit;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  width: 100%;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
+}
+
+button {
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: var(--color-primary);
+  color: #fff;
+  transition: background 0.15s;
+}
+
+button:active {
+  background: var(--color-primary-dark);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+label {
+  display: block;
+  margin-bottom: 16px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--color-muted);
+}
+
+label input,
+label textarea,
+label select {
+  margin-top: 6px;
+}
+
+/* --- Layout containers ---------------------------------------------- */
+.home-page,
+.grafset-page,
+.openclaw-page,
+.auth-page,
+.profile-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+}
+
+/* --- Headers -------------------------------------------------------- */
+.home-header,
+.grafset-header,
+.openclaw-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.home-header h1,
+.grafset-header h1,
+.openclaw-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  margin-top: 6px;
+}
+
+/* --- Navigation ----------------------------------------------------- */
+.grafset-nav,
+.openclaw-nav {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.grafset-nav a,
+.openclaw-nav a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.home-nav {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.nav-card {
+  display: block;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.15s, transform 0.1s;
+}
+
+.nav-card:active {
+  transform: scale(0.98);
+  box-shadow: var(--shadow-md);
+}
+
+.nav-card h2 {
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+  color: var(--color-primary);
+}
+
+.nav-card p {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+
+/* --- Home features -------------------------------------------------- */
+.home-features {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.home-features h2 {
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+}
+
+.home-features ul {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.home-features li {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  padding-left: 18px;
+  position: relative;
+}
+
+.home-features li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+/* --- Agent assistant ------------------------------------------------ */
+.agent-assistant {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.agent-assistant h2 {
+  font-size: 1.15rem;
+  margin-bottom: 6px;
+}
+
+.agent-assistant > p {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  margin-bottom: 14px;
+}
+
+.agent-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.agent-input-row input {
+  flex: 1;
+}
+
+.agent-input-row button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.agent-result {
+  margin-top: 14px;
+  padding: 14px;
+  background: #f0f7ff;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.agent-result strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--color-primary);
+}
+
+/* --- Filter bar ----------------------------------------------------- */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.filter-bar button {
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+}
+
+.filter-bar button.active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+/* --- Ideas grid ----------------------------------------------------- */
+.ideas-grid {
+  display: grid;
+  gap: 14px;
+}
+
+@media (min-width: 520px) {
+  .ideas-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.idea-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.idea-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-primary);
+  background: rgba(26, 115, 232, 0.08);
+  border-radius: 6px;
+  padding: 3px 8px;
+  margin-bottom: 8px;
+}
+
+.idea-card h3 {
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+
+.idea-card > p {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin-bottom: 10px;
+}
+
+.idea-meta {
+  display: flex;
+  gap: 10px;
+  font-size: 0.8rem;
+  margin-bottom: 10px;
+}
+
+.idea-meta .cost {
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.idea-meta .medium {
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.agent-tip {
+  font-size: 0.82rem;
+  padding: 10px;
+  background: #fffbeb;
+  border-radius: 6px;
+  line-height: 1.45;
+}
+
+.agent-tip strong {
+  color: var(--color-accent);
+}
+
+/* --- CTA section ---------------------------------------------------- */
+.cta-section {
+  text-align: center;
+  margin-top: 32px;
+  padding: 24px 16px;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.cta-section h2 {
+  font-size: 1.15rem;
+  margin-bottom: 6px;
+}
+
+.cta-section p {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  margin-bottom: 14px;
+}
+
+.cta-button {
+  display: inline-block;
+  padding: 12px 28px;
+  background: var(--color-accent);
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background 0.15s;
+}
+
+.cta-button:active {
+  background: #e65100;
+}
+
+/* --- OpenClaw promo form -------------------------------------------- */
+.promo-form-section {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.promo-form-section h2 {
+  font-size: 1.15rem;
+  margin-bottom: 14px;
+}
+
+.promo-form button {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.status {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: var(--color-success);
+}
+
+/* --- Promo feed ----------------------------------------------------- */
+.promo-feed h2 {
+  font-size: 1.15rem;
+  margin-bottom: 14px;
+}
+
+.empty-state {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  text-align: center;
+  padding: 20px 0;
+}
+
+.promo-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.promo-card h3 {
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+
+.promo-card p {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin-bottom: 10px;
+}
+
+.promo-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.promo-medium {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: rgba(26, 115, 232, 0.08);
+  border-radius: 6px;
+  padding: 3px 8px;
+}
+
+.promo-tag {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  background: var(--color-bg);
+  border-radius: 6px;
+  padding: 3px 8px;
+}
+
+/* --- Auth pages ----------------------------------------------------- */
+.auth-page {
+  text-align: center;
+}
+
+.auth-page h1 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.auth-page form {
+  text-align: left;
+}
+
+.auth-page button {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.auth-page > p {
+  margin-top: 16px;
+  font-size: 0.9rem;
+}
+
+.auth-page a {
+  color: var(--color-primary);
+}
+
+/* --- Profile page --------------------------------------------------- */
+.profile-page h1 {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.profile-page section {
+  margin-top: 20px;
+}
+
+.profile-page ul {
+  list-style: none;
+}
+
+.profile-page li {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.9rem;
+}
+
+.error {
+  color: var(--color-error);
+}
