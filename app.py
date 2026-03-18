@@ -1,14 +1,17 @@
 """
-A playful problem-solving CLI application.
+A playful problem-solving CLI application with OpenClaw smart document generation.
 """
 from __future__ import annotations
 
 import argparse
 import ast
+import json
 import operator
 import re
 from dataclasses import dataclass
 from typing import Callable, Dict, Iterable, List, Optional, Tuple
+
+import openclaw
 
 
 @dataclass
@@ -303,6 +306,34 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Choose the creative medium for prompt mode. Defaults to auto-detect.",
     )
     parser.add_argument(
+        "--claw",
+        action="store_true",
+        help="Generate a smart document using OpenClaw (contract, SOW, invoice, etc.).",
+    )
+    parser.add_argument(
+        "--doc-type",
+        choices=list(openclaw.DOC_TYPES.keys()) + ["auto"],
+        default="auto",
+        help="Choose the document type for OpenClaw mode. Defaults to auto-detect.",
+    )
+    parser.add_argument(
+        "--claw-list",
+        action="store_true",
+        help="List all available OpenClaw document types.",
+    )
+    parser.add_argument(
+        "--claw-json",
+        action="store_true",
+        help="Output OpenClaw document as JSON instead of formatted text.",
+    )
+    parser.add_argument(
+        "--claw-param",
+        action="append",
+        metavar="KEY=VALUE",
+        default=[],
+        help="Pass custom parameters to OpenClaw (e.g. --claw-param client='Acme Corp').",
+    )
+    parser.add_argument(
         "problem",
         nargs=argparse.REMAINDER,
         help="Tell me your problem to solve. Quotes are encouraged for multi-word puzzles!",
@@ -310,15 +341,43 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _parse_claw_params(raw: List[str]) -> Dict[str, str]:
+    """Parse key=value pairs from --claw-param flags."""
+    params: Dict[str, str] = {}
+    for item in raw:
+        if "=" not in item:
+            continue
+        key, _, value = item.partition("=")
+        params[key.strip()] = value.strip().strip("'\"")
+    return params
+
+
 def main(argv: Optional[Iterable[str]] = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
+
+    if args.claw_list:
+        print("Available OpenClaw document types:\n")
+        for dt in openclaw.list_doc_types():
+            print(f"  {dt['key']:12s} {dt['label']}")
+            print(f"               {dt['description']}\n")
+        return 0
 
     if not args.problem:
         parser.print_help()
         return 0
 
     problem_text = " ".join(args.problem)
+
+    if args.claw:
+        doc_type = None if args.doc_type == "auto" else args.doc_type
+        params = _parse_claw_params(args.claw_param)
+        doc = openclaw.generate(problem_text, doc_type=doc_type, params=params)
+        if args.claw_json:
+            print(json.dumps(doc.to_dict(), indent=2))
+        else:
+            print(doc.render())
+        return 0
 
     if args.prompt:
         medium_hint = None if args.medium == "auto" else args.medium
