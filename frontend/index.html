@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VR Vive Experience</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    #info {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      color: white;
+      font-family: system-ui;
+      font-size: 14px;
+      z-index: 1;
+    }
+    #info a { color: #4dc8ff; }
+    #enter-vr {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 16px 32px;
+      font-size: 18px;
+      background: #4dc8ff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="info">
+    <h1>VR Vive Experience</h1>
+    <p>Use controller to interact with objects</p>
+    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/WebXR_Device_API">WebXR</a> compatible browser required</p>
+  </div>
+  <button id="enter-vr">Enter VR</button>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
