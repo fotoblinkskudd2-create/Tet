@@ -10,6 +10,21 @@ import re
 from dataclasses import dataclass
 from typing import Callable, Dict, Iterable, List, Optional, Tuple
 
+try:
+    from openclaw import (
+        get_toolkit,
+        build_prompt,
+        list_prompt_templates,
+        save_model,
+        load_model,
+        list_saved_models,
+        run_agent,
+        AgentTask,
+    )
+    OPENCLAW_AVAILABLE = True
+except ImportError:
+    OPENCLAW_AVAILABLE = False
+
 
 @dataclass
 class Solution:
@@ -291,6 +306,8 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="A joyful assistant that tackles small problems with gusto!",
     )
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+    
     parser.add_argument(
         "--prompt",
         action="store_true",
@@ -302,6 +319,51 @@ def _build_parser() -> argparse.ArgumentParser:
         default="auto",
         help="Choose the creative medium for prompt mode. Defaults to auto-detect.",
     )
+    
+    if OPENCLAW_AVAILABLE:
+        tools_parser = subparsers.add_parser("tools", help="OpenClaw tools commands")
+        tools_sub = tools_parser.add_subparsers(dest="tool_command")
+        
+        list_parser = tools_sub.add_parser("list", help="List available tools")
+        list_parser.add_argument("--category", help="Filter by category")
+        list_parser.add_argument("--tags", nargs="+", help="Filter by tags")
+        
+        exec_parser = tools_sub.add_parser("exec", help="Execute a tool")
+        exec_parser.add_argument("tool_name", help="Name of tool to execute")
+        exec_parser.add_argument("--args", nargs="*", help="Arguments for the tool")
+        
+        prompt_parser = tools_sub.add_parser("prompt", help="Prompt tools")
+        prompt_sub = prompt_parser.add_subparsers(dest="prompt_command")
+        
+        build_p = prompt_sub.add_parser("build", help="Build a prompt")
+        build_p.add_argument("--system", help="System instruction")
+        build_p.add_argument("--user", help="User content")
+        build_p.add_argument("--template", help="Template name to use")
+        build_p.add_argument("text", nargs="*", help="Prompt text")
+        
+        template_p = prompt_sub.add_parser("templates", help="List prompt templates")
+        
+        agent_parser = tools_sub.add_parser("agent", help="Agent tools")
+        agent_sub = agent_parser.add_subparsers(dest="agent_command")
+        
+        run_p = agent_sub.add_parser("run", help="Run an agent task")
+        run_p.add_argument("name", help="Task name")
+        run_p.add_argument("--prompt", required=True, help="Task prompt")
+        
+        model_parser = tools_sub.add_parser("model", help="Model tools")
+        model_sub = model_parser.add_subparsers(dest="model_command")
+        
+        save_p = model_sub.add_parser("save", help="Save a model")
+        save_p.add_argument("name", help="Model name")
+        save_p.add_argument("--description", default="", help="Model description")
+        save_p.add_argument("--tags", nargs="+", help="Model tags")
+        
+        load_p = model_sub.add_parser("load", help="Load a model")
+        load_p.add_argument("model_id", help="Model ID to load")
+        
+        list_p = model_sub.add_parser("list", help="List saved models")
+        list_p.add_argument("--name", help="Filter by model name")
+    
     parser.add_argument(
         "problem",
         nargs=argparse.REMAINDER,
@@ -313,6 +375,9 @@ def _build_parser() -> argparse.ArgumentParser:
 def main(argv: Optional[Iterable[str]] = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
+    
+    if args.command == "tools" and OPENCLAW_AVAILABLE:
+        return _handle_tools_command(args)
 
     if not args.problem:
         parser.print_help()
@@ -326,6 +391,91 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
     else:
         solution = solve_problem(problem_text)
     print(solution.format())
+    return 0
+
+
+def _handle_tools_command(args) -> int:
+    if args.tool_command == "list":
+        toolkit = get_toolkit()
+        tools = toolkit.list_tools(category=getattr(args, "category", None))
+        for tool in tools:
+            print(f"  {tool.name}: {tool.description}")
+        return 0
+    
+    elif args.tool_command == "exec":
+        toolkit = get_toolkit()
+        kwargs = {}
+        if args.args:
+            for arg in args.args:
+                if "=" in arg:
+                    k, v = arg.split("=", 1)
+                    kwargs[k] = v
+        result = toolkit.execute(args.tool_name, **kwargs)
+        print(f"Success: {result.success}")
+        if result.output:
+            print(f"Output: {result.output}")
+        if result.error:
+            print(f"Error: {result.error}")
+        return 0 if result.success else 1
+    
+    elif args.tool_command == "prompt":
+        if args.prompt_command == "templates":
+            templates = list_prompt_templates()
+            for t in templates:
+                print(f"  {t.name}: {t.description}")
+            return 0
+        elif args.prompt_command == "build":
+            text = " ".join(args.text) if args.text else ""
+            if args.template:
+                result = build_prompt(args.template, content=text)
+            else:
+                from openclaw import PromptBuilder
+                builder = PromptBuilder()
+                if args.system:
+                    builder.add_system(args.system)
+                if args.user:
+                    builder.add_user(args.user)
+                if text:
+                    builder.add_user(text)
+                result = builder.build()
+            print(result)
+            return 0
+    
+    elif args.tool_command == "agent":
+        if args.agent_command == "run":
+            task = AgentTask(name=args.name, prompt=args.prompt)
+            result = run_agent(task)
+            print(f"Task: {result.task_id}")
+            print(f"Success: {result.success}")
+            if result.output:
+                print(f"Output: {result.output}")
+            if result.error:
+                print(f"Error: {result.error}")
+            return 0 if result.success else 1
+    
+    elif args.tool_command == "model":
+        if args.model_command == "save":
+            model_data = {"saved_at": "now", "type": "placeholder"}
+            metadata = save_model(
+                model=model_data,
+                name=args.name,
+                description=args.description or "",
+                tags=args.tags or [],
+            )
+            print(f"Model saved: {metadata.id}")
+            print(f"Name: {metadata.name}, Version: {metadata.version}")
+            return 0
+        elif args.model_command == "load":
+            model = load_model(args.model_id)
+            print(f"Loaded model: {args.model_id}")
+            print(f"Data: {model}")
+            return 0
+        elif args.model_command == "list":
+            models = list_saved_models(name=getattr(args, "name", None))
+            for m in models:
+                print(f"  {m.id}: {m.name} ({m.version}) - {m.description}")
+            return 0
+    
     return 0
 
 
