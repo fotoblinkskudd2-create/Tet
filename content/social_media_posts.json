@@ -1,0 +1,1004 @@
+{
+  "metadata": {
+    "campaign": "Tet Problem Solver - 31 Day Social Media Campaign",
+    "total_posts": 124,
+    "days": 31,
+    "posts_per_day": 4,
+    "platforms": ["Instagram", "Facebook", "X (Twitter)", "LinkedIn", "TikTok"],
+    "description": "A 31-day content calendar promoting the Tet Problem Solver app across the 5 biggest social media platforms. Each day features 4 posts rotating through platforms to maintain a balanced presence."
+  },
+  "posts": [
+    {
+      "id": 1,
+      "day": 1,
+      "platform": "Instagram",
+      "type": "carousel",
+      "caption": "Ever stare at a math problem and feel your brain shut down? Same. That's why we built Tet Problem Solver — a tiny CLI tool that crunches numbers, unscrambles anagrams, and even brainstorms when it doesn't know the answer.\n\nSlide 1: The problem\nSlide 2: One command\nSlide 3: Instant joy\n\nTry it: python app.py \"2 + 3 * 4\"\n\n#ProblemSolving #DevTools #Python #TetSolver #CodeLife #Productivity",
+      "hashtags": ["#ProblemSolving", "#DevTools", "#Python", "#TetSolver", "#CodeLife", "#Productivity"]
+    },
+    {
+      "id": 2,
+      "day": 1,
+      "platform": "Facebook",
+      "type": "text_post",
+      "caption": "Introducing Tet Problem Solver — your new favorite command-line buddy!\n\nWhether it's arithmetic, anagrams, or just needing a creative brainstorm, Tet has your back. It's lightweight, safe, and ridiculously fun to use.\n\nThe best part? When it can't solve something directly, it gives you an upbeat action plan to keep moving forward. Because momentum is magic.\n\nDrop a math problem in the comments and we'll solve it live!",
+      "hashtags": ["#TetSolver", "#OpenSource", "#ProblemSolving"]
+    },
+    {
+      "id": 3,
+      "day": 1,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "Just shipped Tet Problem Solver — a joyful CLI that solves math, anagrams, and brainstorms solutions when it's stuck.\n\npython app.py \"2 + 3 * 4\"\n→ \"The numbers danced and the answer is 14!\"\n\nYes, it has personality. No, it won't judge your algebra skills.\n\n#Python #DevTools #CLI",
+      "hashtags": ["#Python", "#DevTools", "#CLI"]
+    },
+    {
+      "id": 4,
+      "day": 1,
+      "platform": "LinkedIn",
+      "type": "article_post",
+      "caption": "Excited to share a project close to my heart: Tet Problem Solver.\n\nIt started as a weekend hack — a CLI tool that solves simple math and anagram puzzles. But the real magic is what happens when it can't solve something: instead of failing silently, it generates an upbeat brainstorming protocol.\n\nKey technical decisions:\n- AST-based safe math evaluation (no eval() security risks)\n- Pattern matching for anagram detection\n- Graceful fallback to structured brainstorming\n\nSometimes the best tools aren't the most complex. They're the ones that keep you moving.\n\nWhat small tools have made your workflow better?",
+      "hashtags": ["#SoftwareEngineering", "#Python", "#DeveloperTools", "#OpenSource"]
+    },
+    {
+      "id": 5,
+      "day": 2,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "POV: You built a CLI tool that actually has personality\n\nWatch me solve math problems with sparkle emojis and motivational quotes. Yes, the terminal CAN be fun.\n\n#CodeTok #Python #DevLife #ProblemSolving #Coding",
+      "hashtags": ["#CodeTok", "#Python", "#DevLife", "#ProblemSolving", "#Coding"]
+    },
+    {
+      "id": 6,
+      "day": 2,
+      "platform": "Instagram",
+      "type": "reel",
+      "caption": "When your terminal tool says \"Crunching numbers is my cardio\" after solving your equation.\n\nTet Problem Solver doesn't just give answers. It gives VIBES.\n\nTry: python app.py \"100 / 7\"\n\n#DevHumor #CodeVibes #Python #TetSolver #Terminal",
+      "hashtags": ["#DevHumor", "#CodeVibes", "#Python", "#TetSolver", "#Terminal"]
+    },
+    {
+      "id": 7,
+      "day": 2,
+      "platform": "Facebook",
+      "type": "image_post",
+      "caption": "Fun fact: Tet Problem Solver uses Python's Abstract Syntax Tree to safely evaluate math expressions. No dangerous eval() calls here!\n\nThat means you can throw any arithmetic at it and it'll calculate safely — addition, subtraction, multiplication, division, even exponents.\n\nSecurity and fun can coexist. Who knew?\n\nWhat expression should we solve next?",
+      "hashtags": ["#CyberSecurity", "#Python", "#SafeCoding", "#TetSolver"]
+    },
+    {
+      "id": 8,
+      "day": 2,
+      "platform": "X (Twitter)",
+      "type": "tweet_thread",
+      "caption": "Why I built Tet Problem Solver with AST-based math evaluation instead of eval():\n\n1/ eval() executes arbitrary code. One malicious input and your system is compromised.\n\n2/ ast.parse() creates a tree structure we can walk safely. Only numbers and basic operators allowed.\n\n3/ The result? Safe math that's still fast and fun.\n\nSecurity doesn't have to be boring. Thread. 🧵",
+      "hashtags": ["#Python", "#Security", "#DevTips"]
+    },
+    {
+      "id": 9,
+      "day": 3,
+      "platform": "LinkedIn",
+      "type": "text_post",
+      "caption": "One design principle I keep coming back to: graceful degradation.\n\nIn Tet Problem Solver, when the tool encounters a problem it can't directly solve, it doesn't throw an error or give up. Instead, it generates a structured brainstorming protocol:\n\n1. Name the goal in one sentence\n2. List the facts and sketch a diagram\n3. Break it into two bite-sized steps\n4. Start with the easiest step\n\nThis same principle applies to product design, customer support, and team leadership. When you can't deliver the ideal outcome, deliver the next best thing with enthusiasm.\n\nHow do you handle graceful degradation in your work?",
+      "hashtags": ["#ProductDesign", "#Engineering", "#Leadership", "#TetSolver"]
+    },
+    {
+      "id": 10,
+      "day": 3,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "Anagram solver speedrun! Watch Tet crack 'listen' into 'silent', 'enlist', and 'tinsel' in under a second.\n\nBet you didn't know 'stressed' backwards is 'desserts' — and yeah, Tet knows that too.\n\n#WordGames #Anagrams #Python #CodeTok #DevLife",
+      "hashtags": ["#WordGames", "#Anagrams", "#Python", "#CodeTok", "#DevLife"]
+    },
+    {
+      "id": 11,
+      "day": 3,
+      "platform": "Instagram",
+      "type": "story_series",
+      "caption": "Anagram challenge time!\n\nCan you unscramble these before Tet does?\n\n1. VILE → ???\n2. ANGEL → ???\n3. SAVE → ???\n\nSwipe up to see Tet's answers!\n\n#AnagramChallenge #WordPuzzle #BrainTeaser #TetSolver",
+      "hashtags": ["#AnagramChallenge", "#WordPuzzle", "#BrainTeaser", "#TetSolver"]
+    },
+    {
+      "id": 12,
+      "day": 3,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "Anagram of 'listen'?\n\nTet says: silent, enlist, tinsel.\n\nAnagram of 'evil'?\n\nTet says: vile, veil, live.\n\nTry Tet Problem Solver: python app.py \"anagram of listen\"\n\nIt even tells you to say them out loud because \"sometimes the silliest sounds win.\" I love this tool.\n\n#WordGames #Python",
+      "hashtags": ["#WordGames", "#Python"]
+    },
+    {
+      "id": 13,
+      "day": 4,
+      "platform": "Facebook",
+      "type": "engagement_post",
+      "caption": "CHALLENGE: Drop a math expression in the comments and let's see if Tet can handle it!\n\nRules:\n- Basic arithmetic only (+ - * / ** // %)\n- No variables, just numbers\n- Bonus points for creative expressions!\n\nI'll run each one through Tet Problem Solver and reply with the answer.\n\nLet's see what you've got!",
+      "hashtags": ["#MathChallenge", "#TetSolver", "#Community"]
+    },
+    {
+      "id": 14,
+      "day": 4,
+      "platform": "LinkedIn",
+      "type": "text_post",
+      "caption": "Building tools that make people smile is an underrated engineering goal.\n\nTet Problem Solver could just say \"14\" when you ask it 2 + 3 * 4. Instead, it says:\n\n\"The numbers danced and the answer is 14!\"\n\nFollowed by:\n- \"Crunching numbers is my cardio.\"\n- \"Remember: math is just puzzles wearing serious hats.\"\n\nSmall delights compound. In products, in teams, in careers.\n\nWhat's one small delight in a tool you use daily?",
+      "hashtags": ["#ProductDesign", "#UserExperience", "#Engineering"]
+    },
+    {
+      "id": 15,
+      "day": 4,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "My terminal just told me \"math is just puzzles wearing serious hats\" and honestly? Life-changing advice from a Python script.\n\n#DevHumor #CodingLife #Python #Terminal #FunnyCode",
+      "hashtags": ["#DevHumor", "#CodingLife", "#Python", "#Terminal", "#FunnyCode"]
+    },
+    {
+      "id": 16,
+      "day": 4,
+      "platform": "Instagram",
+      "type": "quote_graphic",
+      "caption": "\"Math is just puzzles wearing serious hats.\"\n— Tet Problem Solver\n\nThe best productivity tools don't just work. They make you smile while working.\n\nBuild with joy. Ship with personality.\n\n#QuoteOfTheDay #DevLife #Python #TetSolver #Motivation",
+      "hashtags": ["#QuoteOfTheDay", "#DevLife", "#Python", "#TetSolver", "#Motivation"]
+    },
+    {
+      "id": 17,
+      "day": 5,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "New feature alert: Tet Problem Solver now builds creative prompts!\n\npython app.py --prompt --medium photo \"misty forest boardwalk at dawn\"\n\nIt generates structured prompts for photos, videos, music, art, and poetry — optimized for iOS web inputs.\n\nYour brainstorming assistant just leveled up.\n\n#AI #CreativeTools #Python",
+      "hashtags": ["#AI", "#CreativeTools", "#Python"]
+    },
+    {
+      "id": 18,
+      "day": 5,
+      "platform": "Facebook",
+      "type": "text_post",
+      "caption": "Tet Problem Solver just got a major upgrade: Creative Prompt Mode!\n\nNow you can turn a few words into a fully structured creative brief for:\n- Photography\n- Video production\n- Music composition\n- Art and illustration\n- Poetry\n\nJust run:\npython app.py --prompt \"misty forest boardwalk at dawn\"\n\nIt auto-detects the medium and gives you style notes, structure guidance, and platform-specific delivery tips. All optimized for quick copy-paste on mobile.\n\nCreativity meets command line. What prompt should we try first?",
+      "hashtags": ["#CreativeTools", "#Photography", "#Music", "#Art", "#TetSolver"]
+    },
+    {
+      "id": 19,
+      "day": 5,
+      "platform": "Instagram",
+      "type": "carousel",
+      "caption": "Tet Problem Solver can now write creative prompts for 5 mediums:\n\nSlide 1: Photo — cinematic, natural, with camera cues\nSlide 2: Video — story-driven with pacing and audio notes\nSlide 3: Music — genre + mood + tempo + instruments\nSlide 4: Art — materials, palette, lighting style\nSlide 5: Poetry — form, imagery anchors, closing turns\n\nAll mobile-optimized. All from one command.\n\n#CreativePrompts #ArtDirection #Photography #Music #Poetry #TetSolver",
+      "hashtags": ["#CreativePrompts", "#ArtDirection", "#Photography", "#Music", "#Poetry", "#TetSolver"]
+    },
+    {
+      "id": 20,
+      "day": 5,
+      "platform": "LinkedIn",
+      "type": "article_post",
+      "caption": "Just shipped Creative Prompt Mode for Tet Problem Solver.\n\nThe technical approach:\n- Medium auto-detection via keyword matching against synonym dictionaries\n- Structured recipe templates for each medium (photo, video, music, art, poem)\n- Each recipe includes: style guidance, structure rules, platform fit notes, and delivery specifications\n- Output is mobile-first: short sentences, no markdown, ready for iOS web share sheets\n\nThe design philosophy: creative tools should reduce friction, not add it. A photographer shouldn't need to write a 500-word brief. Give them a seed phrase and a structured output they can paste anywhere.\n\nWhat creative workflows do you wish had better tooling?",
+      "hashtags": ["#ProductDevelopment", "#CreativeTools", "#Python", "#TechInnovation"]
+    },
+    {
+      "id": 21,
+      "day": 6,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "I asked my CLI tool to write a photo prompt and it gave me cinematic lighting notes, lens recommendations, and vertical orientation specs. In 0.1 seconds.\n\nWhy am I paying for prompt engineering courses again?\n\n#PromptEngineering #Photography #DevTok #Python #AI",
+      "hashtags": ["#PromptEngineering", "#Photography", "#DevTok", "#Python", "#AI"]
+    },
+    {
+      "id": 22,
+      "day": 6,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "Photography prompt from Tet:\n\nInput: \"misty forest boardwalk at dawn\"\n\nOutput includes:\n- Cinematic but natural style\n- Subject → context → lighting → framing\n- Camera cue: lens or aperture\n- Vertical orientation, high resolution\n\nAll in two sentences. All paste-ready.\n\n#Photography #CreativeAI #PromptEngineering",
+      "hashtags": ["#Photography", "#CreativeAI", "#PromptEngineering"]
+    },
+    {
+      "id": 23,
+      "day": 6,
+      "platform": "Instagram",
+      "type": "reel",
+      "caption": "Music producers: Tet Problem Solver now generates music prompts.\n\nJust type what you want:\npython app.py --prompt --medium music \"uplifting synthwave for launch video\"\n\nYou get: BPM, instrument list, rhythm feel, hook structure, reverb space notes, and looping specs.\n\nAll from one command in your terminal.\n\n#MusicProduction #Synthwave #CreativeTools #TetSolver",
+      "hashtags": ["#MusicProduction", "#Synthwave", "#CreativeTools", "#TetSolver"]
+    },
+    {
+      "id": 24,
+      "day": 6,
+      "platform": "Facebook",
+      "type": "text_post",
+      "caption": "Poets, this one's for you.\n\nTet Problem Solver can now generate structured poetry prompts. Give it a theme and it'll suggest:\n\n- A poetic form (haiku, sonnet, free verse)\n- Imagery anchors\n- Meter hints\n- A closing turn to land the emotion\n\nTry: python app.py --prompt \"poem about late-summer rain in the city\"\n\nBecause even poetry can benefit from a little structure.\n\nWhat theme should we prompt next?",
+      "hashtags": ["#Poetry", "#WritingCommunity", "#CreativeWriting", "#TetSolver"]
+    },
+    {
+      "id": 25,
+      "day": 7,
+      "platform": "LinkedIn",
+      "type": "text_post",
+      "caption": "Week 1 reflection on building Tet Problem Solver:\n\nThe most important feature isn't the math solver or the anagram finder. It's the brainstorm fallback.\n\nWhen the tool encounters something it can't solve directly, instead of returning an error, it says:\n\n\"I don't have a direct solver for this. But we can still win together!\"\n\nThen it gives you four actionable steps.\n\nThis is a metaphor for how we should build all products. Users don't come to your tool to see error messages. They come for forward momentum. Even when you can't deliver the perfect answer, deliver the next best action.\n\nWhat's your product's brainstorm fallback?",
+      "hashtags": ["#ProductStrategy", "#UX", "#Engineering", "#StartupLife"]
+    },
+    {
+      "id": 26,
+      "day": 7,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "When your code can't solve the problem so it becomes a motivational speaker instead:\n\n\"We can still win together!\"\n\"Momentum is magic!\"\n\"Pick the easiest step and start there!\"\n\nI built a therapist CLI and I'm not sorry.\n\n#CodingHumor #DevLife #Python #Motivation #CodeTok",
+      "hashtags": ["#CodingHumor", "#DevLife", "#Python", "#Motivation", "#CodeTok"]
+    },
+    {
+      "id": 27,
+      "day": 7,
+      "platform": "Instagram",
+      "type": "text_post",
+      "caption": "Sunday check-in: Week 1 of Tet Problem Solver is live!\n\nWhat we've shared so far:\n- Math solving with personality\n- Anagram cracking at speed\n- Creative prompt generation for 5 mediums\n- A brainstorm mode that never gives up\n\nWeek 2 is going deeper. Stay tuned.\n\nWhat feature are you most curious about?\n\n#WeekInReview #TetSolver #Python #DevJourney",
+      "hashtags": ["#WeekInReview", "#TetSolver", "#Python", "#DevJourney"]
+    },
+    {
+      "id": 28,
+      "day": 7,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "Week 1 of Tet Problem Solver: launched, shared, learned.\n\nFavorite response so far: someone used the brainstorm mode for their actual project planning.\n\nA tool built for puzzles became a thinking framework. That's the beauty of simple, flexible design.\n\n#BuildInPublic #Python #DevTools",
+      "hashtags": ["#BuildInPublic", "#Python", "#DevTools"]
+    },
+    {
+      "id": 29,
+      "day": 8,
+      "platform": "Facebook",
+      "type": "video_post",
+      "caption": "DEMO TIME: Watch Tet Problem Solver in action!\n\nIn this quick walkthrough:\n1. Solving \"2 + 3 * 4\" with operator precedence\n2. Unscrambling \"listen\" into 3 anagram matches\n3. Generating a photo prompt from 5 words\n4. Getting brainstorm steps for an open-ended question\n\nAll from the command line. All in under 60 seconds.\n\nThe full tool is open source. Link in comments!",
+      "hashtags": ["#Demo", "#OpenSource", "#Python", "#TetSolver"]
+    },
+    {
+      "id": 30,
+      "day": 8,
+      "platform": "LinkedIn",
+      "type": "text_post",
+      "caption": "A technical decision I'm proud of in Tet Problem Solver: the solver chain pattern.\n\nInstead of a monolithic function, the tool iterates through a chain of specialized solvers:\n\n1. Math solver (AST-based)\n2. Anagram solver (pattern matching)\n3. Panic support (keyword detection)\n4. Brainstorm fallback (always succeeds)\n\nThe first solver to return a result wins. If none match, the brainstorm fallback guarantees a helpful response.\n\nThis is essentially the Chain of Responsibility pattern, and it makes adding new solvers trivial: write a function, return None if it doesn't apply, add it to the chain.\n\nSimple patterns > complex architectures. Every time.",
+      "hashtags": ["#SoftwareArchitecture", "#DesignPatterns", "#Python", "#CleanCode"]
+    },
+    {
+      "id": 31,
+      "day": 8,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "Building a command-line art prompt generator in Python. No AI APIs. No cloud. Just dictionaries and string formatting.\n\nSometimes the simplest solution is the best solution.\n\n#Python #NoAPI #LocalFirst #DevTok #Coding",
+      "hashtags": ["#Python", "#NoAPI", "#LocalFirst", "#DevTok", "#Coding"]
+    },
+    {
+      "id": 32,
+      "day": 8,
+      "platform": "Instagram",
+      "type": "infographic",
+      "caption": "The Solver Chain: How Tet decides what to do with your input.\n\nStep 1: Is it math? → Solve it safely with AST\nStep 2: Is it an anagram? → Match against the library\nStep 3: Is it a panic moment? → Activate support protocol\nStep 4: None of the above? → Brainstorm mode!\n\nEvery input gets a thoughtful response. Every time.\n\n#Architecture #Python #HowItWorks #TetSolver",
+      "hashtags": ["#Architecture", "#Python", "#HowItWorks", "#TetSolver"]
+    },
+    {
+      "id": 33,
+      "day": 9,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "Hot take: more CLI tools should have personality.\n\nNobody reads boring output. But \"The numbers danced and the answer is 42!\" — you remember that.\n\nMake your tools delightful. Users will actually use them.\n\n#DevTips #UX #CLI #Python",
+      "hashtags": ["#DevTips", "#UX", "#CLI", "#Python"]
+    },
+    {
+      "id": 34,
+      "day": 9,
+      "platform": "Facebook",
+      "type": "poll_post",
+      "caption": "Quick poll: Which creative medium would you use Tet's prompt generator for most?\n\nA) Photography prompts\nB) Video production prompts\nC) Music composition prompts\nD) Art and illustration prompts\nE) Poetry prompts\n\nVote below! The winning medium gets a deep-dive tutorial this week.",
+      "hashtags": ["#Poll", "#CreativeTools", "#TetSolver"]
+    },
+    {
+      "id": 35,
+      "day": 9,
+      "platform": "Instagram",
+      "type": "story_series",
+      "caption": "Behind the code: How Tet auto-detects creative mediums.\n\nStory 1: You type \"misty forest boardwalk\"\nStory 2: Tet scans for keywords: photo, image, shot, film, clip...\nStory 3: No match? Default to 'art' — the most versatile medium\nStory 4: Match found? Apply that medium's recipe template\n\nSimple keyword matching. No ML needed.\n\n#BehindTheCode #Python #TetSolver #DevInsights",
+      "hashtags": ["#BehindTheCode", "#Python", "#TetSolver", "#DevInsights"]
+    },
+    {
+      "id": 36,
+      "day": 9,
+      "platform": "LinkedIn",
+      "type": "text_post",
+      "caption": "Building for mobile-first in a CLI tool sounds contradictory, but here's why it matters.\n\nTet Problem Solver's creative prompts are designed to be paste-ready for iOS web inputs:\n- Short sentences\n- No markdown symbols\n- No special characters\n- Two to three sentences max\n\nWhy? Because the output goes somewhere else. It's a generator, not a destination.\n\nThe best tools know they're part of a workflow, not the workflow itself.\n\nHow do you design outputs that fit into larger workflows?",
+      "hashtags": ["#ProductDesign", "#MobileFirst", "#DeveloperExperience"]
+    },
+    {
+      "id": 37,
+      "day": 10,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "Art director in your terminal. For free.\n\npython app.py --prompt --medium art \"cyberpunk street market at midnight\"\n\nIt tells you: material choices, palette direction, lighting style, perspective, negative space, and export specs.\n\nBetter briefs than most Fiverr postings.\n\n#ArtDirection #CyberPunk #DigitalArt #Python #DevTok",
+      "hashtags": ["#ArtDirection", "#CyberPunk", "#DigitalArt", "#Python", "#DevTok"]
+    },
+    {
+      "id": 38,
+      "day": 10,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "The Tet Problem Solver dataclass is 30 lines and powers the entire output system.\n\n@dataclass\nclass Solution:\n    kind: str\n    answer: str\n    details: Optional[List[str]]\n\nThree fields. One format method. Consistent output everywhere.\n\nSimplicity is a feature.\n\n#Python #DataClasses #CleanCode",
+      "hashtags": ["#Python", "#DataClasses", "#CleanCode"]
+    },
+    {
+      "id": 39,
+      "day": 10,
+      "platform": "Facebook",
+      "type": "text_post",
+      "caption": "Did you know Tet Problem Solver handles operator precedence correctly?\n\n\"2 + 3 * 4\" = 14 (not 20!)\n\nThat's because it uses Python's AST parser, which respects mathematical order of operations. The expression becomes a tree:\n\n    +\n   / \\\n  2   *\n     / \\\n    3   4\n\nThe tree is walked safely: 3 * 4 = 12, then 2 + 12 = 14.\n\nMath done right, every time.",
+      "hashtags": ["#Math", "#Python", "#AST", "#TetSolver"]
+    },
+    {
+      "id": 40,
+      "day": 10,
+      "platform": "Instagram",
+      "type": "reel",
+      "caption": "Video prompt generation in action!\n\nInput: \"cinematic drone shot over coastal cliffs at golden hour\"\n\nTet gives you:\n- Story-driven structure with start/middle/end beats\n- Camera movement suggestions\n- Audio texture cues\n- 16:9 specs with clean transitions\n\nAll in your terminal. All in milliseconds.\n\n#Filmmaking #VideoProduction #DroneShots #CreativeTools #TetSolver",
+      "hashtags": ["#Filmmaking", "#VideoProduction", "#DroneShots", "#CreativeTools", "#TetSolver"]
+    },
+    {
+      "id": 41,
+      "day": 11,
+      "platform": "LinkedIn",
+      "type": "text_post",
+      "caption": "The most powerful pattern in Tet Problem Solver is also the simplest: the Optional return type.\n\nEvery solver function returns Optional[Solution]. If it can handle the input, it returns a Solution. If not, it returns None.\n\nThis means:\n- Each solver is self-contained\n- No solver needs to know about the others\n- Adding a new solver is one function + one line in the chain\n- The system is composable and testable\n\nIn my experience, the best architectures are the ones where adding a new capability doesn't require changing existing code.\n\nOpen/Closed Principle in its purest form.",
+      "hashtags": ["#SOLID", "#SoftwareDesign", "#Python", "#CleanArchitecture"]
+    },
+    {
+      "id": 42,
+      "day": 11,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "Challenge: Can Tet solve YOUR anagram?\n\nDrop a word in the comments. If it's in the library, Tet cracks it. If not... well, it'll still try to brainstorm something.\n\nBecause quitting is not in the code.\n\n#AnagramChallenge #Python #CodeTok #WordGames",
+      "hashtags": ["#AnagramChallenge", "#Python", "#CodeTok", "#WordGames"]
+    },
+    {
+      "id": 43,
+      "day": 11,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "Stressed? Tet knows that's an anagram of 'desserts.'\n\nHere's to tools that solve your problems AND improve your vocabulary.\n\npython app.py \"anagram of stressed\"\n→ \"Possible anagram buddies: desserts\"\n\n#WordPlay #Python #StressRelief",
+      "hashtags": ["#WordPlay", "#Python", "#StressRelief"]
+    },
+    {
+      "id": 44,
+      "day": 11,
+      "platform": "Instagram",
+      "type": "carousel",
+      "caption": "5 creative prompts Tet can generate right now:\n\n1. Photo: \"golden hour portrait in a wheat field\"\n2. Video: \"slow-motion raindrop macro on a leaf\"\n3. Music: \"lo-fi jazz for a rainy study session\"\n4. Art: \"watercolor cityscape of Tokyo at dusk\"\n5. Poetry: \"haiku about the first snow of winter\"\n\nEach one comes with style notes, structure guidance, and delivery specs.\n\nWhich one would you try first?\n\n#CreativePrompts #ArtInspiration #Photography #MusicProduction #Poetry #TetSolver",
+      "hashtags": ["#CreativePrompts", "#ArtInspiration", "#Photography", "#MusicProduction", "#Poetry", "#TetSolver"]
+    },
+    {
+      "id": 45,
+      "day": 12,
+      "platform": "Facebook",
+      "type": "text_post",
+      "caption": "Something I learned building Tet Problem Solver: users don't want more features. They want better defaults.\n\nThe --medium flag defaults to 'auto'. The brainstorm mode kicks in automatically. The anagram detector doesn't need you to say \"please solve this anagram\" — it just looks for the pattern.\n\nGood defaults mean less typing, less thinking, less friction.\n\nWhat's the best default you've seen in a tool?",
+      "hashtags": ["#UXDesign", "#DeveloperExperience", "#Defaults", "#TetSolver"]
+    },
+    {
+      "id": 46,
+      "day": 12,
+      "platform": "LinkedIn",
+      "type": "article_post",
+      "caption": "Lessons from building a joyful CLI tool:\n\n1. Personality is a feature, not a gimmick. Output that makes people smile gets shared.\n\n2. Safe evaluation > convenient evaluation. Using AST instead of eval() was worth the extra 20 lines of code.\n\n3. Graceful fallbacks build trust. When a tool always responds helpfully, users forgive its limitations.\n\n4. Mobile-first output matters even for CLI tools. The output goes places the tool doesn't.\n\n5. Simple patterns compound. A dataclass, a chain of solvers, and keyword matching got us surprisingly far.\n\nWhat principles guide your side projects?",
+      "hashtags": ["#LessonsLearned", "#Engineering", "#SideProjects", "#Python"]
+    },
+    {
+      "id": 47,
+      "day": 12,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "How to solve 'evil' with Python:\n\nStep 1: python app.py \"anagram of evil\"\nStep 2: Get 'vile', 'veil', 'live'\nStep 3: Realize 'live' is an anagram of 'evil'\nStep 4: Existential crisis\n\n#DeepThoughts #Python #Anagrams #CodeTok",
+      "hashtags": ["#DeepThoughts", "#Python", "#Anagrams", "#CodeTok"]
+    },
+    {
+      "id": 48,
+      "day": 12,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "Tet's creative recipes use structured dictionaries:\n\n- title\n- style\n- structure\n- platform\n- delivery\n- details[]\n\nNo AI. No API calls. Just well-organized data and string formatting.\n\nProof that you don't need a language model to be creative.\n\n#Python #NoAI #Simplicity",
+      "hashtags": ["#Python", "#NoAI", "#Simplicity"]
+    },
+    {
+      "id": 49,
+      "day": 13,
+      "platform": "Instagram",
+      "type": "text_post",
+      "caption": "Mindset shift: Your code's personality IS your brand.\n\nTet Problem Solver doesn't just solve. It celebrates.\n\n\"The numbers danced!\"\n\"Momentum is magic!\"\n\"We can still win together!\"\n\nEvery output is an opportunity to connect.\n\nWhat personality does your code have?\n\n#CodeWithPersonality #BrandBuilding #DevLife #TetSolver",
+      "hashtags": ["#CodeWithPersonality", "#BrandBuilding", "#DevLife", "#TetSolver"]
+    },
+    {
+      "id": 50,
+      "day": 13,
+      "platform": "Facebook",
+      "type": "engagement_post",
+      "caption": "WORD GAME WEDNESDAY!\n\nGive me a 4-7 letter word and I'll check if Tet can find its anagram buddies.\n\nCurrent anagram library includes: listen, evil, angel, stressed, save... and their matches.\n\nLet's see who can stump Tet!\n\n(Spoiler: if Tet can't find it, it'll still say something encouraging because that's how we built it.)",
+      "hashtags": ["#WordGame", "#Anagrams", "#TetSolver", "#Community"]
+    },
+    {
+      "id": 51,
+      "day": 13,
+      "platform": "LinkedIn",
+      "type": "text_post",
+      "caption": "Tet Problem Solver has a panic support feature.\n\nWhen it detects words like 'panic', 'anxiety attack', or 'heart racing', it doesn't try to solve a puzzle. It activates a structured support protocol:\n\n- Grounding techniques (5-4-3-2-1)\n- Breathing exercises (4-4-6-2 pattern)\n- Reality check phrases\n- Body reset instructions\n- When to seek emergency help\n\nI added this because tools should care about the whole person using them, not just the task they brought.\n\nMental health features in unexpected places can save lives.\n\nHow does your product care for users beyond its core function?",
+      "hashtags": ["#MentalHealth", "#UserCare", "#ProductDesign", "#Empathy"]
+    },
+    {
+      "id": 52,
+      "day": 13,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "Built a panic support system into my problem-solving CLI. Because sometimes the problem isn't math.\n\nIt detects distress keywords and gives you grounding exercises, breathing patterns, and reality checks.\n\nCode can care. And it should.\n\n#MentalHealth #CodeForGood #Python #DevTok",
+      "hashtags": ["#MentalHealth", "#CodeForGood", "#Python", "#DevTok"]
+    },
+    {
+      "id": 53,
+      "day": 14,
+      "platform": "X (Twitter)",
+      "type": "tweet_thread",
+      "caption": "Week 2 of Tet Problem Solver. Here's what I've learned from sharing it publicly:\n\n1/ People love personality in tools. The playful output got more shares than any feature announcement.\n\n2/ The panic support feature resonated deeply. Several people said they wished more tools had this.\n\n3/ Creative prompt mode is being used by people who never touch a terminal normally.\n\n4/ Simple is shareable. Complex is forgettable.\n\nBuilding in public is the best education. 🧵",
+      "hashtags": ["#BuildInPublic", "#LessonsLearned", "#Python"]
+    },
+    {
+      "id": 54,
+      "day": 14,
+      "platform": "Instagram",
+      "type": "carousel",
+      "caption": "Week 2 Recap: Tet Problem Solver highlights!\n\nSlide 1: Creative prompts for 5 mediums\nSlide 2: The solver chain architecture\nSlide 3: Panic support protocol\nSlide 4: Community challenges and engagement\nSlide 5: What's coming in Week 3\n\nThank you for following along on this journey. The best is yet to come.\n\n#WeeklyRecap #TetSolver #BuildInPublic #Python",
+      "hashtags": ["#WeeklyRecap", "#TetSolver", "#BuildInPublic", "#Python"]
+    },
+    {
+      "id": 55,
+      "day": 14,
+      "platform": "Facebook",
+      "type": "text_post",
+      "caption": "Two weeks of Tet Problem Solver! Here's a fun stat:\n\nThe tool has 5 solver types, handles 6 languages worth of panic keywords (including Norwegian: 'kan ikke puste'), and generates creative prompts for 5 different mediums.\n\nAll in a single Python file. No dependencies beyond the standard library.\n\nSometimes constraints breed creativity.\n\nWhat's the most you've packed into a single file?",
+      "hashtags": ["#Python", "#NoDependencies", "#MinimalCode", "#TetSolver"]
+    },
+    {
+      "id": 56,
+      "day": 14,
+      "platform": "LinkedIn",
+      "type": "text_post",
+      "caption": "Two-week milestone on Tet Problem Solver.\n\nThe project started as a simple math evaluator. It's now a multi-solver CLI with creative prompt generation and mental health support.\n\nBut the architecture is still simple:\n- One dataclass for output\n- A chain of solver functions\n- Dictionary-based templates\n- Pattern matching for routing\n\nNo framework. No database. No API. Pure Python standard library.\n\nThe lesson: start simple, add capabilities one at a time, and let the architecture emerge from the needs rather than the other way around.\n\nWhat's your approach to growing simple projects?",
+      "hashtags": ["#Architecture", "#Python", "#GrowthMindset", "#Engineering"]
+    },
+    {
+      "id": 57,
+      "day": 15,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "Python trick: Using AST to safely evaluate math expressions.\n\neval('2+3*4') = DANGEROUS\nast.parse('2+3*4', mode='eval') = SAFE\n\nWalk the tree. Check each node type. Only allow numbers and operators.\n\n30 lines of code. Zero security risks.\n\n#PythonTips #Security #CodingTutorial #DevTok",
+      "hashtags": ["#PythonTips", "#Security", "#CodingTutorial", "#DevTok"]
+    },
+    {
+      "id": 58,
+      "day": 15,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "The entire Tet Problem Solver runs on Python's standard library.\n\nast — safe math evaluation\nre — pattern matching\nargparse — CLI interface\ndataclasses — output structure\noperator — math operations\n\nZero pip installs. Zero dependency hell. Pure Python.\n\n#Python #ZeroDependencies #CLI",
+      "hashtags": ["#Python", "#ZeroDependencies", "#CLI"]
+    },
+    {
+      "id": 59,
+      "day": 15,
+      "platform": "Instagram",
+      "type": "infographic",
+      "caption": "Zero-dependency architecture:\n\nast → Safe math\nre → Pattern matching\nargparse → CLI parsing\ndataclasses → Data structures\noperator → Math operations\ntyping → Type hints\n\nAll from Python's standard library. No pip install needed.\n\nBuild more. Install less.\n\n#Python #StandardLibrary #MinimalDependencies #CleanCode #TetSolver",
+      "hashtags": ["#Python", "#StandardLibrary", "#MinimalDependencies", "#CleanCode", "#TetSolver"]
+    },
+    {
+      "id": 60,
+      "day": 15,
+      "platform": "Facebook",
+      "type": "text_post",
+      "caption": "Let's talk about why Tet Problem Solver has zero external dependencies.\n\nEvery dependency is:\n- A potential security vulnerability\n- A maintenance burden\n- A compatibility risk\n- A barrier to contribution\n\nBy using only Python's standard library, Tet:\n- Runs on any Python 3.7+ installation\n- Has zero supply chain risk\n- Is trivially auditable\n- Installs in zero seconds\n\nThe standard library is more powerful than most people realize. Before reaching for pip, check what's already there.\n\nWhat's your dependency philosophy?",
+      "hashtags": ["#Dependencies", "#Security", "#Python", "#Engineering"]
+    },
+    {
+      "id": 61,
+      "day": 16,
+      "platform": "LinkedIn",
+      "type": "article_post",
+      "caption": "How Tet Problem Solver handles internationalization — a small but meaningful detail.\n\nThe panic support feature detects distress markers in multiple languages:\n- English: 'panic', 'anxiety attack', 'heart racing'\n- Norwegian: 'panik', 'angst', 'kan ikke puste'\n\nThis wasn't a planned feature. It came from asking: who might need this, and what language would they be thinking in during a crisis?\n\nThe answer changed the code.\n\nInclusive design isn't always about translating your entire UI. Sometimes it's about recognizing that a person in distress might not switch to English first.\n\nSmall decisions, real impact.",
+      "hashtags": ["#InclusiveDesign", "#i18n", "#MentalHealth", "#ProductDesign"]
+    },
+    {
+      "id": 62,
+      "day": 16,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "Norwegian Easter egg in my Python CLI:\n\nType 'kan ikke puste' (Norwegian for 'can't breathe') and it activates the panic support protocol.\n\nBecause distress doesn't wait for you to switch languages.\n\n#CodeForGood #Norwegian #MentalHealth #Python #DevTok",
+      "hashtags": ["#CodeForGood", "#Norwegian", "#MentalHealth", "#Python", "#DevTok"]
+    },
+    {
+      "id": 63,
+      "day": 16,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "The panic support protocol in Tet includes:\n\n1. Grounding (5-4-3-2-1 technique)\n2. Breathing (4-4-6-2 pattern)\n3. Reality checks\n4. Progressive muscle relaxation\n5. Attention engagement\n6. Medication guidance\n7. Emergency signs to watch for\n8. Aftercare instructions\n\n8 steps. Evidence-based. In your terminal.\n\n#MentalHealth #Python #CodeCares",
+      "hashtags": ["#MentalHealth", "#Python", "#CodeCares"]
+    },
+    {
+      "id": 64,
+      "day": 16,
+      "platform": "Instagram",
+      "type": "text_post",
+      "caption": "Not every feature needs to be clever. Some just need to be kind.\n\nTet's panic support protocol gives you:\n- Grounding exercises\n- Breathing patterns\n- Reality check phrases\n- Body reset techniques\n- Emergency guidance\n- Aftercare tips\n\nBecause sometimes the problem you bring to a problem solver isn't a puzzle. It's a moment.\n\nCode with empathy.\n\n#MentalHealth #Empathy #CodeForGood #TetSolver",
+      "hashtags": ["#MentalHealth", "#Empathy", "#CodeForGood", "#TetSolver"]
+    },
+    {
+      "id": 65,
+      "day": 17,
+      "platform": "Facebook",
+      "type": "text_post",
+      "caption": "Tutorial: How to use Tet Problem Solver's creative prompt mode.\n\nBasic usage:\npython app.py --prompt \"your idea here\"\n\nWith a specific medium:\npython app.py --prompt --medium photo \"description\"\n\nAvailable mediums:\n- photo: Camera and lighting cues\n- video: Pacing and movement cues\n- music: Tempo, instruments, mood\n- art: Materials, palette, perspective\n- poem: Form, imagery, meter\n- auto: Let Tet detect the medium\n\nThe output is always short, structured, and paste-ready for mobile.\n\nTry one and share your result!",
+      "hashtags": ["#Tutorial", "#CreativeTools", "#Python", "#TetSolver"]
+    },
+    {
+      "id": 66,
+      "day": 17,
+      "platform": "LinkedIn",
+      "type": "text_post",
+      "caption": "Design decision: Why Tet's creative prompts default to 'art' when no medium is detected.\n\nWhen someone types a vague creative idea without specifying photo, video, music, or poem, we needed a sensible default.\n\nArt won because:\n1. It's the most visually versatile medium\n2. Art prompts translate well to other mediums\n3. The palette/composition language is universally understood\n4. It doesn't assume expensive equipment (camera, instruments)\n\nEvery default should be the option that works for the most people with the least assumptions.\n\nHow do you choose defaults for your products?",
+      "hashtags": ["#ProductDesign", "#Defaults", "#UXDecisions"]
+    },
+    {
+      "id": 67,
+      "day": 17,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "I generate poetry prompts from my terminal and here's how:\n\npython app.py --prompt \"poem about late-summer rain in the city\"\n\nIt gives me: form suggestions, imagery anchors, meter hints, and a closing turn.\n\nMy English teacher would be proud. Or confused.\n\n#Poetry #WritingTips #Python #CodeTok #WritingCommunity",
+      "hashtags": ["#Poetry", "#WritingTips", "#Python", "#CodeTok", "#WritingCommunity"]
+    },
+    {
+      "id": 68,
+      "day": 17,
+      "platform": "Instagram",
+      "type": "reel",
+      "caption": "Speed challenge: Generate 5 creative prompts in 30 seconds.\n\n1. Photo prompt: 3 seconds\n2. Video prompt: 3 seconds\n3. Music prompt: 3 seconds\n4. Art prompt: 3 seconds\n5. Poetry prompt: 3 seconds\n\nTotal: 15 seconds. With time to spare.\n\nTet Problem Solver: faster than your coffee order.\n\n#SpeedRun #CreativeTools #Productivity #TetSolver",
+      "hashtags": ["#SpeedRun", "#CreativeTools", "#Productivity", "#TetSolver"]
+    },
+    {
+      "id": 69,
+      "day": 18,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "Tet Problem Solver fun fact:\n\nThe anagram library uses canonical sorting to match words.\n\n'listen' sorted = 'eilnst'\n'silent' sorted = 'eilnst'\n\nSame letters, same canonical form, guaranteed match.\n\nNo ML. No API. Just sorting.\n\n#Algorithms #Python #StringMatching",
+      "hashtags": ["#Algorithms", "#Python", "#StringMatching"]
+    },
+    {
+      "id": 70,
+      "day": 18,
+      "platform": "Facebook",
+      "type": "image_post",
+      "caption": "The brainstorm protocol: Tet's secret weapon.\n\nWhen Tet can't solve your problem directly, it doesn't give up. It gives you a 4-step action plan:\n\n1. Name the goal in one joyful sentence\n2. List the facts and doodle a tiny diagram\n3. Break the challenge into two bite-sized steps\n4. Pick the easiest step and start there\n\nThis works for coding problems, life decisions, creative blocks, and pretty much anything.\n\nMomentum is magic. Start small. Start now.",
+      "hashtags": ["#Brainstorming", "#Productivity", "#TetSolver", "#Motivation"]
+    },
+    {
+      "id": 71,
+      "day": 18,
+      "platform": "Instagram",
+      "type": "carousel",
+      "caption": "The art prompt recipe breakdown:\n\nSlide 1: Style — Vivid but controlled; emphasize material choices\nSlide 2: Structure — Subject + silhouette, palette direction, texture note\nSlide 3: Platform — Compact sentences for mobile web tools\nSlide 4: Delivery — Balanced negative space, print-safe resolution\nSlide 5: Pro tips — Lighting style, perspective, palette constraints\n\nEvery art prompt follows this recipe. Consistency breeds quality.\n\n#ArtDirection #DigitalArt #CreativeProcess #TetSolver",
+      "hashtags": ["#ArtDirection", "#DigitalArt", "#CreativeProcess", "#TetSolver"]
+    },
+    {
+      "id": 72,
+      "day": 18,
+      "platform": "LinkedIn",
+      "type": "text_post",
+      "caption": "A reflection on constraint-driven development.\n\nTet Problem Solver was built with deliberate constraints:\n- Single file\n- Standard library only\n- CLI-first\n- Output optimized for copy-paste\n\nEach constraint forced better decisions:\n- Single file → tight cohesion, everything findable\n- Standard library → deep knowledge of built-in tools\n- CLI-first → fast iteration, no UI overhead\n- Copy-paste output → user-centric formatting\n\nConstraints aren't limitations. They're design tools.\n\nWhat constraints have improved your work?",
+      "hashtags": ["#Constraints", "#Engineering", "#ProductDesign", "#Python"]
+    },
+    {
+      "id": 73,
+      "day": 19,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "What if your terminal could brainstorm with you?\n\npython app.py \"How do I start a podcast?\"\n\nTet: \"I don't have a direct solver for this. But we can still win together!\"\n\nThen it gives you 4 steps to get started. From a Python script. In your terminal.\n\nThe future is weird and I love it.\n\n#Brainstorming #Podcast #Python #DevTok #Productivity",
+      "hashtags": ["#Brainstorming", "#Podcast", "#Python", "#DevTok", "#Productivity"]
+    },
+    {
+      "id": 74,
+      "day": 19,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "Music prompt from Tet:\n\nInput: \"uplifting synthwave for launch video\"\n\nOutput includes:\n- BPM and time signature\n- 3-4 instrument list\n- Rhythm feel\n- Hook/motif definition\n- Mix space specification\n- Clean intro with 2-bar motif and loop tail\n\nBetter than most production briefs I've received.\n\n#MusicProduction #Synthwave #CreativeTools",
+      "hashtags": ["#MusicProduction", "#Synthwave", "#CreativeTools"]
+    },
+    {
+      "id": 75,
+      "day": 19,
+      "platform": "Instagram",
+      "type": "text_post",
+      "caption": "Real talk: The hardest part of building Tet Problem Solver wasn't the code. It was deciding what personality to give it.\n\nToo serious? Nobody remembers it.\nToo silly? Nobody trusts it.\n\nThe sweet spot: enthusiastic and helpful. Like a friend who's genuinely excited to help you with your homework.\n\n\"The numbers danced!\"\n\"We can still win together!\"\n\"Momentum is magic!\"\n\nFind your tool's voice. It matters more than the features.\n\n#ProductVoice #Branding #DevLife #TetSolver",
+      "hashtags": ["#ProductVoice", "#Branding", "#DevLife", "#TetSolver"]
+    },
+    {
+      "id": 76,
+      "day": 19,
+      "platform": "Facebook",
+      "type": "text_post",
+      "caption": "Question for the community:\n\nIf you could add ONE solver to Tet Problem Solver, what would it be?\n\nSome ideas:\n- Unit converter (km to miles, etc.)\n- Date calculator (days between dates)\n- Color palette generator\n- Rhyme finder\n- Tip calculator\n\nDrop your vote or suggest your own! The most-requested feature gets built next.\n\nTet is growing, and you're part of it.",
+      "hashtags": ["#FeatureRequest", "#Community", "#OpenSource", "#TetSolver"]
+    },
+    {
+      "id": 77,
+      "day": 20,
+      "platform": "LinkedIn",
+      "type": "text_post",
+      "caption": "Day 20 insight: The Solution dataclass in Tet is the most important design decision in the entire project.\n\n@dataclass\nclass Solution:\n    kind: str\n    answer: str\n    details: Optional[List[str]] = None\n\nWhy it matters:\n1. Every solver returns the same shape. Consistency.\n2. The format() method handles all presentation logic. Single responsibility.\n3. The details field is optional. Flexibility.\n4. It's a dataclass, not a dict. Type safety.\n\nOne decision. Four benefits. That's what good design looks like.\n\nWhat's the most impactful small decision in your codebase?",
+      "hashtags": ["#SoftwareDesign", "#Python", "#DataClasses", "#CleanCode"]
+    },
+    {
+      "id": 78,
+      "day": 20,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "Math expressions Tet can handle:\n\n2 + 3 * 4 = 14\n100 / 7 = 14.2857\n2 ** 10 = 1024\n17 % 5 = 2\n99 // 7 = 14\n\nAll evaluated safely. No eval(). No security risks. Just vibes and correct answers.\n\n#PythonMath #CodingTips #DevTok #TetSolver",
+      "hashtags": ["#PythonMath", "#CodingTips", "#DevTok", "#TetSolver"]
+    },
+    {
+      "id": 79,
+      "day": 20,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "Day 20 of Tet Problem Solver.\n\nThe project is 334 lines of Python. Zero dependencies. 5 solver types. 5 creative mediums. Multi-language panic support.\n\nProof that you don't need a framework to build something useful.\n\nStart small. Ship often. Add capabilities one at a time.\n\n#Python #Minimalism #BuildInPublic",
+      "hashtags": ["#Python", "#Minimalism", "#BuildInPublic"]
+    },
+    {
+      "id": 80,
+      "day": 20,
+      "platform": "Instagram",
+      "type": "story_series",
+      "caption": "Pop quiz: What does Tet do when you type just numbers and operators?\n\nA) Crashes\nB) Says \"I don't understand\"\nC) Safely evaluates it as math and adds sparkle emojis\nD) Calls an AI API\n\nAnswer: C! Always C.\n\nTet uses AST parsing to safely evaluate any arithmetic expression. No AI needed. Just Python's standard library doing its thing.\n\n#QuizTime #Python #TetSolver",
+      "hashtags": ["#QuizTime", "#Python", "#TetSolver"]
+    },
+    {
+      "id": 81,
+      "day": 21,
+      "platform": "Facebook",
+      "type": "text_post",
+      "caption": "Week 3 is done! Let's celebrate with some Tet Problem Solver highlights.\n\nMost popular post: The panic support feature reveal\nMost engaging: The community math challenge\nMost shared: The \"math is puzzles wearing serious hats\" quote\nMost surprising: People using brainstorm mode for real project planning\n\nThank you for being on this journey. Week 4 starts tomorrow with deeper dives into the technical architecture.\n\nWhat's been your favorite post so far?",
+      "hashtags": ["#WeeklyRecap", "#Community", "#TetSolver"]
+    },
+    {
+      "id": 82,
+      "day": 21,
+      "platform": "LinkedIn",
+      "type": "text_post",
+      "caption": "Three weeks of building in public with Tet Problem Solver. Here's what I know now:\n\n1. Consistency > virality. Posting daily builds an audience that sticks around.\n2. Technical posts get respect. Casual posts get engagement. You need both.\n3. The features people love most aren't the ones you'd predict.\n4. Sharing your thinking process is more valuable than sharing your finished code.\n5. People remember how your tool made them feel, not what it did.\n\nOne more week to go. What should I cover?",
+      "hashtags": ["#BuildInPublic", "#ContentStrategy", "#Engineering"]
+    },
+    {
+      "id": 83,
+      "day": 21,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "3 weeks of daily posts about a Python CLI tool. Here's the highlight reel.\n\nMath solving with personality. Anagram cracking. Creative prompts. Panic support. Brainstorming mode.\n\nAll in one file. All standard library. All vibes.\n\n#BuildInPublic #Python #DevTok #Journey",
+      "hashtags": ["#BuildInPublic", "#Python", "#DevTok", "#Journey"]
+    },
+    {
+      "id": 84,
+      "day": 21,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "Week 3 wrap: Tet Problem Solver has been my daily content source for 21 days.\n\nLesson: A well-designed small project has more content angles than a poorly-designed big one.\n\nSimplicity breeds stories.\n\nFinal week starts tomorrow.\n\n#BuildInPublic #Python #ContentCreation",
+      "hashtags": ["#BuildInPublic", "#Python", "#ContentCreation"]
+    },
+    {
+      "id": 85,
+      "day": 22,
+      "platform": "Instagram",
+      "type": "carousel",
+      "caption": "Deep dive: How the argparse CLI is structured.\n\nSlide 1: --prompt flag enables creative prompt mode\nSlide 2: --medium flag lets you choose or auto-detect\nSlide 3: REMAINDER captures everything else as the problem\nSlide 4: Clean separation between modes\nSlide 5: main() function: 20 lines that tie it all together\n\nGood CLI design = good user experience.\n\n#CLI #Python #argparse #DeveloperExperience #TetSolver",
+      "hashtags": ["#CLI", "#Python", "#argparse", "#DeveloperExperience", "#TetSolver"]
+    },
+    {
+      "id": 86,
+      "day": 22,
+      "platform": "Facebook",
+      "type": "text_post",
+      "caption": "A small but important detail in Tet Problem Solver: the main() function returns an int.\n\nWhy?\n\nBecause CLI tools should communicate with the system, not just the user. Return 0 for success, non-zero for failure.\n\nThis enables:\n- Scripting and piping\n- CI/CD integration\n- Error detection in automation\n- Proper process exit codes\n\nSmall details. Professional quality.\n\nWhat small details do you always include in your projects?",
+      "hashtags": ["#BestPractices", "#Python", "#CLI", "#TetSolver"]
+    },
+    {
+      "id": 87,
+      "day": 22,
+      "platform": "LinkedIn",
+      "type": "text_post",
+      "caption": "The testing philosophy behind Tet Problem Solver.\n\nEvery solver function is pure: input → output. No side effects, no state, no I/O.\n\nThis makes testing trivial:\n- Math solver: pass expressions, check results\n- Anagram solver: pass words, check matches\n- Panic support: pass keywords, verify protocol\n- Brainstorm: always returns, always helpful\n\nPure functions are the foundation of testable code. If your function reads a file, calls an API, or modifies state, it's doing too much.\n\nSeparate computation from effects. Your tests (and future self) will thank you.",
+      "hashtags": ["#Testing", "#PureFunctions", "#SoftwareQuality", "#Python"]
+    },
+    {
+      "id": 88,
+      "day": 22,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "Tet Problem Solver uses from __future__ import annotations for all type hints.\n\nThis means:\n- Forward references work without quotes\n- Cleaner type annotations\n- Python 3.7+ compatible\n- Ready for PEP 563 future\n\n1 import. Maximum compatibility.\n\n#PythonTips #TypeHints #BestPractices",
+      "hashtags": ["#PythonTips", "#TypeHints", "#BestPractices"]
+    },
+    {
+      "id": 89,
+      "day": 23,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "The video prompt recipe is chef's kiss:\n\n- Story-driven and rhythmic\n- Opening frame AND closing frame\n- One signature camera movement\n- Diegetic sound or soundtrack tempo\n- 16:9 with clean transitions\n\nAll generated from a one-line description. Your film teacher could never.\n\n#Filmmaking #VideoTips #Python #DevTok #CreativeTools",
+      "hashtags": ["#Filmmaking", "#VideoTips", "#Python", "#DevTok", "#CreativeTools"]
+    },
+    {
+      "id": 90,
+      "day": 23,
+      "platform": "Instagram",
+      "type": "reel",
+      "caption": "Live coding: Adding a new solver to Tet in under 2 minutes.\n\nStep 1: Write a function that returns Optional[Solution]\nStep 2: Check if the input matches your domain\nStep 3: Return None if it doesn't\nStep 4: Return a Solution if it does\nStep 5: Add it to the solver chain\n\nDone. The architecture makes it that simple.\n\n#LiveCoding #Python #Architecture #TetSolver",
+      "hashtags": ["#LiveCoding", "#Python", "#Architecture", "#TetSolver"]
+    },
+    {
+      "id": 91,
+      "day": 23,
+      "platform": "Facebook",
+      "type": "engagement_post",
+      "caption": "CREATIVE PROMPT CHALLENGE!\n\nGive me a theme in 5 words or fewer. I'll run it through all 5 of Tet's creative mediums and post the results.\n\nExamples:\n- \"abandoned lighthouse at sunset\"\n- \"jazz trio in rain\"\n- \"neon city after dark\"\n\nBest theme gets featured in tomorrow's post!",
+      "hashtags": ["#CreativeChallenge", "#Community", "#TetSolver"]
+    },
+    {
+      "id": 92,
+      "day": 23,
+      "platform": "LinkedIn",
+      "type": "text_post",
+      "caption": "What I wish more junior developers understood about building CLI tools:\n\n1. Your output IS your UI. Treat it with the same care as a visual interface.\n2. Error messages should guide, not blame.\n3. Help text is documentation. Write it well.\n4. Exit codes matter. 0 = success. Everything else = specific failure.\n5. Defaults should be sensible. Advanced options should be discoverable.\n\nTet Problem Solver follows all five. And it took less time to implement these principles than to skip them.\n\nQuality is free. Technical debt is expensive.",
+      "hashtags": ["#CLIDesign", "#JuniorDevelopers", "#BestPractices", "#Engineering"]
+    },
+    {
+      "id": 93,
+      "day": 24,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "The _MEDIUM_SYNONYMS dictionary in Tet:\n\n\"photo\": (\"picture\", \"image\", \"shot\")\n\"video\": (\"film\", \"clip\", \"reel\")\n\"music\": (\"song\", \"track\", \"audio\")\n\"art\": (\"illustration\", \"drawing\", \"painting\")\n\"poem\": (\"poetry\", \"verse\", \"haiku\", \"sonnet\")\n\nSimple synonym mapping. Natural language understanding without NLP.\n\n#Python #NLP #Simplicity",
+      "hashtags": ["#Python", "#NLP", "#Simplicity"]
+    },
+    {
+      "id": 94,
+      "day": 24,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "POV: You realize the problem solver CLI has a panic button.\n\nType anything with 'panic' or 'anxiety' and it switches from math mode to mental health mode.\n\nGrounding. Breathing. Reality checks. Aftercare.\n\nThis is what thoughtful engineering looks like.\n\n#MentalHealthMatters #Python #DevTok #Empathy",
+      "hashtags": ["#MentalHealthMatters", "#Python", "#DevTok", "#Empathy"]
+    },
+    {
+      "id": 95,
+      "day": 24,
+      "platform": "Instagram",
+      "type": "text_post",
+      "caption": "Day 24: Let's talk about the format() method.\n\nEvery Solution in Tet gets formatted the same way:\n1. A sparkle banner with the solution type\n2. The answer\n3. Optional bullet-point details\n\nConsistency in output builds user trust. When you know what to expect, you can focus on the content instead of parsing the format.\n\nDesign your outputs. Don't just print them.\n\n#OutputDesign #UX #Python #TetSolver",
+      "hashtags": ["#OutputDesign", "#UX", "#Python", "#TetSolver"]
+    },
+    {
+      "id": 96,
+      "day": 24,
+      "platform": "Facebook",
+      "type": "text_post",
+      "caption": "Today's Tet tip: The creative prompt mode adds \"Mobile-first: short sentences, no markdown, ready for iOS web share sheets\" to every prompt's details.\n\nThis isn't just a nice-to-have. It's a deliberate design constraint that:\n\n1. Forces concise output\n2. Ensures paste-ability across platforms\n3. Removes formatting dependencies\n4. Keeps prompts universally compatible\n\nThe best constraints are the ones your users never notice because everything just works.",
+      "hashtags": ["#MobileFirst", "#DesignConstraints", "#UX", "#TetSolver"]
+    },
+    {
+      "id": 97,
+      "day": 25,
+      "platform": "LinkedIn",
+      "type": "article_post",
+      "caption": "The hidden complexity of simple tools: a Tet Problem Solver case study.\n\nOn the surface, Tet is a 334-line Python script. Under the hood, it demonstrates:\n\n1. Safe code execution (AST walking)\n2. Pattern matching and NLP-lite (regex + synonyms)\n3. Chain of Responsibility design pattern\n4. Dataclass-driven output consistency\n5. Graceful degradation (brainstorm fallback)\n6. Mental health awareness in software\n7. Multi-language support\n8. Mobile-first output design\n9. Zero-dependency architecture\n10. CLI best practices (exit codes, argparse, help text)\n\n10 engineering concepts in 334 lines. That's the power of working with constraints.\n\nSimple projects are the best teachers. What has a small project taught you?",
+      "hashtags": ["#Engineering", "#CaseStudy", "#Python", "#Learning"]
+    },
+    {
+      "id": 98,
+      "day": 25,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "Quick Python tip from Tet's codebase:\n\nUsing tuples instead of lists for immutable data.\n\n_ANAGRAM_LIBRARY stores matches as tuples:\n\"listen\": (\"silent\", \"enlist\", \"tinsel\")\n\nWhy? Because these values never change. Tuples are faster, use less memory, and communicate intent.\n\nSmall choice. Big signal.\n\n#PythonTips #Tuples #CleanCode #DevTok",
+      "hashtags": ["#PythonTips", "#Tuples", "#CleanCode", "#DevTok"]
+    },
+    {
+      "id": 99,
+      "day": 25,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "Tet Problem Solver validates empty input before processing:\n\nif not seed or not seed.strip():\n    raise ValueError(\"Please provide a few words...\")\n\nAlways validate at the boundary. Trust nothing from the outside. Trust everything on the inside.\n\n#DefensiveProgramming #Python #BestPractices",
+      "hashtags": ["#DefensiveProgramming", "#Python", "#BestPractices"]
+    },
+    {
+      "id": 100,
+      "day": 25,
+      "platform": "Instagram",
+      "type": "carousel",
+      "caption": "POST 100! Here's a celebration carousel of Tet's greatest hits.\n\nSlide 1: \"The numbers danced and the answer is 14!\"\nSlide 2: \"Possible anagram buddies for 'listen': silent, enlist, tinsel\"\nSlide 3: \"We can still win together!\"\nSlide 4: \"Momentum is magic!\"\nSlide 5: The panic support protocol in full\n\n100 posts. 25 days. 5 platforms. 1 tiny Python script.\n\nThank you for being here.\n\n#Milestone #100Posts #TetSolver #Celebration",
+      "hashtags": ["#Milestone", "#100Posts", "#TetSolver", "#Celebration"]
+    },
+    {
+      "id": 101,
+      "day": 26,
+      "platform": "Facebook",
+      "type": "text_post",
+      "caption": "6 days left in our 31-day campaign! Let's talk about what makes Tet Problem Solver different from other CLI tools.\n\n1. It has feelings (well, simulated ones)\n2. It never fails — it always gives you something useful\n3. It cares about your mental health\n4. It's creative, not just computational\n5. It fits in a single file\n\nMost tools optimize for capability. Tet optimizes for experience.\n\nWhat do you optimize for in your projects?",
+      "hashtags": ["#DeveloperExperience", "#TetSolver", "#Philosophy"]
+    },
+    {
+      "id": 102,
+      "day": 26,
+      "platform": "LinkedIn",
+      "type": "text_post",
+      "caption": "Building Tet Problem Solver has reinforced something I believe deeply: the best products are the ones that respect their users' time AND emotions.\n\nRespecting time:\n- Fast execution (no network calls)\n- Concise output (mobile-ready)\n- Smart defaults (less typing)\n\nRespecting emotions:\n- Encouraging language\n- Panic support for distress\n- Never a dead-end response\n\nTechnology should serve the whole person. Not just the task.\n\nWhat product has made you feel respected as a user?",
+      "hashtags": ["#UserRespect", "#ProductPhilosophy", "#Empathy"]
+    },
+    {
+      "id": 103,
+      "day": 26,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "Things my Python CLI says that I need to hear:\n\n\"We can still win together!\"\n\"Momentum is magic!\"\n\"Pick the easiest step and start there.\"\n\"Name the goal in one joyful sentence.\"\n\nI built a motivational app and disguised it as a problem solver.\n\n#MotivationalCoding #Python #DevTok #SelfCare",
+      "hashtags": ["#MotivationalCoding", "#Python", "#DevTok", "#SelfCare"]
+    },
+    {
+      "id": 104,
+      "day": 26,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "The photo prompt recipe in Tet:\n\nStyle: Cinematic but natural\nStructure: Subject → context → lighting → framing → camera cue\nPlatform: Two short sentences for iOS\nDelivery: Vertical, high-res, gentle post-processing\n\nDetails: Time of day, focal length, crisp nouns.\n\n#Photography #PromptDesign #CreativeTools",
+      "hashtags": ["#Photography", "#PromptDesign", "#CreativeTools"]
+    },
+    {
+      "id": 105,
+      "day": 27,
+      "platform": "Instagram",
+      "type": "reel",
+      "caption": "The regex that powers anagram detection:\n\n(?:anagram of|unscramble)\\s+([A-Za-z]+)\n\nIt looks for \"anagram of\" or \"unscramble\" followed by a word.\n\nSimple. Effective. No AI required.\n\nSometimes a regex is all you need.\n\n#Regex #Python #PatternMatching #TetSolver",
+      "hashtags": ["#Regex", "#Python", "#PatternMatching", "#TetSolver"]
+    },
+    {
+      "id": 106,
+      "day": 27,
+      "platform": "Facebook",
+      "type": "text_post",
+      "caption": "Tet Problem Solver handles edge cases with care:\n\n- Empty input? Returns help text, not an error\n- Unknown problem? Brainstorm mode, not \"I don't know\"\n- Distress signals? Support protocol, not a math answer\n- No medium detected? Defaults to art, not an error\n\nEvery edge case is a chance to be helpful instead of hostile.\n\nHow do your tools handle unexpected input?",
+      "hashtags": ["#EdgeCases", "#UXDesign", "#GracefulDegradation", "#TetSolver"]
+    },
+    {
+      "id": 107,
+      "day": 27,
+      "platform": "LinkedIn",
+      "type": "text_post",
+      "caption": "Final week reflection: What 31 days of content about one Python script taught me about technical communication.\n\n1. Every function is a story. Explain the WHY, not just the WHAT.\n2. Code personality is content gold. The playful output generated 3x more engagement than architecture posts.\n3. Mental health in tech resonates deeply. The panic support posts were shared more than anything else.\n4. Simple code teaches better than complex code. People can follow along and contribute.\n5. Consistency beats brilliance. 4 posts a day, every day, across 5 platforms.\n\nThe campaign ends Friday. But the lessons are permanent.",
+      "hashtags": ["#TechCommunication", "#ContentStrategy", "#BuildInPublic"]
+    },
+    {
+      "id": 108,
+      "day": 27,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "Final week energy! 4 days left of the Tet Problem Solver campaign.\n\nWhat started as a simple math tool now:\n- Solves 5 types of problems\n- Generates creative prompts for 5 mediums\n- Supports panic moments in multiple languages\n- Has more personality than most apps\n\nAll in 334 lines of Python. The sequel is going to be wild.\n\n#FinalWeek #Python #DevTok #BuildInPublic",
+      "hashtags": ["#FinalWeek", "#Python", "#DevTok", "#BuildInPublic"]
+    },
+    {
+      "id": 109,
+      "day": 28,
+      "platform": "X (Twitter)",
+      "type": "tweet_thread",
+      "caption": "Day 28: The complete Tet Problem Solver architecture in one thread.\n\n1/ Input arrives via argparse. Two modes: solve or prompt.\n\n2/ Solve mode: chain of Optional[Solution] solvers. Math → Anagram → Panic → Brainstorm fallback.\n\n3/ Prompt mode: medium detection via synonyms, then recipe-based template expansion.\n\n4/ Output: Solution dataclass with kind, answer, optional details. format() handles presentation.\n\n5/ Safety: AST-based math eval. No eval(). No exec(). No external calls.\n\nThat's it. That's the whole thing. Simple, safe, extensible. 🧵",
+      "hashtags": ["#Architecture", "#Python", "#Thread"]
+    },
+    {
+      "id": 110,
+      "day": 28,
+      "platform": "Instagram",
+      "type": "infographic",
+      "caption": "The complete Tet Problem Solver architecture:\n\nINPUT → argparse → [solve mode / prompt mode]\n\nSolve: Math → Anagram → Panic → Brainstorm\nPrompt: Detect medium → Apply recipe → Format output\n\nOUTPUT → Solution(kind, answer, details) → format() → print()\n\nClean. Simple. Effective.\n\n#Architecture #Python #SystemDesign #TetSolver",
+      "hashtags": ["#Architecture", "#Python", "#SystemDesign", "#TetSolver"]
+    },
+    {
+      "id": 111,
+      "day": 28,
+      "platform": "Facebook",
+      "type": "text_post",
+      "caption": "Day 28: Thank you.\n\nThis 31-day campaign has been an experiment in what happens when you deeply explore one small project across 5 platforms.\n\nThe answer: you find more depth than you expected. Every function has a design story. Every decision has a lesson. Every line of code connects to a bigger principle.\n\n3 days left. We're finishing strong.\n\nWhat post from this campaign resonated most with you?",
+      "hashtags": ["#Gratitude", "#Community", "#TetSolver", "#BuildInPublic"]
+    },
+    {
+      "id": 112,
+      "day": 28,
+      "platform": "LinkedIn",
+      "type": "text_post",
+      "caption": "Day 28 of sharing Tet Problem Solver.\n\nThe biggest surprise of this campaign: the features I thought were minor turned out to be major.\n\nI thought the math solver was the star. Users loved the brainstorm mode.\nI thought the creative prompts were a bonus. Creators adopted them into their workflow.\nI thought the panic support was niche. It became the most shared feature.\n\nLesson: You don't get to decide which feature matters. Your users do.\n\nBuild with intention. Listen with humility.",
+      "hashtags": ["#ProductLessons", "#UserFeedback", "#Engineering"]
+    },
+    {
+      "id": 113,
+      "day": 29,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "2 days left! Let me show you everything Tet Problem Solver can do in 60 seconds:\n\n0:00 - Math solving\n0:12 - Anagram cracking\n0:24 - Creative prompts (all 5 mediums)\n0:42 - Panic support\n0:50 - Brainstorm mode\n\nOne file. Zero dependencies. Infinite vibes.\n\n#Speedrun #Python #DevTok #TetSolver",
+      "hashtags": ["#Speedrun", "#Python", "#DevTok", "#TetSolver"]
+    },
+    {
+      "id": 114,
+      "day": 29,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "2 days to go.\n\nTet Problem Solver started as a weekend hack. 29 days later, it's taught me more about product design, content strategy, and technical communication than any course.\n\nBuild small things. Share them publicly. Learn endlessly.\n\n#BuildInPublic #Python #Reflection",
+      "hashtags": ["#BuildInPublic", "#Python", "#Reflection"]
+    },
+    {
+      "id": 115,
+      "day": 29,
+      "platform": "Instagram",
+      "type": "carousel",
+      "caption": "Top 5 lessons from 29 days of Tet Problem Solver:\n\nSlide 1: Personality is a feature, not a gimmick\nSlide 2: Simple architecture enables rapid growth\nSlide 3: Mental health features belong everywhere\nSlide 4: Zero dependencies = maximum portability\nSlide 5: Build for the whole person, not just the task\n\n2 more days. Let's end this strong.\n\n#LessonsLearned #TetSolver #Python #BuildInPublic",
+      "hashtags": ["#LessonsLearned", "#TetSolver", "#Python", "#BuildInPublic"]
+    },
+    {
+      "id": 116,
+      "day": 29,
+      "platform": "Facebook",
+      "type": "text_post",
+      "caption": "Penultimate day! Tomorrow's posts will wrap up the campaign, but today I want to share one more thing.\n\nThe most underrated line in Tet Problem Solver:\n\n\"Pick the easiest step and start there — momentum is magic!\"\n\nThis isn't just advice for solving puzzles. It's advice for:\n- Starting a project\n- Writing a blog post\n- Learning a new skill\n- Getting through a tough day\n\nMomentum IS magic. Start small. Start now. Start messy.\n\nWhat's one step you can take today?",
+      "hashtags": ["#Motivation", "#MomentumIsMagic", "#TetSolver"]
+    },
+    {
+      "id": 117,
+      "day": 30,
+      "platform": "LinkedIn",
+      "type": "article_post",
+      "caption": "Tomorrow is the last day of the 31-day Tet Problem Solver campaign. Here's what I'd tell someone starting a build-in-public journey.\n\n1. Pick a project you can explain in one sentence.\n2. Find content angles you're genuinely curious about — your enthusiasm is contagious.\n3. Rotate platforms. Each has a different audience and different strengths.\n4. Technical depth + personal reflection = engaged audience.\n5. Ship features during the campaign. Give people reasons to come back.\n6. Respond to comments. Community is built in the replies.\n7. Be consistent. 4 posts a day sounds like a lot until it becomes a habit.\n\nThe project doesn't need to be complex. It needs to be authentic.\n\nWho's going to try this next?",
+      "hashtags": ["#BuildInPublic", "#ContentCreation", "#Engineering", "#Advice"]
+    },
+    {
+      "id": 118,
+      "day": 30,
+      "platform": "TikTok",
+      "type": "short_video",
+      "caption": "Tomorrow is the LAST DAY. But first, one more trick.\n\nTet Problem Solver's brainstorm mode works for literally anything:\n\n\"How do I ask for a raise?\"\n\"How do I learn guitar?\"\n\"How do I organize my closet?\"\n\nIt always responds. It always helps. It never judges.\n\nA tool that believes in you. In your terminal.\n\n#MotivationalCode #Python #DevTok #LastDay",
+      "hashtags": ["#MotivationalCode", "#Python", "#DevTok", "#LastDay"]
+    },
+    {
+      "id": 119,
+      "day": 30,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "Day 30 of 31.\n\nTet Problem Solver in numbers:\n- 334 lines of Python\n- 0 external dependencies\n- 5 solver types\n- 5 creative mediums\n- 6 panic support keywords in 2 languages\n- 8-step panic protocol\n- 4 brainstorm steps\n- 1 dataclass that runs it all\n\nSimple tools. Deep impact.\n\n#Python #Minimalism #ByTheNumbers",
+      "hashtags": ["#Python", "#Minimalism", "#ByTheNumbers"]
+    },
+    {
+      "id": 120,
+      "day": 30,
+      "platform": "Instagram",
+      "type": "text_post",
+      "caption": "Day 30. One more day.\n\nThis campaign started with a simple question: Can a 334-line Python script sustain 31 days of content across 5 platforms?\n\nThe answer is a resounding yes.\n\nBecause it's not about the code. It's about the ideas behind the code. The decisions. The values. The personality.\n\nEveryone has a project like this in them. You just have to share it.\n\nSee you tomorrow for the finale.\n\n#AlmostThere #TetSolver #BuildInPublic",
+      "hashtags": ["#AlmostThere", "#TetSolver", "#BuildInPublic"]
+    },
+    {
+      "id": 121,
+      "day": 31,
+      "platform": "Facebook",
+      "type": "text_post",
+      "caption": "DAY 31. THE FINALE.\n\n31 days. 124 posts. 5 platforms. 1 Python script.\n\nThank you to everyone who followed along, commented, shared, and challenged Tet with your problems.\n\nHere's what this journey proved:\n- Small projects can have big impact\n- Code with personality gets remembered\n- Mental health features matter everywhere\n- Building in public accelerates learning\n- Community makes everything better\n\nTet Problem Solver isn't done growing. But this campaign is.\n\nMomentum is magic. And you helped create it.\n\nWhat should we build next?",
+      "hashtags": ["#Finale", "#Day31", "#TetSolver", "#ThankYou", "#Community"]
+    },
+    {
+      "id": 122,
+      "day": 31,
+      "platform": "LinkedIn",
+      "type": "article_post",
+      "caption": "Day 31: Campaign complete.\n\n31 days ago, I challenged myself to create 4 social media posts per day about a single Python CLI tool. Here's what happened:\n\nThe project: Tet Problem Solver — a 334-line CLI tool that solves math, anagrams, generates creative prompts, supports panic moments, and brainstorms solutions.\n\nThe result: 124 posts across Instagram, Facebook, X, LinkedIn, and TikTok. Each post explored a different angle: technical deep-dives, design philosophy, user empathy, creative applications, and build-in-public reflections.\n\nKey takeaways for anyone considering this:\n1. Depth over breadth — one project, many angles\n2. Platform diversity — match content style to audience\n3. Human stories in technical content — the panic support posts outperformed everything\n4. Consistency compounds — daily posting builds momentum and audience\n5. Simple projects teach complex lessons\n\nThe campaign is done. The project continues.\n\nThank you for being part of this.\n\nWhat's your next build-in-public project?",
+      "hashtags": ["#BuildInPublic", "#CampaignComplete", "#Engineering", "#ContentStrategy"]
+    },
+    {
+      "id": 123,
+      "day": 31,
+      "platform": "X (Twitter)",
+      "type": "tweet",
+      "caption": "Day 31/31. Done.\n\n124 posts about a 334-line Python script.\n\nWhat I learned: simple tools tell the best stories.\n\nThank you for following along. Tet Problem Solver lives on.\n\nMomentum is magic.\n\n#BuildInPublic #Python #TetSolver #Day31",
+      "hashtags": ["#BuildInPublic", "#Python", "#TetSolver", "#Day31"]
+    },
+    {
+      "id": 124,
+      "day": 31,
+      "platform": "Instagram",
+      "type": "carousel",
+      "caption": "DAY 31 — THE GRAND FINALE!\n\nSlide 1: Day 1 — \"Meet Tet Problem Solver\"\nSlide 2: Day 7 — \"Week 1: Finding our voice\"\nSlide 3: Day 14 — \"Week 2: Deep architecture dives\"\nSlide 4: Day 21 — \"Week 3: Community & mental health\"\nSlide 5: Day 31 — \"124 posts. 5 platforms. 1 Python script. Infinite lessons.\"\n\nThank you for every like, comment, share, and challenge.\n\nThe code is open source. The lessons are forever.\n\nMomentum is magic. And this is just the beginning.\n\n#Finale #TetSolver #BuildInPublic #124Posts #ThankYou",
+      "hashtags": ["#Finale", "#TetSolver", "#BuildInPublic", "#124Posts", "#ThankYou"]
+    }
+  ]
+}
