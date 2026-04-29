@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-import os
 from datetime import datetime
 from typing import Literal, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
