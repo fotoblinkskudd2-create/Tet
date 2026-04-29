@@ -1,0 +1,143 @@
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.header {
+  border-bottom: 1px solid #1a3048;
+  padding-bottom: 20px;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: bold;
+  letter-spacing: 8px;
+  color: #c8d6e5;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: #3a5a78;
+  margin-bottom: 8px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--toxic);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--toxic);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; }
+}
+
+.mapSection, .chartSection, .reportSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionTitle {
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: #3a5a78;
+  font-weight: normal;
+  border-bottom: 1px solid #1a3048;
+  padding-bottom: 8px;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.statsBox {
+  padding: 16px;
+  border: 1px solid #1a3048;
+  background: #0a1520;
+}
+
+.statLabel {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: #3a5a78;
+  font-weight: normal;
+  margin-bottom: 8px;
+}
+
+.statValue {
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--warning);
+  letter-spacing: 2px;
+}
+
+.statDelta {
+  font-size: 10px;
+  color: var(--danger);
+  margin-top: 4px;
+}
+
+.statSub {
+  font-size: 10px;
+  color: #3a5a78;
+  margin-top: 4px;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #1a3048;
+  background: #0a1520;
+}
+
+.timelineItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 12px;
+  border-left: 2px solid #1a3048;
+}
+
+.year {
+  font-size: 10px;
+  color: var(--toxic);
+  letter-spacing: 2px;
+}
+
+.event {
+  font-size: 11px;
+  color: #8aa;
+  line-height: 1.4;
+}

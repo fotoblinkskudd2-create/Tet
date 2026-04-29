@@ -1,0 +1,17 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --sea: #0d1b2a;
+  --rust: #8b3a2a;
+  --toxic: #39d353;
+  --warning: #f0a500;
+  --danger: #cc2200;
+  --mono: "Courier New", Courier, monospace;
+}
+
+html {
+  background: var(--sea);
+  color: #c8d6e5;
+  font-family: var(--mono);
+  font-size: 14px;
+}

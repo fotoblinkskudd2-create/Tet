@@ -1,0 +1,93 @@
+.main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 60px 24px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.header { text-align: center; }
+
+.logo {
+  font-size: 36px;
+  font-weight: 300;
+  letter-spacing: 12px;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.sub {
+  font-size: 14px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: border-color 0.2s, transform 0.1s;
+  color: inherit;
+  text-decoration: none;
+}
+.card:hover {
+  border-color: var(--node);
+  transform: translateY(-2px);
+}
+
+.cardIcon {
+  font-size: 24px;
+  color: var(--accent);
+}
+
+.cardTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.cardDesc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.stats {
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.statNum {
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--accent);
+}
+
+.statLabel {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+}

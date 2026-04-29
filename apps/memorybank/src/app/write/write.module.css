@@ -1,0 +1,135 @@
+.main {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.back { color: var(--muted); transition: color 0.1s; }
+.back:hover { color: var(--accent); }
+
+.wordCount { font-family: var(--mono); }
+
+.titleInput {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-size: 22px;
+  font-weight: 300;
+  padding: 8px 0;
+  outline: none;
+  width: 100%;
+}
+.titleInput::placeholder { color: var(--muted); }
+
+.editor {
+  flex: 1;
+  min-height: 50vh;
+  width: 100%;
+  padding: 0;
+  font-size: 15px;
+  line-height: 1.8;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  outline: none;
+  resize: none;
+}
+.editor::placeholder { color: var(--muted); }
+
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.saveBtn {
+  padding: 10px 24px;
+  background: var(--node);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.saveBtn:hover:not(:disabled) { background: #5c3de0; }
+.saveBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.summary {
+  font-size: 14px;
+  color: var(--muted);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.sectionLabel {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  font-weight: normal;
+  margin-bottom: 10px;
+}
+
+.entityList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.entity {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid;
+  border-radius: 16px;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.entityType {
+  font-size: 10px;
+  font-family: var(--mono);
+  opacity: 0.8;
+}
+
+.linkList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.link {
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.graphLink {
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+.graphLink:hover { text-decoration: underline; }

@@ -1,0 +1,16 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0c0c14;
+  --surface: #12121e;
+  --border: #1e1e32;
+  --node: #6e4fff;
+  --edge: #2a2a4a;
+  --text: #d4d4f0;
+  --muted: #555580;
+  --accent: #a78bfa;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: "Courier New", monospace;
+}
+
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--sans); }

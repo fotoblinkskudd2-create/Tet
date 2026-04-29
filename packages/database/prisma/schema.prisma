@@ -1,0 +1,326 @@
+// Prisma schema — covers all 5 apps in one PostgreSQL database
+// Run: pnpm db:generate && pnpm db:migrate
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────
+// SHARED
+// ─────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String   @unique
+  createdAt DateTime @default(now())
+
+  // GONZO JOURNAL
+  gonzoEntries   GonzoEntry[]
+  writingStreak  WritingStreak?
+  gonzoUpvotes   GonzoUpvote[]
+
+  // MEMORYBANK
+  notes   Note[]
+  graphs  KnowledgeGraph[]
+
+  // SINTRA12
+  orders      Order[]
+  vibeProfile VibeProfile?
+
+  // OPENALEX
+  workflows Workflow[]
+}
+
+// ─────────────────────────────────────────────
+// GONZO JOURNAL (app 1)
+// ─────────────────────────────────────────────
+
+model GonzoEntry {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  content   String
+  prompt    String?
+  isPublic  Boolean  @default(false)
+  upvotes   Int      @default(0)
+  createdAt DateTime @default(now())
+
+  gonzoScore  GonzoScore?
+  upvoters    GonzoUpvote[]
+
+  @@index([userId, createdAt])
+  @@index([isPublic, upvotes])
+}
+
+model GonzoScore {
+  id             String     @id @default(uuid())
+  entryId        String     @unique
+  entry          GonzoEntry @relation(fields: [entryId], references: [id])
+  rawness        Int
+  lyricism       Int
+  sensoryDetail  Int
+  honesty        Int
+  danceMetaphors Int
+  totalScore     Int
+  feedback       String
+  badge          String?
+}
+
+model WritingStreak {
+  userId         String   @id
+  user           User     @relation(fields: [userId], references: [id])
+  currentStreak  Int      @default(0)
+  longestStreak  Int      @default(0)
+  lastEntryDate  DateTime?
+}
+
+model GonzoUpvote {
+  userId  String
+  entryId String
+  user    User       @relation(fields: [userId], references: [id])
+  entry   GonzoEntry @relation(fields: [entryId], references: [id])
+
+  @@id([userId, entryId])
+}
+
+// ─────────────────────────────────────────────
+// U-864 TRACKER (app 2)
+// ─────────────────────────────────────────────
+
+model PollutionSample {
+  id          String   @id @default(uuid())
+  lat         Float
+  lng         Float
+  mercuryPpm  Float    @default(0)
+  cadmiumPpm  Float    @default(0)
+  leadPpm     Float    @default(0)
+  source      String   // 'official' | 'citizen'
+  reporterId  String?
+  verified    Boolean  @default(false)
+  sampledAt   DateTime
+  createdAt   DateTime @default(now())
+
+  @@index([sampledAt])
+  @@index([lat, lng])
+}
+
+model CitizenReport {
+  id          String   @id @default(uuid())
+  reporterId  String?
+  lat         Float
+  lng         Float
+  type        String   // 'dead_fish' | 'discoloration' | 'water_sample' | 'other'
+  description String
+  imageUrl    String?
+  status      String   @default("pending") // pending | verified | rejected
+  createdAt   DateTime @default(now())
+}
+
+model PressureCampaign {
+  id          String   @id @default(uuid())
+  title       String
+  targetEmail String
+  template    String
+  sendCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+// ─────────────────────────────────────────────
+// MEMORYBANK (app 4)
+// ─────────────────────────────────────────────
+
+model Note {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  content   String
+  title     String?
+  summary   String?
+  tags      String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  entities  NoteEntity[]
+  outgoing  NoteLink[]   @relation("OutgoingLinks")
+  incoming  NoteLink[]   @relation("IncomingLinks")
+  graphId   String?
+  graph     KnowledgeGraph? @relation(fields: [graphId], references: [id])
+
+  @@index([userId, updatedAt])
+}
+
+model NoteEntity {
+  id         String @id @default(uuid())
+  noteId     String
+  note       Note   @relation(fields: [noteId], references: [id])
+  text       String
+  type       String // person | concept | place | book | event | idea
+  confidence Float
+
+  @@index([noteId])
+  @@index([type, text])
+}
+
+model NoteLink {
+  id         String @id @default(uuid())
+  fromNoteId String
+  toNoteId   String
+  strength   Float  @default(0.5)
+  label      String?
+  fromNote   Note   @relation("OutgoingLinks", fields: [fromNoteId], references: [id])
+  toNote     Note   @relation("IncomingLinks", fields: [toNoteId], references: [id])
+
+  @@unique([fromNoteId, toNoteId])
+}
+
+model KnowledgeGraph {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  name      String
+  notes     Note[]
+  createdAt DateTime @default(now())
+}
+
+// ─────────────────────────────────────────────
+// OPENALEX ORCHESTRATOR (app 3)
+// ─────────────────────────────────────────────
+
+model Workflow {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  name        String
+  description String?
+  definition  Json     // { nodes: AgentNode[], edges: WorkflowEdge[] }
+  isPublic    Boolean  @default(false)
+  version     Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  executions WorkflowExecution[]
+
+  @@index([userId, updatedAt])
+}
+
+model WorkflowExecution {
+  id          String   @id @default(uuid())
+  workflowId  String
+  workflow    Workflow @relation(fields: [workflowId], references: [id])
+  input       String
+  output      String?
+  status      String   @default("pending") // pending | running | completed | failed
+  steps       Json?    // AgentResult[]
+  totalCost   Float?
+  durationMs  Int?
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+
+  @@index([workflowId, startedAt])
+}
+
+// ─────────────────────────────────────────────
+// SINTRA12 E-COMMERCE (app 5)
+// ─────────────────────────────────────────────
+
+model Product {
+  id           String   @id @default(uuid())
+  slug         String   @unique
+  name         String
+  description  String
+  backstory    String?
+  whyItExists  String?
+  priceNok     Int      // øre
+  images       String[]
+  tags         String[]
+  darkScore    Int      @default(50)
+  playfulScore Int      @default(50)
+  premiumScore Int      @default(50)
+  weirdScore   Int      @default(50)
+  stock        Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  orderItems  OrderItem[]
+  mysteryBoxes MysteryBoxProduct[]
+
+  @@index([isActive, weirdScore])
+}
+
+model MysteryBox {
+  id           String   @id @default(uuid())
+  priceNok     Int
+  darkVibe     Int
+  playfulVibe  Int
+  premiumVibe  Int
+  weirdVibe    Int
+  totalValue   Int
+  isActive     Boolean  @default(true)
+
+  products     MysteryBoxProduct[]
+  orderItems   OrderItem[]
+}
+
+model MysteryBoxProduct {
+  boxId      String
+  productId  String
+  isGuaranteed Boolean @default(false)
+  box        MysteryBox @relation(fields: [boxId], references: [id])
+  product    Product    @relation(fields: [productId], references: [id])
+
+  @@id([boxId, productId])
+}
+
+model Order {
+  id           String   @id @default(uuid())
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id])
+  email        String
+  stripeId     String?  @unique
+  status       String   @default("pending") // pending | paid | shipped | delivered
+  totalNok     Int
+  vibeLevel    String   // safe | adventurous | unhinged
+  createdAt    DateTime @default(now())
+
+  items        OrderItem[]
+  address      ShippingAddress?
+}
+
+model OrderItem {
+  id           String      @id @default(uuid())
+  orderId      String
+  order        Order       @relation(fields: [orderId], references: [id])
+  productId    String?
+  product      Product?    @relation(fields: [productId], references: [id])
+  mysteryBoxId String?
+  mysteryBox   MysteryBox? @relation(fields: [mysteryBoxId], references: [id])
+  quantity     Int         @default(1)
+  unitPriceNok Int
+}
+
+model ShippingAddress {
+  id       String @id @default(uuid())
+  orderId  String @unique
+  order    Order  @relation(fields: [orderId], references: [id])
+  name     String
+  line1    String
+  line2    String?
+  city     String
+  postal   String
+  country  String @default("NO")
+}
+
+model VibeProfile {
+  userId   String @id
+  user     User   @relation(fields: [userId], references: [id])
+  dark     Int    @default(50)
+  playful  Int    @default(50)
+  premium  Int    @default(50)
+  weird    Int    @default(50)
+}
