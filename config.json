@@ -1,0 +1,12 @@
+{
+  "num_workers_per_type": 2,
+  "task_generation_interval": 90,
+  "health_check_interval": 30,
+  "report_interval": 3600,
+  "dashboard_port": 8080,
+  "worker_poll_interval": 2,
+  "max_task_retries": 3,
+  "agent_restart_delay": 5,
+  "stale_task_timeout": 300,
+  "log_level": "INFO"
+}
