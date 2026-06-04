@@ -4,6 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
+**Install all dependencies (Python + backend + frontend):**
+```bash
+make install        # all three layers
+make install-py     # pytest only
+make install-backend
+make install-frontend
+```
+
 **Run the CLI app:**
 ```bash
 python app.py "2 + 3 * 4"
@@ -13,13 +21,14 @@ python app.py --prompt --medium photo "sunset pier"
 python app.py --help
 ```
 
-**Run tests:**
+**Test, lint, build, clean:**
 ```bash
-python -m pytest tests/ -v
+make test                                                                 # run pytest
+make lint                                                                 # tsc --noEmit on backend + frontend
+make build                                                                # compile TypeScript
+make clean                                                                # remove build artefacts
 python -m pytest tests/test_app.py::test_math_solver_handles_basic_expression -v  # single test
 ```
-
-pytest is not installed in the repo — install it once with `pip install pytest` before running tests.
 
 ## Architecture
 

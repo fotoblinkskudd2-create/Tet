@@ -1,0 +1,11 @@
+[project]
+name = "tet"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+tet = "app:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
