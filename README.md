@@ -1,6 +1,41 @@
-# Tet Problem Solver
+# Tet — Hardwareselskaper
 
-A tiny, joyful command-line helper that solves small puzzles like arithmetic and classic anagrams. When it cannot solve a prompt directly, it offers upbeat brainstorming steps to keep the momentum going.
+Et investor-pitch-nettsted for fem norske hardwareselskaper med dokumentert forretningsmodell og klar ROI.
+
+## Selskaper
+
+| Kode | Produkt | Pris | Modell |
+|------|---------|------|--------|
+| OTORO | Lekkasjejeger Pro | 180 000 kr | B2B · CAPEX |
+| GRIP | Kirurg-Trener | 200 000 kr | B2B · Hardware |
+| VARDE | Katastrofe-Mesh | 2 000 000 kr | B2G · System |
+| TRYGG | Livsignal-Vakt | 800 kr/mnd | SaaS · Subscription |
+| SVERM-VEVAR | Brannmann-Koffert | 1 200 000 kr | B2G · Hardware |
+
+## Frontend
+
+Next.js-basert pitch-site med interaktive ROI-kalkulatorer.
+
+- `/` — Porteføljeoversikt med alle fem selskaper
+- `/selskap/[slug]` — Dypdykk per selskap med problem, løsning, forretningsmodell, ROI-kalkulator og go-to-market-tidslinje
+
+### Sider
+
+```
+frontend/src/pages/
+  index.tsx           # Hoveddside — alle fem selskaper
+  _app.tsx            # Global CSS reset
+  selskap/[slug].tsx  # Individuell selskapside
+  auth/login.tsx
+  auth/signup.tsx
+  profile/[id].tsx
+```
+
+---
+
+## CLI-verktøy (app.py)
+
+En liten kommandolinje-hjelper for matematikk, anagram og kreative prompter.
 
 ## Usage
 
