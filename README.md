@@ -2,6 +2,15 @@
 
 A tiny, joyful command-line helper that solves small puzzles like arithmetic and classic anagrams. When it cannot solve a prompt directly, it offers upbeat brainstorming steps to keep the momentum going.
 
+## Setup
+
+Install test dependencies and run the test suite:
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest
+```
+
 ## Usage
 
 Run the solver with your problem statement:
