@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Riverside FC",
+    "formation": "4-3-3",
+    "tactical_style": "attacking",
+    "home_stadium": "Riverside Arena",
+    "players": [
+      {"name": "Marcus Hale", "position": "GK", "age": 27, "attributes": {"goalkeeping": 84, "physical": 70, "passing": 55, "pace": 45, "defending": 40}},
+      {"name": "Diego Soler", "position": "DF", "age": 26, "attributes": {"defending": 78, "physical": 76, "pace": 70, "passing": 65, "shooting": 35}},
+      {"name": "Kofi Mensah", "position": "DF", "age": 24, "attributes": {"defending": 80, "physical": 79, "pace": 68, "passing": 60, "shooting": 30}},
+      {"name": "Tomas Reyes", "position": "DF", "age": 29, "attributes": {"defending": 75, "physical": 74, "pace": 65, "passing": 68, "shooting": 32}},
+      {"name": "Lukas Bjorn", "position": "DF", "age": 23, "attributes": {"defending": 73, "physical": 70, "pace": 75, "passing": 64, "shooting": 35}},
+      {"name": "Yusuf Demir", "position": "MF", "age": 25, "attributes": {"passing": 82, "dribbling": 78, "defending": 60, "physical": 68, "shooting": 65, "pace": 70}},
+      {"name": "Pietro Lanza", "position": "MF", "age": 28, "attributes": {"passing": 85, "dribbling": 72, "defending": 65, "physical": 72, "shooting": 60, "pace": 62}},
+      {"name": "Adrian Kucera", "position": "MF", "age": 22, "attributes": {"passing": 76, "dribbling": 80, "defending": 50, "physical": 64, "shooting": 70, "pace": 78}},
+      {"name": "Samuel Okoye", "position": "FW", "age": 24, "attributes": {"shooting": 86, "pace": 88, "dribbling": 82, "physical": 70, "passing": 60}},
+      {"name": "Hugo Ferraz", "position": "FW", "age": 27, "attributes": {"shooting": 83, "pace": 80, "dribbling": 85, "physical": 65, "passing": 62}},
+      {"name": "Ren Takahashi", "position": "FW", "age": 23, "attributes": {"shooting": 80, "pace": 85, "dribbling": 79, "physical": 60, "passing": 58}},
+      {"name": "Ola Eriksen", "position": "GK", "age": 31, "attributes": {"goalkeeping": 72, "physical": 68, "passing": 50, "pace": 40, "defending": 38}},
+      {"name": "Marco Bellini", "position": "DF", "age": 30, "attributes": {"defending": 70, "physical": 72, "pace": 60, "passing": 62, "shooting": 28}},
+      {"name": "Felix Brandt", "position": "MF", "age": 21, "attributes": {"passing": 70, "dribbling": 68, "defending": 55, "physical": 66, "shooting": 55, "pace": 72}},
+      {"name": "Ibrahim Sow", "position": "FW", "age": 20, "attributes": {"shooting": 72, "pace": 82, "dribbling": 70, "physical": 58, "passing": 50}},
+      {"name": "Noah Castillo", "position": "DF", "age": 25, "attributes": {"defending": 71, "physical": 73, "pace": 66, "passing": 60, "shooting": 30}}
+    ]
+  },
+  {
+    "name": "Ironbridge United",
+    "formation": "4-2-3-1",
+    "tactical_style": "defensive",
+    "home_stadium": "Ironbridge Park",
+    "players": [
+      {"name": "Petr Vacek", "position": "GK", "age": 29, "attributes": {"goalkeeping": 81, "physical": 74, "passing": 58, "pace": 42, "defending": 42}},
+      {"name": "Connor Walsh", "position": "DF", "age": 27, "attributes": {"defending": 83, "physical": 80, "pace": 64, "passing": 60, "shooting": 28}},
+      {"name": "Bashir Hassan", "position": "DF", "age": 25, "attributes": {"defending": 81, "physical": 78, "pace": 66, "passing": 58, "shooting": 25}},
+      {"name": "Erik Solheim", "position": "DF", "age": 31, "attributes": {"defending": 79, "physical": 75, "pace": 58, "passing": 62, "shooting": 27}},
+      {"name": "Tariq Aziz", "position": "DF", "age": 24, "attributes": {"defending": 76, "physical": 72, "pace": 70, "passing": 60, "shooting": 30}},
+      {"name": "Janne Saarinen", "position": "MF", "age": 28, "attributes": {"passing": 74, "dribbling": 62, "defending": 78, "physical": 80, "shooting": 50, "pace": 60}},
+      {"name": "Bruno Tavares", "position": "MF", "age": 26, "attributes": {"passing": 78, "dribbling": 66, "defending": 74, "physical": 76, "shooting": 52, "pace": 58}},
+      {"name": "Aleksander Nowak", "position": "MF", "age": 23, "attributes": {"passing": 75, "dribbling": 74, "defending": 60, "physical": 68, "shooting": 68, "pace": 72}},
+      {"name": "Theo Lindqvist", "position": "MF", "age": 22, "attributes": {"passing": 72, "dribbling": 76, "defending": 55, "physical": 64, "shooting": 70, "pace": 75}},
+      {"name": "Mateus Pinho", "position": "MF", "age": 25, "attributes": {"passing": 73, "dribbling": 70, "defending": 58, "physical": 66, "shooting": 66, "pace": 70}},
+      {"name": "Dmitri Orlov", "position": "FW", "age": 26, "attributes": {"shooting": 81, "pace": 76, "dribbling": 74, "physical": 78, "passing": 55}},
+      {"name": "Marek Kowalski", "position": "GK", "age": 33, "attributes": {"goalkeeping": 70, "physical": 70, "passing": 48, "pace": 38, "defending": 40}},
+      {"name": "Henrik Voss", "position": "DF", "age": 22, "attributes": {"defending": 72, "physical": 70, "pace": 68, "passing": 56, "shooting": 24}},
+      {"name": "Olamide Ade", "position": "MF", "age": 24, "attributes": {"passing": 68, "dribbling": 65, "defending": 62, "physical": 70, "shooting": 58, "pace": 66}},
+      {"name": "Stefan Pavlovic", "position": "FW", "age": 29, "attributes": {"shooting": 75, "pace": 68, "dribbling": 66, "physical": 74, "passing": 50}},
+      {"name": "Igor Petrov", "position": "DF", "age": 28, "attributes": {"defending": 74, "physical": 76, "pace": 60, "passing": 58, "shooting": 22}}
+    ]
+  }
+]
