@@ -36,6 +36,22 @@ def test_creative_prompt_auto_detects_poem():
     assert any("form" in detail.lower() for detail in solution.details)
 
 
+def test_creative_prompt_handles_code_medium():
+    solution = app.build_creative_prompt(
+        "refactor the login handler to validate email format", medium_hint="code"
+    )
+    assert solution.kind == "Creative Prompt"
+    assert "code prompt" in solution.answer.lower()
+    assert "claude" in solution.answer.lower() and "codex" in solution.answer.lower()
+    assert any("acceptance criteria" in detail.lower() or "test" in detail.lower() for detail in solution.details)
+
+
+def test_creative_prompt_auto_detects_code_from_keyword():
+    solution = app.build_creative_prompt("fix a bug in the payment script")
+    assert solution.kind == "Creative Prompt"
+    assert "code prompt" in solution.answer.lower()
+
+
 def test_panic_support_protocol_is_returned_for_panic_prompt():
     solution = app.solve_problem("I think I am having a panic attack and my heart is racing")
     assert solution.kind == "Panic Support"

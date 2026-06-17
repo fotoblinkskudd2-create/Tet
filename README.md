@@ -22,6 +22,7 @@ Use prompt mode when you want a ready-to-paste creative brief for photos, video,
 python app.py --prompt --medium photo "misty forest boardwalk at dawn"
 python app.py --prompt --medium music "uplifting synthwave for launch video"
 python app.py --prompt "poem about late-summer rain in the city"  # medium auto-detected
+python app.py --prompt --medium code "refactor the login handler to validate email format"
 ```
 
-The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form. The `code` medium builds a prompt structured for coding assistants like Claude and Codex: goal, context/files, constraints, and acceptance criteria (tests or example I/O) so either model can act on it directly.

@@ -119,6 +119,17 @@ _MEDIUM_SYNONYMS: Dict[str, Tuple[str, ...]] = {
     "music": ("song", "track", "audio"),
     "art": ("illustration", "drawing", "painting", "concept art"),
     "poem": ("poetry", "verse", "haiku", "sonnet"),
+    "code": (
+        "coding",
+        "program",
+        "programming",
+        "script",
+        "function",
+        "bug",
+        "refactor",
+        "codex",
+        "claude code",
+    ),
 }
 
 _CREATIVE_RECIPES: Dict[str, Dict[str, object]] = {
@@ -182,6 +193,19 @@ _CREATIVE_RECIPES: Dict[str, Dict[str, object]] = {
             "Suggest a closing turn or surprise to land the emotion.",
         ],
     },
+    "code": {
+        "title": "Code prompt",
+        "style": "Precise and unambiguous; state the goal, the language/framework, and the constraints up front.",
+        "structure": "Goal, then relevant files or context, then constraints, then acceptance criteria (tests or example I/O).",
+        "platform": "Works as a single message to either Claude or Codex—both read explicit file paths and commands the same way.",
+        "delivery": "Ask for a diff or full file contents, plus the exact command to run tests or verify the result.",
+        "details": [
+            "Name the language, framework, and target file paths so the model edits the right place.",
+            "Give at least one concrete example of expected input/output or a failing test to pin down behavior.",
+            "List explicit constraints (no new dependencies, keep the public API, performance limits) to avoid scope creep.",
+            "Request the smallest diff that satisfies the acceptance criteria, plus how to verify it (test command or expected output).",
+        ],
+    },
 }
 
 
@@ -214,7 +238,10 @@ def _shape_creative_prompt(seed: str, medium: str) -> Tuple[str, List[str]]:
         f"Delivery notes: {profile['delivery']}"
     )
     details = list(profile["details"])  # type: ignore[arg-type]
-    details.append("Mobile-first: short sentences, no markdown, ready for iOS web share sheets.")
+    if medium == "code":
+        details.append("Use markdown code blocks for any code, file paths, or commands so they stay copy-pasteable.")
+    else:
+        details.append("Mobile-first: short sentences, no markdown, ready for iOS web share sheets.")
     return answer, details
 
 
@@ -298,7 +325,7 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--medium",
-        choices=["photo", "video", "music", "art", "poem", "auto"],
+        choices=["photo", "video", "music", "art", "poem", "code", "auto"],
         default="auto",
         help="Choose the creative medium for prompt mode. Defaults to auto-detect.",
     )
