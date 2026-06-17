@@ -42,3 +42,25 @@ def test_panic_support_protocol_is_returned_for_panic_prompt():
     assert "you are safe" in solution.answer.lower()
     assert any("4, hold 4, exhale 6" in detail for detail in solution.details)
     assert any("emergency" in detail.lower() for detail in solution.details)
+
+
+def test_tribute_weaves_in_name_and_memories():
+    solution = app.build_tribute(
+        "Mom",
+        ["always had coffee ready", "called every Sunday", "laughed at her own jokes"],
+        relationship="mother",
+    )
+    assert solution.kind == "Tribute"
+    assert "Mom, my mother," in solution.answer
+    assert "always had coffee ready" in solution.answer
+    assert "called every Sunday" in solution.answer
+    assert "laughed at her own jokes" in solution.answer
+
+
+def test_tribute_requires_name_and_memories():
+    import pytest
+
+    with pytest.raises(ValueError):
+        app.build_tribute("", ["something"])
+    with pytest.raises(ValueError):
+        app.build_tribute("Mom", [])

@@ -25,3 +25,13 @@ python app.py --prompt "poem about late-summer rain in the city"  # medium auto-
 ```
 
 The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+
+## Write a heartfelt tribute
+
+Use tribute mode when you want to turn a name and a few specific memories into a genuine, ready-to-read letter:
+
+```bash
+python app.py --tribute --name "Mom" --relationship "mother" "always had coffee ready, called every Sunday, laughed at her own jokes"
+```
+
+List memories separated by commas. The more specific and small the detail, the harder the tribute lands.

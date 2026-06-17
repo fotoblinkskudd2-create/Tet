@@ -233,6 +233,51 @@ def build_creative_prompt(seed: str, medium_hint: Optional[str] = None) -> Solut
     return Solution(kind="Creative Prompt", answer=answer, details=details)
 
 
+def build_tribute(
+    name: str, memories: Iterable[str], relationship: Optional[str] = None
+) -> Solution:
+    """Turn a name and a handful of specific memories into a heartfelt tribute."""
+
+    cleaned_name = (name or "").strip()
+    cleaned_memories = [memory.strip() for memory in memories if memory and memory.strip()]
+    if not cleaned_name:
+        raise ValueError("Please give me a name to write the tribute to.")
+    if not cleaned_memories:
+        raise ValueError("Please give me at least one memory or detail to build the tribute from.")
+
+    address = (
+        f"{cleaned_name}, my {relationship.strip()},"
+        if relationship and relationship.strip()
+        else f"{cleaned_name},"
+    )
+
+    lines = [f"{address} before anything else gets said today, I need you to hear this."]
+
+    first, *rest = cleaned_memories
+    lines.append(f"I still remember {first} — small thing, except it never was.")
+    for memory in rest[:-1]:
+        lines.append(f"I remember {memory}, too, and how easy you made it look.")
+    if rest:
+        lines.append(f"And {rest[-1]} — that's the one I think about more than you'd guess.")
+
+    lines.append(
+        "None of that was nothing. It was you, showing up, over and over, in the ordinary "
+        "way that only looks ordinary from far away."
+    )
+    lines.append(
+        f"So thank you, {cleaned_name}. Not for one big thing — for all the small ones that "
+        "turned out to be the big thing all along."
+    )
+
+    answer = " ".join(lines)
+    details = [
+        "Read it slowly, out loud, once before you send or speak it.",
+        "If a line doesn't sound like you, swap it in — the truest tribute is in your own words.",
+        "It's okay if your voice breaks partway through. That's not the tribute failing, that's it working.",
+    ]
+    return Solution(kind="Tribute", answer=answer, details=details)
+
+
 def _brainstorm_steps(problem: str) -> Solution:
     steps = [
         "Name the goal in one joyful sentence.",
@@ -303,6 +348,21 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Choose the creative medium for prompt mode. Defaults to auto-detect.",
     )
     parser.add_argument(
+        "--tribute",
+        action="store_true",
+        help="Turn a name and comma-separated memories into a heartfelt tribute letter.",
+    )
+    parser.add_argument(
+        "--name",
+        default=None,
+        help="The person the tribute is for. Required with --tribute.",
+    )
+    parser.add_argument(
+        "--relationship",
+        default=None,
+        help="Optional relationship to the person (e.g. 'mother', 'best friend').",
+    )
+    parser.add_argument(
         "problem",
         nargs=argparse.REMAINDER,
         help="Tell me your problem to solve. Quotes are encouraged for multi-word puzzles!",
@@ -320,7 +380,12 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
 
     problem_text = " ".join(args.problem)
 
-    if args.prompt:
+    if args.tribute:
+        if not args.name:
+            parser.error("--tribute requires --name")
+        memories = problem_text.split(",")
+        solution = build_tribute(args.name, memories, relationship=args.relationship)
+    elif args.prompt:
         medium_hint = None if args.medium == "auto" else args.medium
         solution = build_creative_prompt(problem_text, medium_hint=medium_hint)
     else:
