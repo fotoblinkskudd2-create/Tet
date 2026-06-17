@@ -25,3 +25,17 @@ python app.py --prompt "poem about late-summer rain in the city"  # medium auto-
 ```
 
 The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+
+## Multidisciplinary workflow system
+
+Use workflow mode to manage a recurring loop across investing, design/art, music/video, hunting, and writing:
+
+```bash
+python app.py --workflow plan                                  # weekly rotation across all disciplines
+python app.py --workflow daily --day tuesday                   # hour-by-hour template for a weekday
+python app.py --workflow research                               # daily cross-domain research sweep
+python app.py --workflow research --discipline investing        # one discipline's full research routine
+python app.py --workflow synergy --discipline art                # cross-discipline inspiration links
+```
+
+The weekly plan gives one discipline the spotlight each weekday (Investing, Design & Art, Music & Video, Writing, Hunting), keeps Saturday as an open flex/synthesis studio, and closes the loop with a Sunday review. Every weekday starts with the same ~75-90 minute research sweep across all five domains before the day's deep-work block. Use `--discipline` (`investing`, `art`, `music_video`, `hunting`, `writing`, or `all`) to drill into one area's research routine, tools, or synergy links with the others.
