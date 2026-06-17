@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import datetime
 import operator
 import re
 from dataclasses import dataclass
@@ -233,6 +234,194 @@ def build_creative_prompt(seed: str, medium_hint: Optional[str] = None) -> Solut
     return Solution(kind="Creative Prompt", answer=answer, details=details)
 
 
+_WEEKDAY_ORDER: Tuple[str, ...] = (
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+)
+
+_DAY_ALIASES: Dict[str, str] = {
+    "monday": "monday", "mandag": "monday", "man": "monday",
+    "tuesday": "tuesday", "tirsdag": "tuesday", "tir": "tuesday",
+    "wednesday": "wednesday", "onsdag": "wednesday", "ons": "wednesday",
+    "thursday": "thursday", "torsdag": "thursday", "tor": "thursday",
+    "friday": "friday", "fredag": "friday", "fre": "friday",
+    "saturday": "saturday", "lordag": "saturday", "lørdag": "saturday", "lor": "saturday",
+    "sunday": "sunday", "sondag": "sunday", "søndag": "sunday", "son": "sunday",
+}
+
+# A weekly rotation that gives every discipline one dedicated deep-work day
+# plus a short daily research habit, so nothing gets neglected across the cycle.
+WEEKLY_WORKFLOW: Dict[str, Dict[str, object]] = {
+    "monday": {
+        "label": "Mandag - Aksjer og verdiinvestering",
+        "deep_work": (
+            "2-3 timer dyp researchblokk: gjennomgå porteføljen, screene nye "
+            "verdiinvesteringskandidater og oppdater overvåkningslisten."
+        ),
+        "research": [
+            "Sjekk kvartalsrapporter og innsidehandel for selskaper på overvåkningslisten.",
+            "Les én årsrapport eller analytikernotat i dybden.",
+            "Oppdater verdivurderingen (DCF/multipler) for én kandidat.",
+            "Skann makro- og sektornyheter relevante for porteføljen.",
+        ],
+        "synergy": (
+            "Bruk bedriftshistorier og markedsnarrativer som råstoff til "
+            "forfatterprosjektet, f.eks. karakterbakgrunn for en finansfortelling."
+        ),
+    },
+    "tuesday": {
+        "label": "Tirsdag - Kunst",
+        "deep_work": "Atelierøkt: skisser, maleri eller digital kunst i to sammenhengende timer.",
+        "research": [
+            "Bla gjennom tre kunstplattformer eller gallerier for nye trender.",
+            "Lagre fem visuelle referanser i moodboard-mappen.",
+            "Studer en kunstners teknikk i dybden i 10-15 minutter.",
+            "Noter en idé som kan oversettes til et musikk- eller videoprosjekt.",
+        ],
+        "synergy": (
+            "Dagens fargepalett og moodboard kan style albumcoveret (onsdag) "
+            "eller fargegradingen i ukens videoprosjekt (torsdag)."
+        ),
+    },
+    "wednesday": {
+        "label": "Onsdag - Musikk",
+        "deep_work": "Studiotid: komponering, opptak eller miksing i 2-3 timer.",
+        "research": [
+            "Lytt aktivt til to nye album eller artister utenfor komfortsonen.",
+            "Analyser produksjonsteknikken i en favorittlåt.",
+            "Research samples, lyder eller plugins som matcher ukens stemning.",
+            "Skriv én melodi- eller tekstidé inspirert av dagens kunst eller skriving.",
+        ],
+        "synergy": (
+            "Bruk tekstutkast fra skrivedagen (fredag) som lyrikk-råstoff, eller "
+            "komponer en temalåt for en scene i videoprosjektet."
+        ),
+    },
+    "thursday": {
+        "label": "Torsdag - Video",
+        "deep_work": "Produksjon eller redigering: filming, klipping eller motion graphics i 2-3 timer.",
+        "research": [
+            "Se to referansevideoer eller filmer for klipperytme og fargegrading.",
+            "Research kamera-, objektiv- eller VFX-trender.",
+            "Bygg en shotlist eller storyboard for neste opptak.",
+            "Hent en musikksnutt fra onsdagens sesjon til en temp-track.",
+        ],
+        "synergy": (
+            "Den visuelle stilen fra videoprosjektet kan gjenbrukes i kunst-"
+            "moodboardet eller som scenebeskrivelse i manuset."
+        ),
+    },
+    "friday": {
+        "label": "Fredag - Forfatter og skriving",
+        "deep_work": "Skriveøkt: manuskript, dikt eller artikkel i 90-120 minutter sammenhengende.",
+        "research": [
+            "Les 20-30 sider i en bok innenfor eller utenfor egen genre.",
+            "Research et faktaspørsmål eller miljø som dukket opp i manuset.",
+            "Følg en forfatter eller et litteraturtidsskrift for samtidsdebatt.",
+            "Noter dialog eller observasjoner fra ukens opplevelser som materiale.",
+        ],
+        "synergy": (
+            "Erfaringer fra jaktturen (lørdag) eller markedsanalysen (mandag) gir "
+            "autentisk detalj og spenningsdramaturgi til teksten."
+        ),
+    },
+    "saturday": {
+        "label": "Lørdag - Jakt",
+        "deep_work": (
+            "Feltdag eller jaktforberedelse: jakt, viltstellearbeid eller "
+            "utstyrsvedlikehold i 3-4 timer (sesongavhengig)."
+        ),
+        "research": [
+            "Sjekk værmelding, vind og månefase for jaktterrenget.",
+            "Følg viltrapporter, fellingsstatistikk og forvaltningsnytt i ditt område.",
+            "Les om en jaktteknikk, art eller utstyrstest.",
+            "Loggfør observasjoner (spor, lyder, lys) som sanselig materiale.",
+        ],
+        "synergy": (
+            "Naturobservasjoner og lyssetting fra jaktterrenget er gull for "
+            "landskapskunst, naturlydopptak til musikk og location-research til video."
+        ),
+    },
+    "sunday": {
+        "label": "Søndag - Design og ukentlig integrasjon",
+        "deep_work": (
+            "Designarbeid (UI, grafisk eller produkt) på formiddagen; ukentlig "
+            "review og planlegging på ettermiddagen."
+        ),
+        "research": [
+            "Skann designtrender (typografi, produktlanseringer, portfolioer).",
+            "Oppsummer ukens fremdrift i alle seks andre disipliner med en kort logg.",
+            "Identifiser ukens beste tverrfaglige idé og planlegg hvor den skal brukes.",
+            "Sett tre hovedprioriteringer per disiplin for neste uke.",
+        ],
+        "synergy": (
+            "Søndagens review er limet i systemet: her kobles ukens innsikter "
+            "(aksjeideer, kunstreferanser, jaktinntrykk) bevisst til konkrete "
+            "oppgaver i neste ukes sykluser."
+        ),
+    },
+}
+
+MONTHLY_REVIEW_CHECKLIST: Tuple[str, ...] = (
+    "Porteføljegjennomgang: rebalanser, sjekk avkastning mot caset for hver "
+    "posisjon, og luk ut investeringer der avhandlingen ikke holder lenger.",
+    "Kunstarkiv: samle månedens beste skisser/bilder i en portefølje-mappe og "
+    "vurder hva som er utstillingsklart.",
+    "Musikk og video: status på pågående spor og klipp, sett en konkret "
+    "utgivelsesdato for minst ett verk.",
+    "Manusframdrift: tell ord eller sider skrevet, juster neste måneds "
+    "skrivemål, og send ut minst én tekst.",
+    "Jaktsesong og forvaltning: oppdater feltloggen, sjekk kommende sesonger "
+    "og kvoter, og vedlikehold utstyret.",
+    "Tverrfaglig idébank: gå gjennom notatene fra ukens 'tverrfaglig kobling' "
+    "og velg én eller to idéer å utvikle videre neste måned.",
+    "Sett tre fokusmål per disiplin for neste måned, og bekreft at "
+    "ukessyklusen fortsatt gir alle felt nok tid.",
+)
+
+
+def _normalize_day(label: Optional[str]) -> str:
+    """Resolve a day name (English, Norwegian, or 'today') to a canonical key."""
+
+    if not label or label.lower().strip() in {"today", "i dag", "idag"}:
+        return _WEEKDAY_ORDER[datetime.date.today().weekday()]
+    lowered = label.lower().strip()
+    if lowered in _DAY_ALIASES:
+        return _DAY_ALIASES[lowered]
+    raise ValueError(f"Unknown day: {label}")
+
+
+def build_workflow_plan(day_hint: Optional[str] = None) -> Solution:
+    """Return the multidisciplinary workflow plan for a given day (default: today)."""
+
+    day_key = _normalize_day(day_hint)
+    plan = WEEKLY_WORKFLOW[day_key]
+    answer = f"{plan['label']}: {plan['deep_work']}"
+    details = list(plan["research"])  # type: ignore[arg-type]
+    details.append(f"Tverrfaglig kobling: {plan['synergy']}")
+    return Solution(kind="Workflow", answer=answer, details=details)
+
+
+def build_weekly_overview() -> Solution:
+    """Return a one-line-per-day summary of the full weekly rotation."""
+
+    lines = [str(WEEKLY_WORKFLOW[day_key]["label"]) for day_key in _WEEKDAY_ORDER]
+    answer = "Ukesoversikt over de syv disiplinene:"
+    return Solution(kind="Weekly Overview", answer=answer, details=lines)
+
+
+def build_monthly_review() -> Solution:
+    """Return the monthly synthesis checklist that ties the disciplines together."""
+
+    answer = "Månedlig synteserunde (kjør denne siste helg i hver måned):"
+    return Solution(kind="Monthly Review", answer=answer, details=list(MONTHLY_REVIEW_CHECKLIST))
+
+
 def _brainstorm_steps(problem: str) -> Solution:
     steps = [
         "Name the goal in one joyful sentence.",
@@ -303,6 +492,26 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Choose the creative medium for prompt mode. Defaults to auto-detect.",
     )
     parser.add_argument(
+        "--workflow",
+        action="store_true",
+        help="Show the multidisciplinary workflow plan for a day (default: today).",
+    )
+    parser.add_argument(
+        "--day",
+        default=None,
+        help="Day to plan for in --workflow mode (English/Norwegian name, or 'today').",
+    )
+    parser.add_argument(
+        "--week",
+        action="store_true",
+        help="Show the full weekly overview across all seven disciplines.",
+    )
+    parser.add_argument(
+        "--monthly",
+        action="store_true",
+        help="Show the monthly review checklist that ties the disciplines together.",
+    )
+    parser.add_argument(
         "problem",
         nargs=argparse.REMAINDER,
         help="Tell me your problem to solve. Quotes are encouraged for multi-word puzzles!",
@@ -313,6 +522,18 @@ def _build_parser() -> argparse.ArgumentParser:
 def main(argv: Optional[Iterable[str]] = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
+
+    if args.week:
+        print(build_weekly_overview().format())
+        return 0
+
+    if args.monthly:
+        print(build_monthly_review().format())
+        return 0
+
+    if args.workflow:
+        print(build_workflow_plan(args.day).format())
+        return 0
 
     if not args.problem:
         parser.print_help()

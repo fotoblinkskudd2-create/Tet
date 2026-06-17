@@ -25,3 +25,20 @@ python app.py --prompt "poem about late-summer rain in the city"  # medium auto-
 ```
 
 The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+
+## Multidisciplinary workflow planner
+
+Use workflow mode to run a recurring daily/weekly/monthly cycle across seven
+disciplines (stocks/value investing, art, music, video, writing, hunting,
+design), so every field gets dedicated focus without being neglected:
+
+```bash
+python app.py --workflow                 # today's plan, auto-detected
+python app.py --workflow --day mandag    # plan for a specific day (NO or EN names)
+python app.py --week                     # full weekly overview
+python app.py --monthly                  # monthly cross-discipline review checklist
+```
+
+See [WORKFLOW_SYSTEM.md](WORKFLOW_SYSTEM.md) for the full strategy: the
+calendar structure, the per-discipline research routines, and how the
+disciplines are designed to cross-pollinate each other.
