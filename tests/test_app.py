@@ -15,6 +15,12 @@ def test_anagram_solver_finds_known_match():
     assert "silent" in solution.answer
 
 
+def test_anagram_solver_ignores_unscramble_filler_word():
+    solution = app.solve_problem("Unscramble an anagram of listen")
+    assert solution.kind == "Anagram"
+    assert "silent" in solution.answer
+
+
 def test_brainstorm_fallback_is_upbeat():
     solution = app.solve_problem("How do I organize my sock drawer?")
     assert solution.kind == "Brainstorm"
@@ -42,3 +48,12 @@ def test_panic_support_protocol_is_returned_for_panic_prompt():
     assert "you are safe" in solution.answer.lower()
     assert any("4, hold 4, exhale 6" in detail for detail in solution.details)
     assert any("emergency" in detail.lower() for detail in solution.details)
+
+
+def test_build_creative_prompt_rejects_blank_seed():
+    try:
+        app.build_creative_prompt("   ")
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Expected ValueError for a blank seed")

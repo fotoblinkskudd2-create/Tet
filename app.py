@@ -76,12 +76,18 @@ _ANAGRAM_LIBRARY: Dict[str, Tuple[str, ...]] = {
 
 
 def _solve_anagram(problem: str) -> Optional[Solution]:
-    pattern = re.compile(r"(?:anagram of|unscramble)\s+([A-Za-z]+)")
-    match = pattern.search(problem.lower())
-    if not match:
+    lowered = problem.lower()
+    if not re.search(r"anagram of|unscramble", lowered):
         return None
 
-    target = match.group(1)
+    words = re.findall(r"[a-z]+", lowered)
+    if not words:
+        return None
+
+    # The target word is conventionally the last one ("unscramble an
+    # anagram of listen"), so anchoring on the trigger phrase itself
+    # would grab a filler word like "an" instead.
+    target = words[-1]
     canonical = "".join(sorted(target))
     candidates: List[str] = []
     for source, words in _ANAGRAM_LIBRARY.items():
@@ -322,7 +328,11 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
 
     if args.prompt:
         medium_hint = None if args.medium == "auto" else args.medium
-        solution = build_creative_prompt(problem_text, medium_hint=medium_hint)
+        try:
+            solution = build_creative_prompt(problem_text, medium_hint=medium_hint)
+        except ValueError as exc:
+            print(f"Oops: {exc}")
+            return 1
     else:
         solution = solve_problem(problem_text)
     print(solution.format())
