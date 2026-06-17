@@ -119,6 +119,17 @@ _MEDIUM_SYNONYMS: Dict[str, Tuple[str, ...]] = {
     "music": ("song", "track", "audio"),
     "art": ("illustration", "drawing", "painting", "concept art"),
     "poem": ("poetry", "verse", "haiku", "sonnet"),
+    "code": (
+        "coding",
+        "program",
+        "programming",
+        "script",
+        "function",
+        "bug",
+        "refactor",
+        "claude",
+        "codex",
+    ),
 }
 
 _CREATIVE_RECIPES: Dict[str, Dict[str, object]] = {
@@ -180,6 +191,29 @@ _CREATIVE_RECIPES: Dict[str, Dict[str, object]] = {
             "State the form or line count to guide cadence.",
             "Offer two sensory images (sound + sight or touch) to keep it concrete.",
             "Suggest a closing turn or surprise to land the emotion.",
+        ],
+    },
+    "code": {
+        "title": "Code prompt",
+        "style": "Precise and unambiguous; state the goal before any implementation detail.",
+        "structure": (
+            "Context (repo/language/files), then the exact task, then constraints "
+            "(libraries, style, performance), then acceptance criteria (tests, examples, "
+            "edge cases)."
+        ),
+        "platform": (
+            "Written for coding agents like Claude Code and Codex: plain sentences, real "
+            "file paths, no filler, ready to paste into a chat or CLI."
+        ),
+        "delivery": (
+            "Ask for a diff or full file, the commands to run tests, and a short summary "
+            "of what changed and why."
+        ),
+        "details": [
+            "Name the exact files or functions to touch so the agent does not guess scope.",
+            "State inputs, outputs, and at least one edge case or failure mode to handle.",
+            "Specify the language/runtime version and any libraries that are off-limits.",
+            "Ask for tests (or test commands) so the change is verifiable, not just plausible.",
         ],
     },
 }
@@ -298,7 +332,7 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--medium",
-        choices=["photo", "video", "music", "art", "poem", "auto"],
+        choices=["photo", "video", "music", "art", "poem", "code", "auto"],
         default="auto",
         help="Choose the creative medium for prompt mode. Defaults to auto-detect.",
     )

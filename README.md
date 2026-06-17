@@ -25,3 +25,15 @@ python app.py --prompt "poem about late-summer rain in the city"  # medium auto-
 ```
 
 The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+
+## Build the world's best code prompt for Claude and Codex
+
+Use `--medium code` to turn a rough idea into a precise, agent-ready prompt for coding
+assistants like Claude Code and Codex. It pushes you to name the files in scope, the
+constraints, and the acceptance criteria up front, so the agent has everything it needs
+to do the job right the first time:
+
+```bash
+python app.py --prompt --medium code "refactor the auth login handler to validate emails"
+python app.py --prompt "fix the off-by-one bug in the pagination function"  # medium auto-detected
+```
