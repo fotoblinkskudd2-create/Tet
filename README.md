@@ -25,3 +25,15 @@ python app.py --prompt "poem about late-summer rain in the city"  # medium auto-
 ```
 
 The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+
+## OpenClaw multi-agent workflows
+
+The `openclaw/` package holds Scout → Processor → Finalizer agent pipelines for engineering, biomechanical, acoustic, and creative side projects (AbyssLatch, SeneDrakt, DR-2, VORTEX-LOCK, LYTTEPOST, Sonic Visualization, DYPLADER, and the Norwegian AI prompt suite).
+
+```bash
+python openclaw/openclaw_extensions.py       # Run the AbyssLatch scout/processor/finalizer example
+python openclaw/claude_code_integration.py   # Run the default integration workflow
+python openclaw/concrete_tasks.py            # Run all 7 quick engineering/creative calculations
+```
+
+Each workflow function can also be imported directly, e.g. `from openclaw.concrete_tasks import task_1_abysslatch_gasket_seating`. See `tests/test_openclaw.py` for examples covering every agent pipeline and task.
