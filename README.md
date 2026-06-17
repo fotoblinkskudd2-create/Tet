@@ -22,6 +22,8 @@ Use prompt mode when you want a ready-to-paste creative brief for photos, video,
 python app.py --prompt --medium photo "misty forest boardwalk at dawn"
 python app.py --prompt --medium music "uplifting synthwave for launch video"
 python app.py --prompt "poem about late-summer rain in the city"  # medium auto-detected
+python app.py --prompt --medium photo "wide panorama of a mountain range at sunset"
+python app.py --prompt --medium art --wide "city skyline at golden hour"
 ```
 
-The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form. Photo and art prompts default to vertical/mobile framing but switch to wide, panoramic delivery notes automatically when the seed mentions words like "wide" or "panorama" — or you can force it with `--wide`.

@@ -36,6 +36,26 @@ def test_creative_prompt_auto_detects_poem():
     assert any("form" in detail.lower() for detail in solution.details)
 
 
+def test_creative_prompt_detects_wide_from_text():
+    solution = app.build_creative_prompt(
+        "wide panorama of a mountain range at sunset", medium_hint="photo"
+    )
+    assert "21:9" in solution.answer or "16:9" in solution.answer
+    assert "vertical" not in solution.answer.lower()
+    assert any("horizontal sweep" in detail.lower() for detail in solution.details)
+
+
+def test_creative_prompt_wide_flag_forces_wide_framing():
+    solution = app.build_creative_prompt("a curious cat", medium_hint="photo", wide=True)
+    assert "panoramic" in solution.answer.lower() or "16:9" in solution.answer
+    assert "vertical" not in solution.answer.lower()
+
+
+def test_creative_prompt_defaults_to_vertical_without_wide_cues():
+    solution = app.build_creative_prompt("a curious cat napping", medium_hint="photo")
+    assert "vertical orientation" in solution.answer.lower()
+
+
 def test_panic_support_protocol_is_returned_for_panic_prompt():
     solution = app.solve_problem("I think I am having a panic attack and my heart is racing")
     assert solution.kind == "Panic Support"

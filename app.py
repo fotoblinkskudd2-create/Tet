@@ -128,6 +128,7 @@ _CREATIVE_RECIPES: Dict[str, Dict[str, object]] = {
         "structure": "Subject first, then context, then lighting and framing, plus a camera cue (lens or aperture).",
         "platform": "Keep it in two short sentences so it pastes cleanly into iOS web fields.",
         "delivery": "Ask for vertical orientation, high resolution, and gentle post-processing.",
+        "delivery_wide": "Ask for wide/panoramic orientation (16:9 or 21:9), an expansive horizon, high resolution, and gentle post-processing.",
         "details": [
             "Mention time of day and light direction to control shadows.",
             "Call out focal length or depth of field for focus hierarchy.",
@@ -164,6 +165,7 @@ _CREATIVE_RECIPES: Dict[str, Dict[str, object]] = {
         "structure": "Subject + silhouette, palette direction, and a texture or brushwork note.",
         "platform": "Two or three compact sentences that stay crisp when pasted into mobile web tools.",
         "delivery": "Request balanced negative space and export-ready at print-safe resolution.",
+        "delivery_wide": "Request a wide panoramic canvas (21:9), balanced negative space across the horizontal sweep, and export-ready at print-safe resolution.",
         "details": [
             "Describe lighting or shading style (rim light, chiaroscuro, subsurface glow).",
             "Mention perspective or lens feel for depth (isometric, 35mm, telephoto compression).",
@@ -203,22 +205,45 @@ def _detect_medium_from_text(text: str) -> Optional[str]:
     return None
 
 
-def _shape_creative_prompt(seed: str, medium: str) -> Tuple[str, List[str]]:
+_WIDE_KEYWORDS: Tuple[str, ...] = (
+    "wide",
+    "widescreen",
+    "panorama",
+    "panoramic",
+    "ultrawide",
+    "landscape format",
+    "bred",
+    "panoramautsikt",
+    "vidvinkel",
+)
+
+
+def _detect_wide_orientation(text: str) -> bool:
+    lowered = text.lower()
+    return any(keyword in lowered for keyword in _WIDE_KEYWORDS)
+
+
+def _shape_creative_prompt(seed: str, medium: str, wide: bool) -> Tuple[str, List[str]]:
     profile = _CREATIVE_RECIPES[medium]
     cleaned_seed = seed.strip().rstrip(".")
+    delivery = profile["delivery_wide"] if wide and "delivery_wide" in profile else profile["delivery"]
     answer = (
         f"{profile['title']}: {cleaned_seed}. "
         f"Style: {profile['style']} "
         f"Structure: {profile['structure']} "
         f"Platform fit: {profile['platform']} "
-        f"Delivery notes: {profile['delivery']}"
+        f"Delivery notes: {delivery}"
     )
     details = list(profile["details"])  # type: ignore[arg-type]
+    if wide and "delivery_wide" in profile:
+        details.append("Wide framing: compose for a horizontal sweep and keep the focal subject within the central third for crops.")
     details.append("Mobile-first: short sentences, no markdown, ready for iOS web share sheets.")
     return answer, details
 
 
-def build_creative_prompt(seed: str, medium_hint: Optional[str] = None) -> Solution:
+def build_creative_prompt(
+    seed: str, medium_hint: Optional[str] = None, wide: Optional[bool] = None
+) -> Solution:
     """Turn a short idea into a structured creative prompt for multiple mediums."""
 
     if not seed or not seed.strip():
@@ -229,7 +254,8 @@ def build_creative_prompt(seed: str, medium_hint: Optional[str] = None) -> Solut
         or _detect_medium_from_text(seed)
         or "art"
     )
-    answer, details = _shape_creative_prompt(seed, normalized)
+    is_wide = wide if wide is not None else _detect_wide_orientation(seed)
+    answer, details = _shape_creative_prompt(seed, normalized, is_wide)
     return Solution(kind="Creative Prompt", answer=answer, details=details)
 
 
@@ -303,6 +329,12 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Choose the creative medium for prompt mode. Defaults to auto-detect.",
     )
     parser.add_argument(
+        "--wide",
+        action="store_true",
+        help="Force wide/panoramic framing for photo and art prompts. Auto-detected from "
+        "wording like 'wide' or 'panorama' when omitted.",
+    )
+    parser.add_argument(
         "problem",
         nargs=argparse.REMAINDER,
         help="Tell me your problem to solve. Quotes are encouraged for multi-word puzzles!",
@@ -322,7 +354,8 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
 
     if args.prompt:
         medium_hint = None if args.medium == "auto" else args.medium
-        solution = build_creative_prompt(problem_text, medium_hint=medium_hint)
+        wide_hint = True if args.wide else None
+        solution = build_creative_prompt(problem_text, medium_hint=medium_hint, wide=wide_hint)
     else:
         solution = solve_problem(problem_text)
     print(solution.format())
