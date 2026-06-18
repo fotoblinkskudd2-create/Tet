@@ -10,6 +10,8 @@ import re
 from dataclasses import dataclass
 from typing import Callable, Dict, Iterable, List, Optional, Tuple
 
+import prompt_pack
+
 
 @dataclass
 class Solution:
@@ -303,6 +305,26 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Choose the creative medium for prompt mode. Defaults to auto-detect.",
     )
     parser.add_argument(
+        "--pack",
+        action="store_true",
+        help="Print the massive coding prompt pack for Codex and Claude Code.",
+    )
+    parser.add_argument(
+        "--agent",
+        choices=["codex", "claude-code", "all"],
+        default="all",
+        help="Filter the prompt pack to one coding agent. Defaults to all.",
+    )
+    parser.add_argument(
+        "--category",
+        help="Filter the prompt pack to a single category (see --list-categories).",
+    )
+    parser.add_argument(
+        "--list-categories",
+        action="store_true",
+        help="List the available prompt-pack categories and exit.",
+    )
+    parser.add_argument(
         "problem",
         nargs=argparse.REMAINDER,
         help="Tell me your problem to solve. Quotes are encouraged for multi-word puzzles!",
@@ -310,9 +332,33 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def run_prompt_pack(agent: str, category: Optional[str]) -> int:
+    """Print the coding prompt pack, optionally filtered by agent/category."""
+
+    selected_agent = None if agent == "all" else agent
+    if category and category not in prompt_pack.categories():
+        available = ", ".join(prompt_pack.categories())
+        print(f"Unknown category '{category}'. Available: {available}")
+        return 1
+
+    rendered = prompt_pack.render_pack(agent=selected_agent, category=category)
+    if not rendered:
+        print("No prompts matched that filter.")
+        return 1
+    print(rendered)
+    return 0
+
+
 def main(argv: Optional[Iterable[str]] = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
+
+    if args.list_categories:
+        print("\n".join(prompt_pack.categories()))
+        return 0
+
+    if args.pack:
+        return run_prompt_pack(args.agent, args.category)
 
     if not args.problem:
         parser.print_help()
