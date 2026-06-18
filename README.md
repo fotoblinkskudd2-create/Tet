@@ -25,3 +25,27 @@ python app.py --prompt "poem about late-summer rain in the city"  # medium auto-
 ```
 
 The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+
+## Byggeprosjekter (construction project tracker)
+
+A small full-stack app for registering construction projects with budget/value tracking, located in `backend/` (Express + TypeScript + Postgres) and `frontend/` (Next.js + TypeScript).
+
+### Setup
+
+```bash
+# Database (requires a running Postgres instance)
+cp backend/.env.example backend/.env  # edit DATABASE_URL/JWT_SECRET
+cd backend && npm install && npm run migrate
+
+# Backend API (http://localhost:4000)
+npm run dev
+
+# Frontend (http://localhost:3000, in another terminal)
+cd ../frontend && npm install && npm run dev
+```
+
+### Features
+
+- User accounts (signup/login/logout) backed by Postgres, sessions via httpOnly JWT cookie.
+- Register, list, edit, and delete construction projects: name, address, status, start/end date, budget, and current value.
+- Each user only sees and manages their own projects.

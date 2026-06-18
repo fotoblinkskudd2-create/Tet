@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { apiFetch } from '../../lib/api';
+import { PublicUser } from '../../lib/types';
 
 export default function SignupPage() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -14,18 +18,12 @@ export default function SignupPage() {
     setMessage(null);
 
     try {
-      const response = await fetch('/api/auth/signup', {
+      await apiFetch<PublicUser>('/api/auth/signup', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, username, password }),
       });
 
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || 'Kunne ikke opprette bruker');
-      }
-
-      setMessage(`Bruker ${data.username} ble opprettet!`);
+      router.push('/');
     } catch (error) {
       setMessage((error as Error).message);
     } finally {

@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { apiFetch } from '../../lib/api';
+import { PublicUser } from '../../lib/types';
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState<string | null>(null);
@@ -13,18 +17,12 @@ export default function LoginPage() {
     setMessage(null);
 
     try {
-      const response = await fetch('/api/auth/login', {
+      await apiFetch<PublicUser>('/api/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || 'Kunne ikke logge inn');
-      }
-
-      setMessage(`Velkommen tilbake, ${data.username}!`);
+      router.push('/');
     } catch (error) {
       setMessage((error as Error).message);
     } finally {
