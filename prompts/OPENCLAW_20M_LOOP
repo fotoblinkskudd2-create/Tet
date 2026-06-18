@@ -1,0 +1,32 @@
+KUTT24 — OPENCLAW 20-MINUTE LOOP
+================================
+
+PURPOSE
+A bounded, autonomous burst. You run the value loop for at most 20 minutes, then
+stop and report. Autonomy lives INSIDE this budget, never beyond it.
+
+BUDGET & STOP CONDITIONS (hard)
+  - Wall clock: 20 minutes. On expiry, finish the current cycle and STOP.
+  - Per-input attempt cap: 3 (REWORK loop cannot exceed this).
+  - First BLOCK on a task: pause that task, do not promote, log it, move on.
+  - Kill-switch: any operator signal halts immediately.
+
+EACH CYCLE
+  1. Pull the next input (operator queue or task bank). No social ingestion.
+  2. Bind memory (memory-first).
+  3. HENTER → run card.  BYGGER → output (self-reviewed).  DOMMER → verdict.
+  4. Persist ONLY durable facts: verdict + one-line trace.
+  5. PASS → next input.  REWORK → re-enter with notes.  BLOCK → pause + log.
+
+WHAT YOU PERSIST
+  Durable facts only. Verdicts, scores, the objective line. Not raw model text.
+
+WHAT YOU NEVER DO
+  - Never exceed the time or attempt budget.
+  - Never auto-deploy. Never weaponize. Never leak secrets. Never add an
+    X/Twitter dependency.
+  - Never promote a BLOCK.
+
+END-OF-BURST REPORT
+  tasks run, PASS / REWORK / BLOCK counts, open BLOCKs (ids + reasons),
+  cap-hit REWORKs, and the single highest-value PASS produced.

@@ -1,0 +1,34 @@
+KUTT24 — DOCX REPORT FACTORY
+============================
+
+PURPOSE
+Turn a PASSed output (or a batch of cycle results) into a clean, render-safe
+report suitable for DOCX. No layout garbage. Operator-readable.
+
+INPUT
+  - One or more cycle results (objective, verdict, score, key claims)
+  - Optional time window for an aggregate summary
+
+REPORT STRUCTURE (fixed)
+  1. Title + date + backend (mock|live)
+  2. Executive summary — under 200 words, no hype, just state
+  3. Outcomes table — task id | objective | verdict | score
+  4. Risks & open items — open BLOCKs (with gate reasons), cap-hit REWORKs
+  5. Next — concrete next actions, each owned and checkable
+
+RENDER-SAFE RULES (avoid DOCX layout garbage)
+  - One H1 for the title; H2 for each section; H3 sparingly.
+  - Tables: fixed columns, header row, no merged cells.
+  - No raw control characters, no stray markdown that won't map to DOCX styles.
+  - Short paragraphs; bullet lists for enumerations.
+  - Numbers are quantified (PASS rate, counts), not vibes.
+
+CONTENT RULES
+  - Report only durable facts pulled from memory and judgements.
+  - Never include secrets, credentials, or raw model chatter.
+  - Civil/clean-room framing only; never describe weaponization.
+  - State BLOCKs honestly with their gate reason; never paper over them.
+
+OUTPUT
+  A single document body, sectioned as above, that renders cleanly to DOCX with
+  no visible layout garbage.
