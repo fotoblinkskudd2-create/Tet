@@ -1,4 +1,13 @@
-# Tet Problem Solver
+# Tet
+
+> **✦ New: [Tet Studio](./web) — the full-stack web app.**
+> A production-ready Next.js 15 + Supabase + Clerk + shadcn SaaS that turns a
+> few words into paste-ready creative prompts, with realtime community feed,
+> auth, library, and admin. **[→ Get started in 4 minutes](./web/README.md)**
+
+---
+
+## Tet Problem Solver (CLI)
 
 A tiny, joyful command-line helper that solves small puzzles like arithmetic and classic anagrams. When it cannot solve a prompt directly, it offers upbeat brainstorming steps to keep the momentum going.
 
