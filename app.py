@@ -10,6 +10,8 @@ import re
 from dataclasses import dataclass
 from typing import Callable, Dict, Iterable, List, Optional, Tuple
 
+import prompt_pack
+
 
 @dataclass
 class Solution:
@@ -303,6 +305,23 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Choose the creative medium for prompt mode. Defaults to auto-detect.",
     )
     parser.add_argument(
+        "--pack",
+        action="store_true",
+        help="Emit a massive coding prompt pack for Codex and Claude Code.",
+    )
+    parser.add_argument(
+        "--agent",
+        choices=["codex", "claude-code", "both"],
+        default="both",
+        help="Target agent for --pack mode. Defaults to both.",
+    )
+    parser.add_argument(
+        "--category",
+        choices=prompt_pack.category_keys(),
+        default=None,
+        help="Limit --pack to a single category. Defaults to every category.",
+    )
+    parser.add_argument(
         "problem",
         nargs=argparse.REMAINDER,
         help="Tell me your problem to solve. Quotes are encouraged for multi-word puzzles!",
@@ -314,11 +333,21 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
 
+    problem_text = " ".join(args.problem)
+
+    if args.pack:
+        # Topic is optional in pack mode—an empty pack still ships templates.
+        pack = prompt_pack.build_prompt_pack(
+            agent=args.agent,
+            category=args.category,
+            topic=problem_text or None,
+        )
+        print(pack.format())
+        return 0
+
     if not args.problem:
         parser.print_help()
         return 0
-
-    problem_text = " ".join(args.problem)
 
     if args.prompt:
         medium_hint = None if args.medium == "auto" else args.medium
