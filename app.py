@@ -10,6 +10,8 @@ import re
 from dataclasses import dataclass
 from typing import Callable, Dict, Iterable, List, Optional, Tuple
 
+import biomimetic
+
 
 @dataclass
 class Solution:
@@ -287,6 +289,33 @@ def solve_problem(problem: str) -> Solution:
     return _brainstorm_steps(problem)
 
 
+def _format_idea_list() -> str:
+    """List the biomimetic catalog as a compact, scannable menu."""
+
+    lines = ["🧬 Biomimetic product factory — 10 prototype concepts:"]
+    for idea in biomimetic.list_ideas():
+        lines.append(f"  - {idea.name}: {idea.organism} → {idea.problem}")
+    lines.append("")
+    lines.append("Run `--prototype <name>` to expand one into a build brief.")
+    return "\n".join(lines)
+
+
+def _format_prototype(name: str) -> str:
+    """Expand one named idea (or all, when no name is given) into briefs."""
+
+    name = name.strip()
+    if not name:
+        specs = biomimetic.build_all_prototypes()
+        return "\n\n".join(spec.format() for spec in specs)
+
+    idea = biomimetic.get_idea(name)
+    if idea is None:
+        return (
+            f"No biomimetic idea matched '{name}'.\n\n" + _format_idea_list()
+        )
+    return biomimetic.build_prototype(idea).format()
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="A joyful assistant that tackles small problems with gusto!",
@@ -303,6 +332,16 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Choose the creative medium for prompt mode. Defaults to auto-detect.",
     )
     parser.add_argument(
+        "--prototype",
+        action="store_true",
+        help="Expand a biomimetic idea into a build-ready prototype brief.",
+    )
+    parser.add_argument(
+        "--list-ideas",
+        action="store_true",
+        help="List the biomimetic product catalog.",
+    )
+    parser.add_argument(
         "problem",
         nargs=argparse.REMAINDER,
         help="Tell me your problem to solve. Quotes are encouraged for multi-word puzzles!",
@@ -314,11 +353,19 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
 
+    problem_text = " ".join(args.problem)
+
+    if args.list_ideas:
+        print(_format_idea_list())
+        return 0
+
+    if args.prototype:
+        print(_format_prototype(problem_text))
+        return 0
+
     if not args.problem:
         parser.print_help()
         return 0
-
-    problem_text = " ".join(args.problem)
 
     if args.prompt:
         medium_hint = None if args.medium == "auto" else args.medium

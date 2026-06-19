@@ -25,3 +25,19 @@ python app.py --prompt "poem about late-summer rain in the city"  # medium auto-
 ```
 
 The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+
+## Biomimetic product factory
+
+Turn the OpenClaw idea list into structured, build-ready prototype briefs. Each
+of the 10 ideas couples a biological mechanism to a subsea / arctic engineering
+problem, with subsystems, a phased build path, and measurable acceptance
+criteria mirrored from the Grovjobb Navigator requirements.
+
+```bash
+python app.py --list-ideas                 # scan the 10 concepts
+python app.py --prototype IsKlo            # expand one into a build brief
+python app.py --prototype                  # expand every idea
+```
+
+Lookup is case-insensitive and accepts partial names (e.g. `--prototype mussel`).
+The catalog lives in `biomimetic.py`.
