@@ -25,3 +25,20 @@ python app.py --prompt "poem about late-summer rain in the city"  # medium auto-
 ```
 
 The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+
+## Play Anagram Arena
+
+A fast, replayable word game built on Tet's playful spirit. A pot of letters
+appears and you race the clock to make as many words as you can—longer words
+score more, and a clean streak builds a combo multiplier. Pure standard
+library, so it runs offline.
+
+```bash
+python anagram_arena.py            # play a 60s round (7-letter pot)
+python anagram_arena.py --time 90  # longer round
+python anagram_arena.py --pot 9    # bigger letter pot
+python anagram_arena.py --seed 42  # repeatable pot for practice or sharing
+```
+
+Words must be at least three letters, use only letters from the pot, and exist
+in the word list. Your best score is saved locally between rounds.
