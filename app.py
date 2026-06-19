@@ -233,6 +233,99 @@ def build_creative_prompt(seed: str, medium_hint: Optional[str] = None) -> Solut
     return Solution(kind="Creative Prompt", answer=answer, details=details)
 
 
+_COMMITMENT_FLAVORS: Dict[str, Dict[str, str]] = {
+    "event": {
+        "label": "arrangementet",
+        "headline": "Dette er ikke et vanlig arrangement. Dette er en sosial kontrakt.",
+        "default_trigger": "kvelden før kl 20",
+        "default_action": "pakker det jeg trenger og legger ut en kort story",
+    },
+    "dugnad": {
+        "label": "dugnaden",
+        "headline": "Dette er ikke en vanlig dugnad. Dette er en sosial kontrakt.",
+        "default_trigger": "kvelden før",
+        "default_action": "legger frem klær og verktøy og setter alarm",
+    },
+    "fest": {
+        "label": "festen",
+        "headline": "Dette er ikke en vanlig fest. Dette er en sosial kontrakt.",
+        "default_trigger": "to timer før",
+        "default_action": "begynner å gjøre meg klar og sier ifra i tråden",
+    },
+    "aksjon": {
+        "label": "aksjonen",
+        "headline": "Dette er ikke en vanlig aksjon. Dette er en sosial kontrakt.",
+        "default_trigger": "morgenen samme dag",
+        "default_action": "møter opp på avtalt sted og melder meg klar",
+    },
+}
+
+_DEFAULT_COMMITMENT_FLAVOR = "event"
+
+
+def _resolve_commitment_flavor(kind: Optional[str]) -> Tuple[str, Dict[str, str]]:
+    key = (kind or _DEFAULT_COMMITMENT_FLAVOR).lower().strip()
+    if key not in _COMMITMENT_FLAVORS:
+        key = _DEFAULT_COMMITMENT_FLAVOR
+    return key, _COMMITMENT_FLAVORS[key]
+
+
+def build_commitment_post(
+    activity: str,
+    *,
+    kind: Optional[str] = None,
+    when: Optional[str] = None,
+    referee: Optional[str] = None,
+    stake: Optional[str] = None,
+) -> Solution:
+    """Build a ready-to-paste Facebook "social contract" post.
+
+    Combines proven behavioral-psychology mechanisms—public commitment,
+    implementation intentions (if-then), an accountability referee, a stake
+    (loss aversion), identity framing and social proof—so people are far more
+    likely to actually show up instead of flaking.
+    """
+
+    if not activity or not activity.strip():
+        raise ValueError("Please describe the activity people are committing to.")
+
+    _, flavor = _resolve_commitment_flavor(kind)
+    activity_text = activity.strip().rstrip(".")
+    when_text = (when or "[dato + klokkeslett]").strip()
+    referee_text = (referee or "[tagg en venn]").strip()
+    stake_text = (
+        stake.strip()
+        if stake and stake.strip()
+        else "en offentlig unnskyldning i denne tråden"
+    )
+
+    post_lines = [
+        flavor["headline"],
+        "Kun de som committer seg 100 % er velkomne. Kommenter med denne malen:",
+        "",
+        f'"Jeg committer meg 100 % til {activity_text} ({when_text}).',
+        f'Hvis {flavor["default_trigger"]}, så {flavor["default_action"]}.',
+        f"Min referee er {referee_text}, som kaller meg ut offentlig hvis jeg flaker.",
+        "Jeg er en som holder det jeg lover.",
+        f'Flaker jeg, poster jeg {stake_text}."',
+        "",
+        f"De andre planlegger rundt deg fordi de stoler på at du kommer. "
+        f"Allerede flere committed med referee—oppdater Committed-listen under.",
+    ]
+    answer = "\n".join(post_lines)
+
+    details = [
+        "Offentlig commitment (Cialdini): det folk skriver offentlig, lever de opp til for å være konsistente.",
+        "If-then-plan (implementation intentions): en konkret trigger+handling dobler sjansen for oppmøte.",
+        "Referee: en navngitt ansvarlig-venn gir sosialt press og øker suksess kraftig.",
+        "Stake (loss aversion): en liten konsekvens svir mer enn en gevinst frister.",
+        "Identitet: 'Jeg er en som holder det jeg lover' kobler oppmøtet til selvbildet.",
+        "Sosial proof: vis en levende Committed-liste og snitt-oppmøte for å sette normen.",
+        "Vær ærlig om mekanismene, hold tonen lett, og tell lovet vs. møtte opp til neste gang.",
+    ]
+    return Solution(kind="Commitment Contract", answer=answer, details=details)
+
+
 def _brainstorm_steps(problem: str) -> Solution:
     steps = [
         "Name the goal in one joyful sentence.",
@@ -303,6 +396,29 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Choose the creative medium for prompt mode. Defaults to auto-detect.",
     )
     parser.add_argument(
+        "--commit",
+        action="store_true",
+        help="Build a copy-paste Facebook 'social contract' post that boosts real attendance.",
+    )
+    parser.add_argument(
+        "--kind",
+        choices=["event", "dugnad", "fest", "aksjon"],
+        default="event",
+        help="Tone of the commitment post. Defaults to event.",
+    )
+    parser.add_argument(
+        "--when",
+        help="When the activity happens, e.g. 'lørdag 21. juni kl 10'.",
+    )
+    parser.add_argument(
+        "--referee",
+        help="Name/handle of the accountability referee who calls out flaking.",
+    )
+    parser.add_argument(
+        "--stake",
+        help="Consequence for flaking, e.g. '200 kr til veldedighet + offentlig unnskyldning'.",
+    )
+    parser.add_argument(
         "problem",
         nargs=argparse.REMAINDER,
         help="Tell me your problem to solve. Quotes are encouraged for multi-word puzzles!",
@@ -320,7 +436,15 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
 
     problem_text = " ".join(args.problem)
 
-    if args.prompt:
+    if args.commit:
+        solution = build_commitment_post(
+            problem_text,
+            kind=args.kind,
+            when=args.when,
+            referee=args.referee,
+            stake=args.stake,
+        )
+    elif args.prompt:
         medium_hint = None if args.medium == "auto" else args.medium
         solution = build_creative_prompt(problem_text, medium_hint=medium_hint)
     else:

@@ -25,3 +25,17 @@ python app.py --prompt "poem about late-summer rain in the city"  # medium auto-
 ```
 
 The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+
+## Build a Facebook commitment post (beat the flaking)
+
+Commitment mode turns proven behavioral psychology into a ready-to-paste "social contract" post that makes people far more likely to actually show up. It combines a public written commitment, an if-then plan (implementation intention), an accountability referee, a stake (loss aversion), identity framing, and social proof:
+
+```bash
+python app.py --commit --kind dugnad --when "lørdag kl 10" --referee "@Kari" \
+  --stake "200 kr til veldedighet" "ryddedugnad i parken"
+```
+
+- `--kind` sets the tone: `event` (default), `dugnad`, `fest`, or `aksjon`.
+- `--when`, `--referee`, and `--stake` are optional—missing fields become clearly marked placeholders to fill in.
+
+The answer is the copy-paste post; the bullet points explain why each mechanism works so you can tune it for your group.

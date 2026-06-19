@@ -36,6 +36,40 @@ def test_creative_prompt_auto_detects_poem():
     assert any("form" in detail.lower() for detail in solution.details)
 
 
+def test_commitment_post_combines_core_mechanisms():
+    solution = app.build_commitment_post(
+        "ryddedugnad i parken",
+        kind="dugnad",
+        when="lørdag kl 10",
+        referee="@Kari",
+        stake="200 kr til veldedighet",
+    )
+    assert solution.kind == "Commitment Contract"
+    assert "ryddedugnad i parken" in solution.answer
+    assert "lørdag kl 10" in solution.answer
+    assert "@Kari" in solution.answer
+    assert "200 kr til veldedighet" in solution.answer
+    assert "sosial kontrakt" in solution.answer.lower()
+    assert "Hvis" in solution.answer and "så" in solution.answer
+    assert any("referee" in detail.lower() for detail in solution.details)
+
+
+def test_commitment_post_uses_placeholders_when_optional_fields_missing():
+    solution = app.build_commitment_post("kveldstur")
+    assert "[dato + klokkeslett]" in solution.answer
+    assert "[tagg en venn]" in solution.answer
+    assert "offentlig unnskyldning" in solution.answer
+
+
+def test_commitment_post_requires_activity():
+    try:
+        app.build_commitment_post("   ")
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Expected ValueError for empty activity")
+
+
 def test_panic_support_protocol_is_returned_for_panic_prompt():
     solution = app.solve_problem("I think I am having a panic attack and my heart is racing")
     assert solution.kind == "Panic Support"
