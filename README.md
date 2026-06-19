@@ -25,3 +25,28 @@ python app.py --prompt "poem about late-summer rain in the city"  # medium auto-
 ```
 
 The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+
+## Bergen Dream Orchestrator
+
+Run a full, weather-aware creative day for Bergen in one command. Unlike a
+hand-typed run, every item is actually generated — no "the rest are
+variations" placeholders. Output is seeded from the date, so the same day is
+reproducible while a different `--seed` forks an alternate version.
+
+```bash
+python app.py --bergen                       # full run: 50 video + 60 image prompts, poems, inventions
+python app.py --bergen --summary             # compact, mobile-friendly overview
+python app.py --bergen --section video       # only the video prompts
+python app.py --bergen --weather osregn      # force a weather archetype
+python app.py --bergen --seed myday-2 --videos 80 --images 90
+```
+
+Each run includes:
+
+- A weather archetype (regnbyger, osregn, take, opphold, sol, vind) and the mood it invites.
+- A time-blocked creative day plan that adapts to the weather.
+- Fully unique, combinatorially generated video and image prompts (Midjourney/Flux-ready).
+- A batch of Norwegian Bergen poems with varied composition.
+- Concrete inventions, each with a benefit and a next step.
+
+Sections: `all`, `plan`, `dreams`, `video`, `image`, `poems`, `inventions`.

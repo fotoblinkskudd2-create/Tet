@@ -8,7 +8,10 @@ import ast
 import operator
 import re
 from dataclasses import dataclass
+from datetime import date
 from typing import Callable, Dict, Iterable, List, Optional, Tuple
+
+import bergen
 
 
 @dataclass
@@ -303,6 +306,44 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Choose the creative medium for prompt mode. Defaults to auto-detect.",
     )
     parser.add_argument(
+        "--bergen",
+        action="store_true",
+        help="Run the Bergen Dream Orchestrator: a full weather-aware day of prompts, poems, and inventions.",
+    )
+    parser.add_argument(
+        "--seed",
+        default=None,
+        help="Seed for the Bergen orchestrator. Defaults to the date for reproducible runs.",
+    )
+    parser.add_argument(
+        "--weather",
+        default=None,
+        help="Force a Bergen weather archetype (e.g. regnbyger, osregn, take, opphold, sol, vind).",
+    )
+    parser.add_argument(
+        "--videos",
+        type=int,
+        default=50,
+        help="How many unique video prompts the Bergen orchestrator should generate.",
+    )
+    parser.add_argument(
+        "--images",
+        type=int,
+        default=60,
+        help="How many unique image prompts the Bergen orchestrator should generate.",
+    )
+    parser.add_argument(
+        "--section",
+        choices=["all", "plan", "dreams", "video", "image", "poems", "inventions"],
+        default="all",
+        help="Render only one section of the Bergen run.",
+    )
+    parser.add_argument(
+        "--summary",
+        action="store_true",
+        help="Print a compact, mobile-friendly summary of the Bergen run.",
+    )
+    parser.add_argument(
         "problem",
         nargs=argparse.REMAINDER,
         help="Tell me your problem to solve. Quotes are encouraged for multi-word puzzles!",
@@ -313,6 +354,23 @@ def _build_parser() -> argparse.ArgumentParser:
 def main(argv: Optional[Iterable[str]] = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
+
+    if args.bergen:
+        try:
+            run = bergen.orchestrate(
+                date.today(),
+                seed=args.seed,
+                weather_key=args.weather,
+                video_count=args.videos,
+                image_count=args.images,
+            )
+        except ValueError as exc:
+            parser.error(str(exc))
+        if args.summary:
+            print(bergen.render_summary(run))
+        else:
+            print(bergen.render_run(run, section=args.section))
+        return 0
 
     if not args.problem:
         parser.print_help()
