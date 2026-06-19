@@ -25,3 +25,14 @@ python app.py --prompt "poem about late-summer rain in the city"  # medium auto-
 ```
 
 The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+
+## Optimize a game strategy
+
+Use strategy mode to turn a list of units, resources, or buildings into a maxed-out, ROI-ranked build plan. Every element is simulated to its top level, boosted by a synergy multiplier, and (by default) celebrated with a +50% birthday buff:
+
+```bash
+python app.py --strategy "3 archers, gold mine and barracks"
+python app.py --strategy --no-birthday "town hall, lumber camp, wall"
+```
+
+Separate elements with commas, semicolons, `and`/`og`, `+`, `&`, or new lines. Prefix a count (for example `3 archers` or `3x archers`) to scale that element's value. The output lists each element at its maximum level with its final value and ROI, then recommends the fastest-payoff build order.

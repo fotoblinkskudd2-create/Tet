@@ -277,6 +277,110 @@ def _solve_panic_support(problem: str) -> Optional[Solution]:
     return Solution(kind="Panic Support", answer=answer, details=details)
 
 
+_STRATEGY_MAX_LEVEL = 10
+_STRATEGY_BASE_VALUE = 100
+_STRATEGY_BIRTHDAY_BUFF = 1.5
+_STRATEGY_SPLIT_PATTERN = re.compile(r"\s*(?:,|;|/|&|\+|\n|\band\b|\bog\b)\s*", re.IGNORECASE)
+_STRATEGY_QUANTITY_PATTERN = re.compile(r"^(\d+)\s*[xX]?\s+(.+)$")
+
+
+@dataclass
+class StrategyElement:
+    """A single maximized game element in an optimization plan."""
+
+    name: str
+    quantity: int
+    max_level: int
+    final_value: float
+    roi: float
+
+
+def _format_number(value: float) -> str:
+    """Render a value as a clean, thousands-separated integer."""
+
+    return f"{int(round(value)):,}"
+
+
+def _parse_strategy_elements(text: str) -> List[Tuple[str, int]]:
+    """Split free-form input into (name, quantity) pairs."""
+
+    parsed: List[Tuple[str, int]] = []
+    for chunk in _STRATEGY_SPLIT_PATTERN.split(text):
+        token = chunk.strip()
+        if not token:
+            continue
+        match = _STRATEGY_QUANTITY_PATTERN.match(token)
+        if match:
+            quantity = max(int(match.group(1)), 1)
+            name = match.group(2).strip()
+        else:
+            quantity = 1
+            name = token
+        if name:
+            parsed.append((name, quantity))
+    return parsed
+
+
+def build_strategy_plan(text: str, birthday: bool = True) -> Solution:
+    """Maximize every element in the input and rank them by ROI.
+
+    Each element is simulated up to the maximum level, then boosted by a
+    synergy multiplier (more elements reinforce each other) and an optional
+    birthday buff. The result is an ROI-ordered build plan.
+    """
+
+    if not text or not text.strip():
+        raise ValueError("Please list the units, resources, or buildings to optimize.")
+
+    parsed = _parse_strategy_elements(text)
+    if not parsed:
+        raise ValueError("Please list the units, resources, or buildings to optimize.")
+
+    synergy = 1 + 0.1 * (len(parsed) - 1)
+    birthday_buff = _STRATEGY_BIRTHDAY_BUFF if birthday else 1.0
+
+    elements: List[StrategyElement] = []
+    for name, quantity in parsed:
+        base_value = _STRATEGY_BASE_VALUE * quantity
+        maxed_value = base_value * _STRATEGY_MAX_LEVEL
+        final_value = maxed_value * synergy * birthday_buff
+        upgrade_cost = base_value * (_STRATEGY_MAX_LEVEL - 1)
+        roi = final_value / upgrade_cost if upgrade_cost else final_value
+        elements.append(
+            StrategyElement(
+                name=name,
+                quantity=quantity,
+                max_level=_STRATEGY_MAX_LEVEL,
+                final_value=final_value,
+                roi=roi,
+            )
+        )
+
+    elements.sort(key=lambda element: element.final_value, reverse=True)
+    total_value = sum(element.final_value for element in elements)
+
+    answer_bits = [
+        f"Maxed {len(elements)} element(s) to level {_STRATEGY_MAX_LEVEL} "
+        f"for a total portfolio value of {_format_number(total_value)}."
+    ]
+    if birthday:
+        answer_bits.append("Birthday buff active: +50% on every maxed value. 🎂")
+    answer = " ".join(answer_bits)
+
+    details: List[str] = []
+    for rank, element in enumerate(elements, start=1):
+        qty_label = f"x{element.quantity} " if element.quantity > 1 else ""
+        details.append(
+            f"#{rank} {qty_label}{element.name}: Lv.{element.max_level} -> "
+            f"value {_format_number(element.final_value)} (ROI {element.roi:.1f}x)"
+        )
+    details.append(
+        f"Build order follows ROI: start with '{elements[0].name}' for the fastest "
+        "payoff, then work down the list to compound the synergy bonus."
+    )
+    return Solution(kind="Strategy", answer=answer, details=details)
+
+
 def solve_problem(problem: str) -> Solution:
     """Attempt to solve a problem using available solvers."""
 
@@ -303,6 +407,16 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Choose the creative medium for prompt mode. Defaults to auto-detect.",
     )
     parser.add_argument(
+        "--strategy",
+        action="store_true",
+        help="Optimize a list of game elements to max level and rank them by ROI.",
+    )
+    parser.add_argument(
+        "--no-birthday",
+        action="store_true",
+        help="Disable the +50%% birthday buff in strategy mode.",
+    )
+    parser.add_argument(
         "problem",
         nargs=argparse.REMAINDER,
         help="Tell me your problem to solve. Quotes are encouraged for multi-word puzzles!",
@@ -323,6 +437,8 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
     if args.prompt:
         medium_hint = None if args.medium == "auto" else args.medium
         solution = build_creative_prompt(problem_text, medium_hint=medium_hint)
+    elif args.strategy:
+        solution = build_strategy_plan(problem_text, birthday=not args.no_birthday)
     else:
         solution = solve_problem(problem_text)
     print(solution.format())
