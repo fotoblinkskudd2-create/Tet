@@ -277,10 +277,248 @@ def _solve_panic_support(problem: str) -> Optional[Solution]:
     return Solution(kind="Panic Support", answer=answer, details=details)
 
 
+# ---------------------------------------------------------------------------
+# Decision Oracle
+#
+# Most "decision helpers" pretend to know what you should do with your life.
+# This one is more honest and far more useful: it audits *how you framed the
+# question*, names the cognitive traps hiding in your own wording, classifies
+# the choice as a reversible "two-way door" or a permanent "one-way door", and
+# walks the options through four mental models the clearest thinkers actually
+# use. You leave with a sharper question and a concrete next move, not a
+# fortune-cookie verdict.
+# ---------------------------------------------------------------------------
+
+_DECISION_MARKERS: Tuple[str, ...] = (
+    "should i",
+    "shall i",
+    "skal jeg",
+    "bør jeg",
+    "burde jeg",
+    "can't decide",
+    "cant decide",
+    "kan ikke bestemme",
+    "klarer ikke bestemme",
+    "torn between",
+    "decide between",
+    "velge mellom",
+    " vs ",
+    " versus ",
+)
+
+# Each trap: (label, detector keywords, the insight, the witty fix).
+_DECISION_TRAPS: Tuple[Tuple[str, Tuple[str, ...], str, str], ...] = (
+    (
+        "Binary trap",
+        ("either", " or ", " vs ", " versus ", "eller"),
+        "You framed this as 'this OR that'. Research on real decisions shows "
+        "roughly 1 in 3 'whether-or-not' choices has a hidden third option you "
+        "never listed.",
+        "Spend 60 seconds inventing an option C (often 'do both, smaller' or "
+        "'neither, yet'). The Oracle has never regretted that minute.",
+    ),
+    (
+        "Sunk-cost trap",
+        ("already", "invested", "wasted", "so far", "this far", "spent so much",
+         "kastet bort", "brukt så mye", "kommet så langt"),
+        "You're weighing what you've already spent. That money, time and pride "
+        "are gone whatever you choose — the universe will not refund them.",
+        "Ask the cleaner question: 'Knowing what I know now, would I START this "
+        "today?' If no, the past is just lobbying for the future.",
+    ),
+    (
+        "Should-pressure trap",
+        ("supposed to", "expected to", "everyone says", "everyone thinks",
+         "people think", "my parents want", "my boss wants", "forventer",
+         "alle sier", "alle mener", "burde egentlig"),
+        "The phrasing leans on what others expect — 'should' words usually "
+        "smuggle in someone else's values wearing your voice.",
+        "Re-read the question with 'want to' instead of 'should'. If it stops "
+        "making sense, you've found whose decision this really is.",
+    ),
+    (
+        "False-urgency trap",
+        ("now", "right away", "immediately", "asap", "today", "tonight",
+         "med en gang", "nå", "i dag", "i kveld"),
+        "Urgency is the natural enemy of judgement, and most urgency is "
+        "manufactured by whoever benefits from your haste.",
+        "Name the thing that ACTUALLY breaks if you decide in 48 hours. If you "
+        "can't, you just bought yourself 48 hours of better thinking.",
+    ),
+    (
+        "Fear-framing trap",
+        ("afraid", "scared", "risk losing", "what if i lose", "don't want to lose",
+         "redd", "tør ikke", "frykter", "miste"),
+        "You framed this around what you might lose. Humans feel losses about "
+        "twice as hard as equivalent gains, so this lens quietly tilts the scale.",
+        "Re-describe each option by what you stand to GAIN. Then decide which "
+        "framing is the lie — usually neither, but now you can see both.",
+    ),
+    (
+        "Permission-seeking trap",
+        ("right?", "isn't it", "ikke sant", "just need to know", "tell me it's ok",
+         "am i crazy"),
+        "The phrasing reads like you want permission, not analysis. That's "
+        "fine — but it's a different errand.",
+        "If you already know the answer and just want a witness: consider this "
+        "your witness. Now go.",
+    ),
+)
+
+# Words that smell like an irreversible, costly-to-undo "one-way door".
+_ONE_WAY_MARKERS: Tuple[str, ...] = (
+    "quit", "resign", "drop out", "move", "relocate", "emigrate", "sell",
+    "marry", "divorce", "break up", "tattoo", "delete", "burn", "have a kid",
+    "have kids", "get pregnant", "amputate", "si opp", "flytte", "skilsmisse",
+    "selge", "slette", "få barn",
+)
+
+
+def _clean_option(text: str) -> str:
+    cleaned = text.strip().strip("?.!,; ").strip()
+    for lead in ("to ", "i ", "should i ", "just "):
+        if cleaned.lower().startswith(lead):
+            cleaned = cleaned[len(lead):]
+            break
+    return cleaned[:1].upper() + cleaned[1:] if cleaned else cleaned
+
+
+def _extract_options(question: str) -> List[str]:
+    text = question.strip().rstrip("?.! ").strip()
+    lowered = text.lower()
+    for lead in (
+        "should i ", "shall i ", "do i ", "skal jeg ", "bør jeg ",
+        "burde jeg ", "i can't decide whether to ", "i can't decide if i should ",
+        "can't decide whether to ", "torn between ",
+    ):
+        if lowered.startswith(lead):
+            text = text[len(lead):]
+            break
+
+    patterns = (
+        r"\bbetween\s+(.+?)\s+and\s+(.+)$",
+        r"^(.+?)\s+(?:vs\.?|versus)\s+(.+)$",
+        r"^(.+?)\s+or\s+(.+)$",
+        r"^(.+?)\s+eller\s+(.+)$",
+    )
+    for pattern in patterns:
+        match = re.search(pattern, text, re.IGNORECASE)
+        if match:
+            options = [_clean_option(match.group(1)), _clean_option(match.group(2))]
+            return [opt for opt in options if opt]
+    cleaned = _clean_option(text)
+    return [cleaned] if cleaned else []
+
+
+def _detect_decision_traps(question: str) -> List[str]:
+    lowered = f" {question.lower()} "
+    findings: List[str] = []
+    for label, keywords, insight, fix in _DECISION_TRAPS:
+        if any(keyword in lowered for keyword in keywords):
+            findings.append(f"{label} detected — {insight} Fix: {fix}")
+    return findings
+
+
+def _door_type(question: str) -> str:
+    lowered = question.lower()
+    return "one-way" if any(m in lowered for m in _ONE_WAY_MARKERS) else "two-way"
+
+
+def _decision_verdict(door: str, traps_found: bool) -> str:
+    if door == "one-way":
+        base = (
+            "This smells like a ONE-WAY DOOR — expensive or impossible to undo. "
+            "The Oracle's ruling: slow down and buy information. Sleep on it twice, "
+            "run the premortem below, and find the cheapest way to 'try before you "
+            "buy' (a trial, a conversation, a tiny pilot)."
+        )
+    else:
+        base = (
+            "This looks like a TWO-WAY DOOR — cheap to reverse. The Oracle's ruling: "
+            "stop deliberating and run a small experiment this week. With reversible "
+            "choices, the cost of deciding slowly is almost always higher than the "
+            "cost of deciding wrong."
+        )
+    if traps_found:
+        base += " But first, clear the traps below — your question is arguing with itself."
+    return base
+
+
+def build_decision_oracle(question: str) -> Solution:
+    """Audit a decision's framing and walk it through real mental models."""
+
+    if not question or not question.strip():
+        raise ValueError("Tell the Oracle the decision you're chewing on.")
+
+    options = _extract_options(question)
+    traps = _detect_decision_traps(question)
+    door = _door_type(question)
+
+    answer = _decision_verdict(door, bool(traps))
+
+    details: List[str] = []
+
+    if len(options) >= 2:
+        details.append(
+            f"The choice as posed: «{options[0]}»  vs  «{options[1]}». "
+            "Hold these loosely — the best move is often a third option neither "
+            "of them mentions."
+        )
+    elif options:
+        details.append(
+            f"The decision in focus: «{options[0]}». Name the real alternatives "
+            "out loud; a choice with only one visible option isn't a choice, it's a fear."
+        )
+
+    details.extend(traps)
+
+    # Four mental models, applied to whatever options we have.
+    a = options[0] if options else "the choice"
+    b = options[1] if len(options) >= 2 else "the alternative"
+
+    details.append(
+        "Regret-minimization (Bezos): picture yourself at 80, calm and honest. "
+        f"Which do you regret NOT trying — {a.lower()} or {b.lower()}? Regret of "
+        "omission outlasts regret of action almost every time."
+    )
+    details.append(
+        "10/10/10: how will each option feel 10 minutes from now, 10 months from "
+        "now, and 10 years from now? Decisions that look scary at 10 minutes and "
+        "great at 10 years are usually the ones worth the flinch."
+    )
+    details.append(
+        "Premortem (Gary Klein): fast-forward a year — your choice FAILED badly. "
+        "Write the one-line headline explaining why. Then ask whether you can "
+        "defuse that exact cause today. If you can, the fear was a to-do list in disguise."
+    )
+    details.append(
+        "Weighted scoring (for the stubbornly close calls): list your top 3 "
+        "criteria, weight them 1–5 by how much you truly care, score each option "
+        "1–5 per criterion, multiply and sum. Watch your gut flinch at the winner "
+        "— that flinch is data too."
+    )
+    details.append(
+        "Reminder from the Oracle: a decision is a bet on the best information you "
+        "have, not a promise about the future. Make it cleanly, write down WHY in "
+        "one sentence, and let future-you grade the reasoning, not just the luck."
+    )
+
+    return Solution(kind="Decision Oracle", answer=answer, details=details)
+
+
+def _solve_decision(problem: str) -> Optional[Solution]:
+    """Route clearly decision-shaped questions to the Decision Oracle."""
+
+    lowered = f" {problem.lower()} "
+    if not any(marker in lowered for marker in _DECISION_MARKERS):
+        return None
+    return build_decision_oracle(problem)
+
+
 def solve_problem(problem: str) -> Solution:
     """Attempt to solve a problem using available solvers."""
 
-    for solver in (_solve_math, _solve_anagram, _solve_panic_support):
+    for solver in (_solve_math, _solve_anagram, _solve_panic_support, _solve_decision):
         solution = solver(problem)
         if solution:
             return solution
@@ -295,6 +533,11 @@ def _build_parser() -> argparse.ArgumentParser:
         "--prompt",
         action="store_true",
         help="Turn a few words into a fully structured creative prompt for iOS web.",
+    )
+    parser.add_argument(
+        "--decide",
+        action="store_true",
+        help="Run a decision through the Decision Oracle: trap-scan, door-type, and four mental models.",
     )
     parser.add_argument(
         "--medium",
@@ -320,7 +563,9 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
 
     problem_text = " ".join(args.problem)
 
-    if args.prompt:
+    if args.decide:
+        solution = build_decision_oracle(problem_text)
+    elif args.prompt:
         medium_hint = None if args.medium == "auto" else args.medium
         solution = build_creative_prompt(problem_text, medium_hint=medium_hint)
     else:
