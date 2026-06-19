@@ -25,3 +25,11 @@ python app.py --prompt "poem about late-summer rain in the city"  # medium auto-
 ```
 
 The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+
+## KLEPPFORGE Command Center v0
+
+A standalone, dark/industrial web demo (Norwegian UI) that turns five product tracks into product cards, report structures, Codex/Claude tickets and sales copy — no backend, auth or database. See [`kleppforge/`](kleppforge/README.md).
+
+```bash
+cd kleppforge && python3 -m http.server 8000   # → http://localhost:8000
+```
