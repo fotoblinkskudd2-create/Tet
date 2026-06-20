@@ -75,20 +75,47 @@ _ANAGRAM_LIBRARY: Dict[str, Tuple[str, ...]] = {
 }
 
 
+def _canonical(word: str) -> str:
+    """Return a sort-key fingerprint shared by all anagrams of ``word``."""
+
+    return "".join(sorted(word))
+
+
+def _build_anagram_index(
+    library: Dict[str, Tuple[str, ...]]
+) -> Dict[str, Tuple[str, ...]]:
+    """Pre-compute an inverted index: canonical fingerprint -> anagram family.
+
+    Done once at import time so each lookup is an O(1) dict hit instead of a
+    full O(N) scan that re-sorts every library entry on every call. Both the
+    keys and their listed anagrams are folded into the same family, so a query
+    can match from either side (e.g. "anagram of silent" finds "listen").
+    """
+
+    index: Dict[str, set] = {}
+    for source, words in library.items():
+        family = index.setdefault(_canonical(source), set())
+        family.add(source)
+        family.update(words)
+    return {fingerprint: tuple(sorted(words)) for fingerprint, words in index.items()}
+
+
+_ANAGRAM_INDEX: Dict[str, Tuple[str, ...]] = _build_anagram_index(_ANAGRAM_LIBRARY)
+_ANAGRAM_PATTERN = re.compile(r"(?:anagram of|unscramble)\s+([A-Za-z]+)")
+
+
 def _solve_anagram(problem: str) -> Optional[Solution]:
-    pattern = re.compile(r"(?:anagram of|unscramble)\s+([A-Za-z]+)")
-    match = pattern.search(problem.lower())
+    match = _ANAGRAM_PATTERN.search(problem.lower())
     if not match:
         return None
 
     target = match.group(1)
-    canonical = "".join(sorted(target))
-    candidates: List[str] = []
-    for source, words in _ANAGRAM_LIBRARY.items():
-        if canonical == "".join(sorted(source)):
-            candidates.extend(words)
+    # Exclude the queried word itself so we only surface its partners.
+    candidates = [
+        word for word in _ANAGRAM_INDEX.get(_canonical(target), ()) if word != target
+    ]
     if not candidates:
-        answer = f"I could not find a perfect match, but '{canonical}' looks like a fun jumble!"
+        answer = f"I could not find a perfect match, but '{_canonical(target)}' looks like a fun jumble!"
     else:
         answer = f"Possible anagram buddies for '{target}': {', '.join(candidates)}"
     details = ["Try speaking the options out loud—sometimes the silliest sounds win!"]
