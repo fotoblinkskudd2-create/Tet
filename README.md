@@ -1,4 +1,31 @@
-# Tet Problem Solver
+# Tet
+
+## 🎮 TET — Neon Stacker (the game)
+
+A complete, self-contained Tetris in a single file. **No build step, no dependencies** — just open it in any browser (desktop or mobile).
+
+```bash
+# macOS
+open index.html
+# Linux
+xdg-open index.html
+# or serve it
+python3 -m http.server 8000   # then visit http://localhost:8000
+```
+
+**Features**
+- SRS rotation with full wall-kick tables (incl. I-piece kicks)
+- 7-bag randomizer, hold piece, ghost piece, 5-deep next queue
+- T-spin detection (mini / single / double / triple), combos, back-to-back bonuses
+- Lock delay with move resets, DAS/ARR tuned movement, soft & hard drop
+- Speed curve across 20 levels, particle juice on line clears, WebAudio synth (no sound assets)
+- Neon glassmorphism UI, local best-score, and touch controls (swipe + on-screen buttons)
+
+Controls: **← →** move · **↓** soft drop · **Space** hard drop · **↑/X** rotate CW · **Z** rotate CCW · **C** hold · **P** pause.
+
+---
+
+## Tet Problem Solver (CLI)
 
 A tiny, joyful command-line helper that solves small puzzles like arithmetic and classic anagrams. When it cannot solve a prompt directly, it offers upbeat brainstorming steps to keep the momentum going.
 
