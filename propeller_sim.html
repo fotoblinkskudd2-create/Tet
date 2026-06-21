@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Propeller Simulator</title>
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --line: #30363d;
+    --text: #e6edf3; --muted: #8b949e;
+    --accent: #58a6ff; --good: #3fb950; --warn: #f0883e; --bad: #f85149;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+    padding: 16px; max-width: 760px; margin: 0 auto;
+  }
+  h1 { font-size: 1.35rem; margin: 0 0 2px; }
+  .sub { color: var(--muted); font-size: 0.85rem; margin: 0 0 18px; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+  .control { margin-bottom: 16px; }
+  .control:last-child { margin-bottom: 0; }
+  .control label { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px; }
+  .control label b { color: var(--accent); font-variant-numeric: tabular-nums; }
+  input[type=range] { width: 100%; height: 34px; accent-color: var(--accent); }
+  .readouts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  @media (min-width: 560px) { .readouts { grid-template-columns: repeat(4, 1fr); } }
+  .stat { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 12px; text-align: center; }
+  .stat .v { font-size: 1.45rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .stat .k { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 4px; }
+  canvas { width: 100%; height: auto; display: block; border-radius: 10px; }
+  .legend { display: flex; gap: 18px; font-size: 0.8rem; color: var(--muted); margin-top: 10px; flex-wrap: wrap; }
+  .legend span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  .legend .thr::before { background: var(--accent); }
+  .legend .eff::before { background: var(--good); }
+  .legend .now::before { background: var(--warn); }
+  .note { color: var(--muted); font-size: 0.78rem; line-height: 1.5; }
+</style>
+</head>
+<body>
+  <h1>🚁 Propeller Simulator</h1>
+  <p class="sub">Drag the sliders. Everything updates live — thrust, power, efficiency and tip speed.</p>
+
+  <div class="panel">
+    <div class="control">
+      <label>Diameter <b><span id="diaV">10.0</span> in</b></label>
+      <input id="dia" type="range" min="4" max="20" step="0.5" value="10" />
+    </div>
+    <div class="control">
+      <label>Pitch <b><span id="pitV">4.5</span> in</b></label>
+      <input id="pit" type="range" min="2" max="10" step="0.5" value="4.5" />
+    </div>
+    <div class="control">
+      <label>RPM <b><span id="rpmV">8000</span></b></label>
+      <input id="rpm" type="range" min="1000" max="14000" step="100" value="8000" />
+    </div>
+    <div class="control">
+      <label>Airspeed (forward) <b><span id="airV">0</span> m/s</b></label>
+      <input id="air" type="range" min="0" max="30" step="1" value="0" />
+    </div>
+    <div class="control">
+      <label>Figure of merit (efficiency factor) <b><span id="fomV">0.60</span></b></label>
+      <input id="fom" type="range" min="0.4" max="0.8" step="0.01" value="0.6" />
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="readouts">
+      <div class="stat"><div class="v" id="thrustG">–</div><div class="k">Thrust (g)</div></div>
+      <div class="stat"><div class="v" id="powerW">–</div><div class="k">Power (W)</div></div>
+      <div class="stat"><div class="v" id="eff">–</div><div class="k">g per Watt</div></div>
+      <div class="stat"><div class="v" id="mach">–</div><div class="k">Tip Mach</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <canvas id="chart" width="720" height="320"></canvas>
+    <div class="legend">
+      <span class="thr">Thrust vs RPM</span>
+      <span class="eff">Efficiency vs RPM</span>
+      <span class="now">Your current RPM</span>
+    </div>
+  </div>
+
+  <p class="note">
+    First-pass model: thrust uses an established empirical formula, power uses momentum (actuator-disk)
+    theory with a figure of merit. Great for comparing designs fast — not a CFD replacement.
+    Keep tip Mach below ~0.7 to avoid noise and efficiency loss (the gauge turns orange/red as you approach it).
+  </p>
+
+<script>
+const INCH_TO_M = 0.0254, RHO = 1.225, G = 9.80665, SOUND = 343;
+
+function evaluateProp(d, p, rpm, airspeed, fom) {
+  let thrustN = 4.392399e-8 * rpm * (Math.pow(d, 3.5) / Math.sqrt(p)) *
+                (4.23333e-4 * rpm * p - airspeed);
+  thrustN = Math.max(thrustN, 0);
+  const thrustG = thrustN / G * 1000;
+  const area = Math.PI * Math.pow(d * INCH_TO_M, 2) / 4;
+  const powerW = thrustN > 0 ? Math.pow(thrustN, 1.5) / Math.sqrt(2 * RHO * area) / fom : 0;
+  const eff = powerW > 0 ? thrustG / powerW : 0;
+  const mach = (Math.PI * d * INCH_TO_M * rpm / 60) / SOUND;
+  return { thrustN, thrustG, powerW, eff, mach };
+}
+
+const els = {};
+["dia","pit","rpm","air","fom"].forEach(id => els[id] = document.getElementById(id));
+const canvas = document.getElementById("chart");
+const ctx = canvas.getContext("2d");
+let CW = 720, CH = 320; // logical (CSS) chart size used by drawChart
+
+function fmt(n, d=0) { return n.toLocaleString("en-US", {minimumFractionDigits:d, maximumFractionDigits:d}); }
+
+function machColor(m) { return m > 0.7 ? "var(--bad)" : m > 0.55 ? "var(--warn)" : "var(--good)"; }
+
+function update() {
+  const d = +els.dia.value, p = +els.pit.value, rpm = +els.rpm.value,
+        air = +els.air.value, fom = +els.fom.value;
+  document.getElementById("diaV").textContent = d.toFixed(1);
+  document.getElementById("pitV").textContent = p.toFixed(1);
+  document.getElementById("rpmV").textContent = fmt(rpm);
+  document.getElementById("airV").textContent = air;
+  document.getElementById("fomV").textContent = fom.toFixed(2);
+
+  const r = evaluateProp(d, p, rpm, air, fom);
+  document.getElementById("thrustG").textContent = fmt(r.thrustG);
+  document.getElementById("powerW").textContent = fmt(r.powerW);
+  document.getElementById("eff").textContent = fmt(r.eff, 2);
+  const machEl = document.getElementById("mach");
+  machEl.textContent = r.mach.toFixed(2);
+  machEl.style.color = machColor(r.mach);
+
+  drawChart(d, p, air, fom, rpm);
+}
+
+function drawChart(d, p, air, fom, currentRpm) {
+  const W = CW, H = CH, padL = 8, padR = 8, padT = 14, padB = 26;
+  ctx.clearRect(0, 0, W, H);
+
+  const minR = 1000, maxR = 14000, steps = 120;
+  const thr = [], eff = [];
+  let maxThr = 0, maxEff = 0;
+  for (let i = 0; i <= steps; i++) {
+    const rpm = minR + (maxR - minR) * i / steps;
+    const res = evaluateProp(d, p, rpm, air, fom);
+    thr.push(res.thrustG); eff.push(res.eff);
+    maxThr = Math.max(maxThr, res.thrustG);
+    maxEff = Math.max(maxEff, res.eff);
+  }
+  maxThr = maxThr || 1; maxEff = maxEff || 1;
+
+  const x = i => padL + (W - padL - padR) * i / steps;
+  const yThr = v => (H - padB) - (H - padT - padB) * (v / maxThr);
+  const yEff = v => (H - padB) - (H - padT - padB) * (v / maxEff);
+
+  // grid
+  ctx.strokeStyle = "#21262d"; ctx.lineWidth = 1;
+  for (let g = 0; g <= 4; g++) {
+    const yy = padT + (H - padT - padB) * g / 4;
+    ctx.beginPath(); ctx.moveTo(padL, yy); ctx.lineTo(W - padR, yy); ctx.stroke();
+  }
+
+  // current RPM marker
+  const cx = padL + (W - padL - padR) * (currentRpm - minR) / (maxR - minR);
+  ctx.strokeStyle = "#f0883e"; ctx.lineWidth = 2; ctx.setLineDash([5, 4]);
+  ctx.beginPath(); ctx.moveTo(cx, padT); ctx.lineTo(cx, H - padB); ctx.stroke();
+  ctx.setLineDash([]);
+
+  const plot = (data, yfn, color) => {
+    ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.beginPath();
+    data.forEach((v, i) => { const xx = x(i), yy = yfn(v); i ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); });
+    ctx.stroke();
+  };
+  plot(thr, yThr, "#58a6ff");
+  plot(eff, yEff, "#3fb950");
+
+  // x axis labels
+  ctx.fillStyle = "#8b949e"; ctx.font = "11px system-ui"; ctx.textAlign = "center";
+  for (let g = 0; g <= 4; g++) {
+    const rpm = minR + (maxR - minR) * g / 4;
+    ctx.fillText(fmt(rpm), padL + (W - padL - padR) * g / 4, H - 8);
+  }
+}
+
+Object.values(els).forEach(el => el.addEventListener("input", update));
+
+// Keep the canvas crisp on high-DPI (Retina) screens, then redraw.
+function resizeCanvas() {
+  const ratio = window.devicePixelRatio || 1;
+  CW = canvas.clientWidth || 720;
+  CH = Math.round(CW * 0.44);
+  canvas.width = Math.round(CW * ratio);
+  canvas.height = Math.round(CH * ratio);
+  canvas.style.height = CH + "px";
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  update();
+}
+
+window.addEventListener("resize", resizeCanvas);
+window.requestAnimationFrame(resizeCanvas);
+</script>
+</body>
+</html>
