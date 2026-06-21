@@ -42,3 +42,28 @@ def test_panic_support_protocol_is_returned_for_panic_prompt():
     assert "you are safe" in solution.answer.lower()
     assert any("4, hold 4, exhale 6" in detail for detail in solution.details)
     assert any("emergency" in detail.lower() for detail in solution.details)
+
+
+def test_math_solver_explains_division_by_zero():
+    solution = app.solve_problem("1 / 0")
+    assert solution.kind == "Math"
+    assert "zero" in solution.answer.lower()
+
+
+def test_boolean_literal_is_not_treated_as_math():
+    # `True` is an int subclass in Python; it must not be evaluated as a number.
+    solution = app.solve_problem("True")
+    assert solution.kind == "Brainstorm"
+
+
+def test_anagram_solver_handles_added_pairs():
+    solution = app.solve_problem("Unscramble an anagram of earth")
+    assert solution.kind == "Anagram"
+    assert "heart" in solution.answer
+
+
+def test_anagram_target_skips_filler_articles():
+    # "anagram of the night" must target "night", not the article "the".
+    assert app._extract_anagram_target("Find an anagram of the night") == "night"
+    # A real word that merely starts with an article must stay intact.
+    assert app._extract_anagram_target("anagram of theatre") == "theatre"

@@ -52,7 +52,11 @@ def _safe_math_eval(expr: str) -> float:
     def _evaluate(node: ast.AST) -> float:
         if isinstance(node, ast.Expression):
             return _evaluate(node.body)
-        if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
+        if (
+            isinstance(node, ast.Constant)
+            and isinstance(node.value, (int, float))
+            and not isinstance(node.value, bool)
+        ):
             return float(node.value)
         if isinstance(node, ast.BinOp) and type(node.op) in allowed_bin_ops:
             left = _evaluate(node.left)
@@ -71,17 +75,35 @@ _ANAGRAM_LIBRARY: Dict[str, Tuple[str, ...]] = {
     "evil": ("vile", "veil", "live"),
     "angel": ("glean", "angle"),
     "stressed": ("desserts",),
-    "save": ("vase" ,),
+    "save": ("vase",),
+    "night": ("thing",),
+    "races": ("scare", "cares", "acres"),
+    "earth": ("heart", "hater"),
 }
 
 
+def _extract_anagram_target(problem: str) -> Optional[str]:
+    """Pull the word to unscramble, ignoring filler articles.
+
+    Prefers the explicit "anagram of <word>" phrasing so prompts like
+    "Unscramble an anagram of earth" target "earth" rather than the
+    article "an" that follows "unscramble".
+    """
+
+    lowered = problem.lower()
+    article = r"(?:(?:a|an|the)\s+)?"
+    for trigger in ("anagram of", "unscramble"):
+        match = re.search(rf"{trigger}\s+{article}([a-z]+)", lowered)
+        if match:
+            return match.group(1)
+    return None
+
+
 def _solve_anagram(problem: str) -> Optional[Solution]:
-    pattern = re.compile(r"(?:anagram of|unscramble)\s+([A-Za-z]+)")
-    match = pattern.search(problem.lower())
-    if not match:
+    target = _extract_anagram_target(problem)
+    if not target:
         return None
 
-    target = match.group(1)
     canonical = "".join(sorted(target))
     candidates: List[str] = []
     for source, words in _ANAGRAM_LIBRARY.items():
@@ -101,6 +123,12 @@ def _solve_math(problem: str) -> Optional[Solution]:
         return None
     try:
         result = _safe_math_eval(cleaned)
+    except ZeroDivisionError:
+        return Solution(
+            kind="Math",
+            answer="Whoops—dividing by zero breaks the dance floor! Try a non-zero divisor.",
+            details=["Even math has its limits: nothing can be split into zero pieces."],
+        )
     except Exception:
         return None
 

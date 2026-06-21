@@ -14,6 +14,17 @@ python app.py "How do I get motivated for chores?"
 
 Each response includes a playful banner, a concise answer, and encouraging bullet points whenever brainstorming is needed.
 
+## Panic and anxiety support
+
+When a prompt mentions panic or an anxiety attack (in English or Norwegian, e.g. "panic", "anxiety attack", "panikk", "angst", "kan ikke puste"), the solver switches to a calm, structured protocol instead of brainstorming:
+
+```bash
+python app.py "I think I am having a panic attack and my heart is racing"
+python app.py "Jeg får panikk og kan ikke puste"
+```
+
+The response walks through grounding, paced breathing (inhale 4, hold 4, exhale 6, hold 2), reality checks, a body reset, and aftercare. It also lists the warning signs that mean you should seek urgent help. This is supportive self-care guidance, not a substitute for professional or emergency care.
+
 ## Build creative prompts for iOS web
 
 Use prompt mode when you want a ready-to-paste creative brief for photos, video, music, art, or poetry. The builder keeps instructions short and mobile-friendly for iOS web inputs:
