@@ -277,6 +277,47 @@ _IDEA_LENSES: Tuple[Tuple[str, str, str], ...] = (
 )
 
 
+def simulate_savings(
+    start: float,
+    monthly: float,
+    annual_rate_pct: float,
+    years: int,
+) -> Solution:
+    """Project how savings grow with monthly deposits and compound interest.
+
+    Interest is compounded monthly, and the monthly deposit is added after each
+    month's growth—mirroring how a real savings account behaves.
+    """
+
+    if years < 1:
+        raise ValueError("Simulate at least one year.")
+    if start < 0 or monthly < 0:
+        raise ValueError("Amounts cannot be negative.")
+
+    monthly_rate = annual_rate_pct / 100 / 12
+    balance = float(start)
+    contributed = float(start)
+
+    details: List[str] = []
+    for year in range(1, years + 1):
+        for _ in range(12):
+            balance = balance * (1 + monthly_rate) + monthly
+            contributed += monthly
+        growth = balance - contributed
+        details.append(
+            f"Year {year}: {balance:,.0f} kr "
+            f"(you put in {contributed:,.0f} kr, interest added {growth:,.0f} kr)"
+        )
+
+    total_growth = balance - contributed
+    answer = (
+        f"Saving {monthly:,.0f} kr/month from {start:,.0f} kr at {annual_rate_pct:g}% "
+        f"for {years} year(s) grows to {balance:,.0f} kr—"
+        f"{total_growth:,.0f} kr of that is interest working for you!"
+    )
+    return Solution(kind="Savings Simulator", answer=answer, details=details)
+
+
 def generate_ideas(topic: str, count: int = 5) -> Solution:
     """Spark concrete ideas about a topic using proven brainstorming lenses."""
 
@@ -369,6 +410,15 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Out of ideas? Spark fresh angles on any topic using brainstorming lenses.",
     )
     parser.add_argument(
+        "--simulate",
+        action="store_true",
+        help="Run the savings simulator: project growth from monthly deposits + interest.",
+    )
+    parser.add_argument("--start", type=float, default=0.0, help="Starting amount (kr).")
+    parser.add_argument("--monthly", type=float, default=0.0, help="Monthly deposit (kr).")
+    parser.add_argument("--rate", type=float, default=0.0, help="Annual interest rate (%).")
+    parser.add_argument("--years", type=int, default=5, help="Number of years to simulate.")
+    parser.add_argument(
         "--count",
         type=int,
         default=5,
@@ -391,6 +441,16 @@ def _build_parser() -> argparse.ArgumentParser:
 def main(argv: Optional[Iterable[str]] = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
+
+    if args.simulate:
+        solution = simulate_savings(
+            start=args.start,
+            monthly=args.monthly,
+            annual_rate_pct=args.rate,
+            years=args.years,
+        )
+        print(solution.format())
+        return 0
 
     if not args.problem:
         parser.print_help()

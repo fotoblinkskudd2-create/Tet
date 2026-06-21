@@ -36,3 +36,20 @@ python app.py --ideas --count 8 "ways to make my photography stand out"
 ```
 
 Use `--count` to ask for more angles; once the lenses are exhausted they cycle so you always get exactly as many ideas as you request.
+
+## Simulate savings growth
+
+See how money grows over time with monthly deposits and compound interest (compounded monthly). Handy for planning, e.g. setting aside what you earn from photography:
+
+```bash
+python app.py --simulate --start 1000 --monthly 500 --rate 4 --years 10
+```
+
+| Flag | Meaning |
+|------|---------|
+| `--start` | Starting amount (kr) |
+| `--monthly` | Amount you add each month (kr) |
+| `--rate` | Annual interest rate in percent |
+| `--years` | How many years to project |
+
+The output shows a year-by-year balance plus how much of it is interest working for you.

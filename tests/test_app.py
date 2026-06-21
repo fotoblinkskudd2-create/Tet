@@ -51,6 +51,32 @@ def test_generate_ideas_cycles_lenses_when_count_exceeds_library():
     assert big.details[0].split(":")[0] == big.details[len(app._IDEA_LENSES)].split(":")[0]
 
 
+def test_savings_simulator_with_no_interest_is_pure_sum():
+    # 100/month for 2 years (24 months) at 0% = 2400, starting from 0.
+    solution = app.simulate_savings(start=0, monthly=100, annual_rate_pct=0, years=2)
+    assert solution.kind == "Savings Simulator"
+    assert len(solution.details) == 2  # one line per year
+    assert "2,400 kr" in solution.answer
+
+
+def test_savings_simulator_interest_grows_the_balance():
+    no_interest = app.simulate_savings(start=1000, monthly=100, annual_rate_pct=0, years=5)
+    with_interest = app.simulate_savings(start=1000, monthly=100, annual_rate_pct=5, years=5)
+    # Same deposits, but interest must produce a larger final balance.
+    final_plain = float(no_interest.details[-1].split(":")[1].split("kr")[0].replace(",", ""))
+    final_grown = float(with_interest.details[-1].split(":")[1].split("kr")[0].replace(",", ""))
+    assert final_grown > final_plain
+
+
+def test_savings_simulator_rejects_zero_years():
+    try:
+        app.simulate_savings(start=0, monthly=100, annual_rate_pct=5, years=0)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Expected ValueError for zero years.")
+
+
 def test_generate_ideas_rejects_empty_topic():
     try:
         app.generate_ideas("   ")
