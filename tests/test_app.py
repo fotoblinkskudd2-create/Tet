@@ -66,6 +66,30 @@ def test_focus_rhythm_rejects_non_positive_window():
         app.build_focus_rhythm(0)
 
 
+def test_percentage_solver_computes_part_of_whole():
+    solution = app.solve_problem("what is 15% of 80?")
+    assert solution.kind == "Percentage"
+    assert "is 12" in solution.answer
+
+
+def test_percentage_solver_accepts_word_percent():
+    solution = app.solve_problem("calculate 50 percent of 30")
+    assert solution.kind == "Percentage"
+    assert "is 15" in solution.answer
+
+
+def test_base_conversion_decimal_to_binary():
+    solution = app.solve_problem("convert 10 from decimal to binary")
+    assert solution.kind == "Base Conversion"
+    assert "1010" in solution.answer
+
+
+def test_base_conversion_hex_to_decimal():
+    solution = app.solve_problem("convert ff from hex to decimal")
+    assert solution.kind == "Base Conversion"
+    assert "255" in solution.answer
+
+
 def test_panic_support_protocol_is_returned_for_panic_prompt():
     solution = app.solve_problem("I think I am having a panic attack and my heart is racing")
     assert solution.kind == "Panic Support"

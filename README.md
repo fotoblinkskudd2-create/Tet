@@ -14,10 +14,12 @@ python app.py "How do I get motivated for chores?"
 
 Each response includes a playful banner, a concise answer, and encouraging bullet points whenever brainstorming is needed.
 
-The solver also handles quick statistics—ask for the average, mean, or median of a list of numbers:
+The solver also handles quick everyday math—statistics, percentages, and number-base conversions:
 
 ```bash
 python app.py "what is the average of 2, 4, 9?"
+python app.py "what is 15% of 80?"
+python app.py "convert 255 from decimal to hex"
 ```
 
 ## Build a focus rhythm

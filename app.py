@@ -339,6 +339,63 @@ def _solve_stats(problem: str) -> Optional[Solution]:
     return Solution(kind="Stats", answer=answer, details=details)
 
 
+def _solve_percentage(problem: str) -> Optional[Solution]:
+    """Answer 'what is X% of Y' style questions."""
+
+    pattern = re.compile(
+        r"(-?\d+(?:\.\d+)?)\s*(?:%|percent)\s*of\s*(-?\d+(?:\.\d+)?)",
+        re.IGNORECASE,
+    )
+    match = pattern.search(problem)
+    if not match:
+        return None
+
+    percent = float(match.group(1))
+    whole = float(match.group(2))
+    result = percent / 100 * whole
+    tidy = int(result) if float(result).is_integer() else round(result, 4)
+    answer = f"{match.group(1)}% of {match.group(2)} is {tidy}!"
+    details = [
+        "Percent means 'per hundred', so I scaled the whole by the fraction.",
+        "Flip it anytime: the part divided by the whole, times 100, gives the percent.",
+    ]
+    return Solution(kind="Percentage", answer=answer, details=details)
+
+
+def _solve_base_conversion(problem: str) -> Optional[Solution]:
+    """Convert integers between binary, decimal, and hexadecimal."""
+
+    pattern = re.compile(
+        r"convert\s+([0-9a-fx]+)\s+(?:from\s+)?(binary|decimal|hex(?:adecimal)?)"
+        r"\s+to\s+(binary|decimal|hex(?:adecimal)?)",
+        re.IGNORECASE,
+    )
+    match = pattern.search(problem)
+    if not match:
+        return None
+
+    raw, src, dst = match.group(1), match.group(2).lower(), match.group(3).lower()
+    bases = {"binary": 2, "decimal": 10, "hex": 16, "hexadecimal": 16}
+    try:
+        value = int(raw.lower().replace("0x", ""), bases[src])
+    except ValueError:
+        return None
+
+    renderers: Dict[str, Callable[[int], str]] = {
+        "binary": lambda v: format(v, "b"),
+        "decimal": str,
+        "hex": lambda v: format(v, "x"),
+        "hexadecimal": lambda v: format(v, "x"),
+    }
+    converted = renderers[dst](value)
+    answer = f"{raw} ({src}) converts to {converted} ({dst})!"
+    details = [
+        f"In plain decimal that value is {value}.",
+        "Binary counts in 2s, decimal in 10s, hex in 16s—same number, different costume.",
+    ]
+    return Solution(kind="Base Conversion", answer=answer, details=details)
+
+
 def _brainstorm_steps(problem: str) -> Solution:
     steps = [
         "Name the goal in one joyful sentence.",
@@ -386,7 +443,15 @@ def _solve_panic_support(problem: str) -> Optional[Solution]:
 def solve_problem(problem: str) -> Solution:
     """Attempt to solve a problem using available solvers."""
 
-    for solver in (_solve_stats, _solve_math, _solve_anagram, _solve_panic_support):
+    solvers = (
+        _solve_percentage,
+        _solve_base_conversion,
+        _solve_stats,
+        _solve_math,
+        _solve_anagram,
+        _solve_panic_support,
+    )
+    for solver in solvers:
         solution = solver(problem)
         if solution:
             return solution
