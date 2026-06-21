@@ -14,6 +14,21 @@ python app.py "How do I get motivated for chores?"
 
 Each response includes a playful banner, a concise answer, and encouraging bullet points whenever brainstorming is needed.
 
+The solver also handles quick statistics—ask for the average, mean, or median of a list of numbers:
+
+```bash
+python app.py "what is the average of 2, 4, 9?"
+```
+
+## Build a focus rhythm
+
+Use rhythm mode to plan a work/break schedule that fits a fixed time window. The plan alternates focus blocks with short breaks (and a longer break every fourth cycle), trims the final block so it never overruns, and always ends on deep work:
+
+```bash
+python app.py --rhythm 40                 # 40-minute window, 25/5 default cadence
+python app.py --rhythm 90 --work 30 --break 10
+```
+
 ## Build creative prompts for iOS web
 
 Use prompt mode when you want a ready-to-paste creative brief for photos, video, music, art, or poetry. The builder keeps instructions short and mobile-friendly for iOS web inputs:

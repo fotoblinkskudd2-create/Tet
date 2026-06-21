@@ -233,6 +233,112 @@ def build_creative_prompt(seed: str, medium_hint: Optional[str] = None) -> Solut
     return Solution(kind="Creative Prompt", answer=answer, details=details)
 
 
+def _format_clock(total_minutes: int) -> str:
+    """Render a whole-minute offset as a friendly H:MM clock string."""
+
+    hours, minutes = divmod(max(total_minutes, 0), 60)
+    return f"{hours}:{minutes:02d}"
+
+
+def build_focus_rhythm(
+    total_minutes: int,
+    work_minutes: int = 25,
+    break_minutes: int = 5,
+    long_break_minutes: int = 15,
+    cycles_before_long_break: int = 4,
+) -> Solution:
+    """Plan a work/break rhythm that fits inside a fixed focus window.
+
+    The schedule alternates focused work blocks with short breaks, swapping in a
+    longer break after every ``cycles_before_long_break`` work blocks. Blocks are
+    trimmed so the plan never spills past ``total_minutes`` and always ends on a
+    work block so the momentum lands on something productive.
+    """
+
+    if total_minutes <= 0:
+        raise ValueError("Give me a positive number of minutes to shape a rhythm.")
+    if work_minutes <= 0 or break_minutes <= 0 or long_break_minutes <= 0:
+        raise ValueError("Work and break lengths must be positive.")
+    if cycles_before_long_break <= 0:
+        raise ValueError("Cycles before a long break must be positive.")
+
+    blocks: List[Tuple[str, int]] = []
+    elapsed = 0
+    work_done = 0
+    while elapsed < total_minutes:
+        remaining = total_minutes - elapsed
+        length = min(work_minutes, remaining)
+        work_done += 1
+        blocks.append((f"Focus block {work_done} — deep work", length))
+        elapsed += length
+        if elapsed >= total_minutes:
+            break
+
+        remaining = total_minutes - elapsed
+        is_long = work_done % cycles_before_long_break == 0
+        wanted = long_break_minutes if is_long else break_minutes
+        length = min(wanted, remaining)
+        label = "Long break — recharge" if is_long else "Short break — breathe"
+        blocks.append((label, length))
+        elapsed += length
+
+    # Always finish on a work block so the rhythm lands on momentum.
+    while blocks and blocks[-1][0].startswith(("Short break", "Long break")):
+        elapsed -= blocks.pop()[1]
+
+    details: List[str] = []
+    cursor = 0
+    focus_total = 0
+    for label, length in blocks:
+        start, end = cursor, cursor + length
+        details.append(f"{_format_clock(start)}–{_format_clock(end)}  {label} ({length} min)")
+        if label.startswith("Focus block"):
+            focus_total += length
+        cursor = end
+
+    answer = (
+        f"Built a {_format_clock(elapsed)} focus rhythm with {work_done} work block(s) "
+        f"totaling {focus_total} min of deep work. Ride the cycles and protect the breaks!"
+    )
+    details.append("Tip: silence notifications during focus blocks and actually rest on breaks.")
+    return Solution(kind="Focus Rhythm", answer=answer, details=details)
+
+
+_STATS_KEYWORDS = ("average", "mean", "avg", "median")
+
+
+def _solve_stats(problem: str) -> Optional[Solution]:
+    """Compute the mean and median for prompts like 'average of 3, 5, 10'."""
+
+    lowered = problem.lower()
+    if not any(keyword in lowered for keyword in _STATS_KEYWORDS):
+        return None
+
+    numbers = [float(token) for token in re.findall(r"-?\d+(?:\.\d+)?", problem)]
+    if not numbers:
+        return None
+
+    mean = sum(numbers) / len(numbers)
+    ordered = sorted(numbers)
+    mid = len(ordered) // 2
+    if len(ordered) % 2:
+        median = ordered[mid]
+    else:
+        median = (ordered[mid - 1] + ordered[mid]) / 2
+
+    def _tidy(value: float) -> str:
+        return str(int(value)) if float(value).is_integer() else str(round(value, 4))
+
+    answer = (
+        f"Across {len(numbers)} number(s): mean is {_tidy(mean)} and median is {_tidy(median)}!"
+    )
+    details = [
+        f"Numbers I used: {', '.join(_tidy(n) for n in numbers)}.",
+        "Mean balances the values; median marks the middle—compare them to spot skew.",
+    ]
+    return Solution(kind="Stats", answer=answer, details=details)
+
+
 def _brainstorm_steps(problem: str) -> Solution:
     steps = [
         "Name the goal in one joyful sentence.",
@@ -280,7 +386,7 @@ def _solve_panic_support(problem: str) -> Optional[Solution]:
 def solve_problem(problem: str) -> Solution:
     """Attempt to solve a problem using available solvers."""
 
-    for solver in (_solve_math, _solve_anagram, _solve_panic_support):
+    for solver in (_solve_stats, _solve_math, _solve_anagram, _solve_panic_support):
         solution = solver(problem)
         if solution:
             return solution
@@ -295,6 +401,25 @@ def _build_parser() -> argparse.ArgumentParser:
         "--prompt",
         action="store_true",
         help="Turn a few words into a fully structured creative prompt for iOS web.",
+    )
+    parser.add_argument(
+        "--rhythm",
+        type=int,
+        metavar="MINUTES",
+        help="Plan a work/break focus rhythm that fits the given number of minutes.",
+    )
+    parser.add_argument(
+        "--work",
+        type=int,
+        default=25,
+        help="Length of each focus block in rhythm mode (default: 25).",
+    )
+    parser.add_argument(
+        "--break",
+        type=int,
+        default=5,
+        dest="break_minutes",
+        help="Length of each short break in rhythm mode (default: 5).",
     )
     parser.add_argument(
         "--medium",
@@ -313,6 +438,19 @@ def _build_parser() -> argparse.ArgumentParser:
 def main(argv: Optional[Iterable[str]] = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
+
+    if args.rhythm is not None:
+        try:
+            solution = build_focus_rhythm(
+                args.rhythm,
+                work_minutes=args.work,
+                break_minutes=args.break_minutes,
+            )
+        except ValueError as err:
+            print(f"⚠️  {err}")
+            return 1
+        print(solution.format())
+        return 0
 
     if not args.problem:
         parser.print_help()

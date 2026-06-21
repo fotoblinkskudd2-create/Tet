@@ -36,6 +36,36 @@ def test_creative_prompt_auto_detects_poem():
     assert any("form" in detail.lower() for detail in solution.details)
 
 
+def test_stats_solver_reports_mean_and_median():
+    solution = app.solve_problem("what is the average of 2, 4, 9?")
+    assert solution.kind == "Stats"
+    assert "mean is 5" in solution.answer
+    assert "median is 4" in solution.answer
+
+
+def test_focus_rhythm_fits_window_and_ends_on_work():
+    solution = app.build_focus_rhythm(60, work_minutes=25, break_minutes=5)
+    assert solution.kind == "Focus Rhythm"
+    # Two 25-min focus blocks plus a 5-min break = 55 min, ending on work.
+    work_blocks = [d for d in solution.details if "Focus block" in d]
+    assert len(work_blocks) == 2
+    assert solution.details[-2].startswith("0:30–0:55  Focus block 2")
+
+
+def test_focus_rhythm_never_exceeds_total_minutes():
+    solution = app.build_focus_rhythm(40, work_minutes=25, break_minutes=5)
+    # 25 work + 5 break + 10 trimmed work = 40 min exactly.
+    assert "0:40 focus rhythm" in solution.answer
+    assert any("0:30–0:40  Focus block 2 — deep work (10 min)" in d for d in solution.details)
+
+
+def test_focus_rhythm_rejects_non_positive_window():
+    import pytest
+
+    with pytest.raises(ValueError):
+        app.build_focus_rhythm(0)
+
+
 def test_panic_support_protocol_is_returned_for_panic_prompt():
     solution = app.solve_problem("I think I am having a panic attack and my heart is racing")
     assert solution.kind == "Panic Support"
