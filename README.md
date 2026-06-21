@@ -25,3 +25,14 @@ python app.py --prompt "poem about late-summer rain in the city"  # medium auto-
 ```
 
 The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+
+## Spark ideas when you're stuck
+
+Completely out of ideas? Idea mode takes any topic and breaks the block with concrete angles drawn from proven brainstorming lenses (simplify, combine, automate, teach, flip, niche, productize, constrain). Each idea comes with a first step so you can start immediately:
+
+```bash
+python app.py --ideas "a weekend side project"
+python app.py --ideas --count 8 "ways to make my photography stand out"
+```
+
+Use `--count` to ask for more angles; once the lenses are exhausted they cycle so you always get exactly as many ideas as you request.

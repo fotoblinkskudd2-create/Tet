@@ -233,6 +233,73 @@ def build_creative_prompt(seed: str, medium_hint: Optional[str] = None) -> Solut
     return Solution(kind="Creative Prompt", answer=answer, details=details)
 
 
+_IDEA_LENSES: Tuple[Tuple[str, str, str], ...] = (
+    (
+        "Simplify",
+        "Strip {topic} down to the single thing people actually need and ship just that.",
+        "First step: list every part, then cross out everything but the one that must exist.",
+    ),
+    (
+        "Combine",
+        "Blend {topic} with an idea from a totally different field to spark something fresh.",
+        "First step: pick a random hobby or industry and ask how it would solve {topic}.",
+    ),
+    (
+        "Automate",
+        "Find the most boring, repeated chore inside {topic} and make it run itself.",
+        "First step: time the chore once, then sketch how a script or template removes it.",
+    ),
+    (
+        "Teach",
+        "Turn {topic} into a tiny lesson, guide, or demo that helps a beginner in 5 minutes.",
+        "First step: write the one tip you wish someone had told you about {topic}.",
+    ),
+    (
+        "Flip",
+        "Reverse the usual approach to {topic} and explore the opposite on purpose.",
+        "First step: state the 'normal' way out loud, then design its mirror image.",
+    ),
+    (
+        "Niche",
+        "Aim {topic} at one very specific person and serve them better than anyone else.",
+        "First step: name that person, their week, and the exact moment they need {topic}.",
+    ),
+    (
+        "Productize",
+        "Package {topic} into something reusable: a template, kit, checklist, or small tool.",
+        "First step: do {topic} once by hand and save every reusable piece as you go.",
+    ),
+    (
+        "Constrain",
+        "Give {topic} a playful limit—one hour, one color, ten words—and create within it.",
+        "First step: pick the tightest constraint you can still finish, then start the clock.",
+    ),
+)
+
+
+def generate_ideas(topic: str, count: int = 5) -> Solution:
+    """Spark concrete ideas about a topic using proven brainstorming lenses."""
+
+    cleaned = topic.strip().rstrip(".")
+    if not cleaned:
+        raise ValueError("Please give me a topic to spark ideas around.")
+    if count < 1:
+        raise ValueError("Ask for at least one idea.")
+
+    details: List[str] = []
+    for index in range(count):
+        name, template, step = _IDEA_LENSES[index % len(_IDEA_LENSES)]
+        idea = template.format(topic=cleaned)
+        nudge = step.format(topic=cleaned)
+        details.append(f"{name}: {idea} {nudge}")
+
+    answer = (
+        f"Out of ideas about '{cleaned}'? Here are {count} angles to break the block—"
+        "steal the one that makes you grin and run with it!"
+    )
+    return Solution(kind="Idea Spark", answer=answer, details=details)
+
+
 def _brainstorm_steps(problem: str) -> Solution:
     steps = [
         "Name the goal in one joyful sentence.",
@@ -297,6 +364,17 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Turn a few words into a fully structured creative prompt for iOS web.",
     )
     parser.add_argument(
+        "--ideas",
+        action="store_true",
+        help="Out of ideas? Spark fresh angles on any topic using brainstorming lenses.",
+    )
+    parser.add_argument(
+        "--count",
+        type=int,
+        default=5,
+        help="How many ideas to generate in --ideas mode (default: 5).",
+    )
+    parser.add_argument(
         "--medium",
         choices=["photo", "video", "music", "art", "poem", "auto"],
         default="auto",
@@ -320,7 +398,9 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
 
     problem_text = " ".join(args.problem)
 
-    if args.prompt:
+    if args.ideas:
+        solution = generate_ideas(problem_text, count=args.count)
+    elif args.prompt:
         medium_hint = None if args.medium == "auto" else args.medium
         solution = build_creative_prompt(problem_text, medium_hint=medium_hint)
     else:
