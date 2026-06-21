@@ -1,27 +1,92 @@
-# Tet Problem Solver
+# Tet — a joyful, extensible problem solver
 
-A tiny, joyful command-line helper that solves small puzzles like arithmetic and classic anagrams. When it cannot solve a prompt directly, it offers upbeat brainstorming steps to keep the momentum going.
+Tet turns small everyday questions into clear, upbeat answers. Ask it to do
+arithmetic, convert units, count days, crunch statistics, find anagrams, or
+build a creative brief — and when it doesn't have a direct solver, it still
+hands you a structured way to start.
 
-## Usage
+Under the hood Tet is a tiny **solver engine**: every capability is a small,
+self-contained solver, and a registry ranks their answers by *confidence* so
+the most relevant solver wins — not merely the first one that matched.
 
-Run the solver with your problem statement:
+* **Zero dependencies.** Pure Python standard library; runs anywhere.
+* **Safe by construction.** The math evaluator walks the AST against an
+  allow-list — no `eval`, no attribute access, no surprise imports.
+* **Extensible.** Add a capability by writing one small class and registering
+  it. No giant `if/elif` ladder to edit.
+
+## Quick start
 
 ```bash
-python app.py "2 + 3 * 4"
-python app.py "Unscramble an anagram of listen"
-python app.py "How do I get motivated for chores?"
+python app.py "2 + 3 * 4"                 # → 14
+python app.py "sqrt(2) + 1"               # functions: sqrt, log, sin, factorial, …
+python app.py "convert 10 km to miles"    # unit conversion
+python app.py "100 f to c"                # temperature
+python app.py "days until 2026-12-25"     # date math
+python app.py "median of 5 3 8 1 9"       # statistics
+python app.py "15% of 200"                # percentages
+python app.py "convert 255 to hex"        # number bases
+python app.py "roman numeral for 2026"    # roman numerals
+python app.py "find an anagram of listen" # anagrams
 ```
 
-Each response includes a playful banner, a concise answer, and encouraging bullet points whenever brainstorming is needed.
+Installed as a package, the same lives under the `tet` command:
+
+```bash
+pip install -e .
+tet "what weekday is 2026-06-21"
+```
+
+## CLI options
+
+| Flag | What it does |
+| --- | --- |
+| `--json` | Emit the solution as JSON instead of friendly text. |
+| `--all` | Show every solver's ranked candidate with its confidence. |
+| `--list` | List the available solvers and exit. |
+| `--repl` | Start an interactive loop. |
+| `--prompt [--medium photo\|video\|music\|art\|poem]` | Build a structured, mobile-friendly creative brief. |
+| `--version` | Print the version. |
+
+The `--all` view is the clearest window into the engine:
+
+```text
+$ tet --all "what is 50% of 80"
+[1] percentage (confidence 0.86)
+✨ Percent solution ready! ✨
+50% of 80 is 40.
+
+[2] brainstorm (confidence 0.02)
+…
+```
 
 ## Build creative prompts for iOS web
 
-Use prompt mode when you want a ready-to-paste creative brief for photos, video, music, art, or poetry. The builder keeps instructions short and mobile-friendly for iOS web inputs:
-
 ```bash
 python app.py --prompt --medium photo "misty forest boardwalk at dawn"
-python app.py --prompt --medium music "uplifting synthwave for launch video"
 python app.py --prompt "poem about late-summer rain in the city"  # medium auto-detected
 ```
 
-The prompt generator auto-detects mediums when possible and adds concise delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+The builder keeps instructions short and mobile-friendly and adds concise
+delivery notes for camera, composition, pacing, instrumentation, or poetic form.
+
+## Library use
+
+```python
+from tet import solve_problem, candidate_solutions, build_creative_prompt
+
+print(solve_problem("convert 5 kg to pounds").format())
+
+for candidate in candidate_solutions("25% of 80"):
+    print(candidate.source, candidate.confidence)
+```
+
+## Development
+
+```bash
+pip install -e ".[dev]"
+pytest
+```
+
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the design and a guide to
+adding your own solver.

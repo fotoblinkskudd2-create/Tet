@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tet"
+version = "0.2.0"
+description = "A joyful, extensible problem-solving engine with confidence-ranked solvers."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+keywords = ["cli", "solver", "math", "units", "anagram", "joyful"]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+tet = "tet.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["tet*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
