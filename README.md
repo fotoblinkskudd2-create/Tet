@@ -53,3 +53,20 @@ python app.py --simulate --start 1000 --monthly 500 --rate 4 --years 10
 | `--years` | How many years to project |
 
 The output shows a year-by-year balance plus how much of it is interest working for you.
+
+## Propeller design simulator (`propeller_sim.py`)
+
+A first-pass engineering tool for drone/multirotor propellers: estimate thrust, power, and efficiency for one configuration, or sweep across hundreds and let it rank the best. Define the part virtually, run it many ways, build only the shortlist.
+
+```bash
+# One propeller
+python propeller_sim.py --diameter 10 --pitch 4.5 --rpm 8000
+
+# Sweep ranges (min:max:step) and rank — here ~140 configs by efficiency
+python propeller_sim.py --diameter 8:14:1 --pitch 4:6:0.5 --rpm 6000:9000:1000 --rank efficiency --top 8
+
+# Optimize for raw thrust instead, with forward airspeed
+python propeller_sim.py --diameter 8:14:1 --rpm 5000:10000:500 --rank thrust --airspeed 10
+```
+
+Any of `--diameter`, `--pitch`, `--rpm` accepts a single value (`10`) or a `min:max:step` range (`8:14:1`). Thrust uses an established empirical model; power uses momentum theory with a figure of merit (`--fom`). It narrows the design space fast — it is **not** a CFD replacement, so validate the winners for real.
