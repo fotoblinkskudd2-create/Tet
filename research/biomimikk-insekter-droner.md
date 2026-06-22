@@ -8,6 +8,10 @@
 > eksplisitt merket. Anvendelsene drøftes med henblikk på sivile/forsvarlige/etisk
 > forsvarbare bruksområder (søk-og-redning, inspeksjon, miljøovervåking, autonomi).
 
+> 📊 **Diagrammer:** se [`diagrammer.md`](./diagrammer.md) for visuelle modeller (Mermaid)
+> av den røde tråden, mekanisme→prinsipp→algoritme-mappingen, og den lagdelte arkitekturen.
+> 🇬🇧 **English version:** [`biomimicry-insects-drones-EN.md`](./biomimicry-insects-drones-EN.md).
+
 ---
 
 <part_header>DEL 1: INSEKTENES DEFENSIVE OG OFFENSIVE MEKANISMER I NATUREN</part_header>
