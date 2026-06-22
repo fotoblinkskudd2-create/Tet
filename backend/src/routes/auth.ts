@@ -2,24 +2,8 @@ import { Router, Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { v4 as uuid } from 'uuid';
+import { users, User } from '../store';
 
-interface UserStats {
-  gamesPlayed: number;
-  wins: number;
-  losses: number;
-  draws: number;
-}
-
-interface User {
-  id: string;
-  email: string;
-  username: string;
-  passwordHash: string;
-  rating: number;
-  stats: UserStats;
-}
-
-const users = new Map<string, User>();
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
 const COOKIE_NAME = 'session';
