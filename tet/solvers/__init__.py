@@ -9,6 +9,7 @@ from .anagram import AnagramSolver
 from .arithmetic import ArithmeticSolver
 from .brainstorm import BrainstormSolver
 from .creative import CreativeSolver, build_creative_prompt
+from .knowledge import KnowledgeSolver
 from .numeric import (
     BaseConversionSolver,
     PercentageSolver,
@@ -25,6 +26,7 @@ __all__ = [
     "BaseConversionSolver",
     "BrainstormSolver",
     "CreativeSolver",
+    "KnowledgeSolver",
     "PanicSupportSolver",
     "PercentageSolver",
     "RomanSolver",
@@ -53,6 +55,7 @@ def all_solvers() -> List[Solver]:
         PercentageSolver(),
         StatisticsSolver(),
         AnagramSolver(),
+        KnowledgeSolver(),
         PanicSupportSolver(),
         CreativeSolver(),
         BrainstormSolver(),
@@ -78,5 +81,6 @@ def default_registry() -> Registry:
     registry.register(PercentageSolver())
     registry.register(StatisticsSolver())
     registry.register(AnagramSolver())
+    registry.register(KnowledgeSolver())
     registry.register(BrainstormSolver())
     return registry

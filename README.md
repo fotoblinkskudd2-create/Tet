@@ -28,6 +28,33 @@ python app.py "15% of 200"                # percentages
 python app.py "convert 255 to hex"        # number bases
 python app.py "roman numeral for 2026"    # roman numerals
 python app.py "find an anagram of listen" # anagrams
+python app.py "what is the speed of light"  # searchable knowledge base
+python app.py "search avogadro constant"    # physical constants & SI prefixes
+```
+
+### Searchable knowledge & intelligent recovery
+
+Tet ships a small, accurate, **searchable** knowledge base — physical constants
+(CODATA 2022), SI prefixes (through quetta/quecto), and defined values like the
+astronomical unit. Ask in plain language and Tet ranks its entries against your
+words, with typo tolerance:
+
+```text
+$ tet "what is the planck constant"
+✨ Knowledge solution ready! ✨
+Planck constant (h) = 6.62607 × 10^-34 J·s
+- Exact by SI definition. Category: constant.
+- Related: reduced Planck constant = 1.05457 × 10^-34 J·s
+```
+
+And when nothing matches, Tet infers what you *probably* meant and offers a
+ready-to-run example instead of a dead end:
+
+```text
+$ tet "could you covert kilometers somehow"
+✨ Brainstorm solution ready! ✨
+…
+- Did you mean a unit conversion? Try: convert 10 km to miles
 ```
 
 Installed as a package, the same lives under the `tet` command:

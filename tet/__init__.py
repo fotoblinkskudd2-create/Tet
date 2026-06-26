@@ -16,6 +16,7 @@ from __future__ import annotations
 from typing import List, Optional
 
 from .core import Registry, Solution, Solver
+from .intelligence import suggestions
 from .solvers import all_solvers, build_creative_prompt, default_registry
 
 __version__ = "0.2.0"
@@ -26,6 +27,7 @@ __all__ = [
     "Registry",
     "solve_problem",
     "candidate_solutions",
+    "suggestions",
     "build_creative_prompt",
     "default_registry",
     "all_solvers",
@@ -46,6 +48,20 @@ def solve_problem(problem: str) -> Solution:
 
     solution = _REGISTRY.best(problem)
     assert solution is not None  # brainstorm always matches
+
+    # When nothing specific matched, try to infer intent and offer concrete,
+    # copy-pasteable guidance instead of a bare fallback.
+    if solution.source == "brainstorm":
+        hints = suggestions(problem)
+        if hints:
+            details = list(solution.details or [])
+            solution = Solution(
+                kind=solution.kind,
+                answer=solution.answer,
+                details=details + hints,
+                confidence=solution.confidence,
+                source=solution.source,
+            )
     return solution
 
 

@@ -53,12 +53,40 @@ The **brainstorm** fallback matches everything at confidence `0.02`, which
 guarantees `solve_problem` never returns `None` while never beating a real
 answer.
 
+## Searching on input: the knowledge solver
+
+`tet/solvers/knowledge.py` is a curated, offline knowledge base (physical
+constants from CODATA 2022, the full SI prefix set, and defined reference
+values). It does not pattern-match a fixed grammar; instead it **ranks every
+entry against the query**. The score combines two signals:
+
+1. **Whole-word phrase hits** — an entry term appearing in the query on letter
+   boundaries (so "kilo" never matches inside "kilometers").
+2. **Typo-tolerant token matching** — `difflib.get_close_matches` over the
+   query's meaningful tokens, so "boltzman constant" still finds Boltzmann.
+
+It only emits a `Solution` above a confidence threshold, so it never hijacks an
+arithmetic or unit question that merely contains the word "what". The values
+are sourced, not remembered — see the commit that introduced it for the CODATA
+references.
+
+## Intelligence: did-you-mean dispatch
+
+`tet/intelligence.py` runs when *nothing* matched. It scores the query's tokens
+against each capability's vocabulary (again with `difflib` typo tolerance) and,
+for any strong intent, appends a concrete, copy-pasteable example to the
+brainstorm fallback. This is wired in `tet.solve_problem`: the engine still
+returns a `Brainstorm` solution, but an enriched one that says *"Did you mean a
+unit conversion? Try: convert 10 km to miles."* A truly open-ended question
+("organize my sock drawer") gets no spurious hint and keeps its joyful steps.
+
 ## Confidence guide
 
 | Band | Meaning | Example solvers |
 | --- | --- | --- |
 | `0.95–1.0` | Safety-critical / unambiguous intent | wellbeing |
 | `0.84–0.92` | Clear structural match (operators, units, ISO dates) | arithmetic, units, temporal, numeric |
+| `0.68–0.9` | Ranked knowledge-base match (phrase hit → fuzzy) | knowledge |
 | `0.7` | Recognised shape, partial/empty result | anagram with no match |
 | `0.02` | Universal fallback | brainstorm |
 
